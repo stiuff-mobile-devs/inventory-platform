@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "inventoryplatform" "\0"
+            VALUE "FileDescription", "inventory_platform" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "inventoryplatform" "\0"
+            VALUE "InternalName", "inventory_platform" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "inventoryplatform.exe" "\0"
-            VALUE "ProductName", "inventoryplatform" "\0"
+            VALUE "OriginalFilename", "inventory_platform.exe" "\0"
+            VALUE "ProductName", "inventory_platform" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
