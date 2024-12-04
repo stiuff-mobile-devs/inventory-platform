@@ -1,0 +1,25 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "inventory-platform",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "chrome"
+        },
+        {
+            "name": "inventory-platform (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "deviceId": "chrome" 
+        },
+        {
+            "name": "inventory-platform (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "deviceId": "chrome" 
+        }
+    ]
+}
