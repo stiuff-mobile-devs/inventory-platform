@@ -1,3 +1,7 @@
+# Firebase Configuration 
+lib/firebase_options.dart
+android/app/google-services.json
+
 # Android/Flutter specific
 .gradle/
 .idea/
@@ -48,7 +52,15 @@ migrate_working_dir/
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
-#.vscode/
+.idea/
+.vscode/
+
+# macOS build directory
+macos/Flutter/GeneratedPluginRegistrant.swift
+
+# Windows build directory
+windows/flutter/generated_plugin_registrant.cc
+windows/flutter/generated_plugins.cmake
 
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -66,3 +78,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Dependency lock file (if needed)
+pubspec.lock
