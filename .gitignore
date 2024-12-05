@@ -85,3 +85,4 @@ pubspec.lock
 # Others
 web/js/google_api.js
 web/index.html
+.env/
