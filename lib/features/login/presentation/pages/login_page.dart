@@ -233,7 +233,7 @@ class _AppInfo extends StatelessWidget {
             Icon(
               Icons.all_inclusive_outlined,
               size: 100,
-              color: Colors.blue,
+              color: Color(0xFF0061FF),
             ),
             Text(
               "Inventário Universal",
