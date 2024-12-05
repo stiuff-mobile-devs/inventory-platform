@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class RouteTransitions {
-  // Fade transition
   static Widget fadeTransition(
       BuildContext context,
       Animation<double> animation,
@@ -13,7 +12,6 @@ class RouteTransitions {
     );
   }
 
-  // Slide from right transition
   static Widget slideFromRightTransition(
       BuildContext context,
       Animation<double> animation,
@@ -32,7 +30,6 @@ class RouteTransitions {
     );
   }
 
-  // No transition (immediate navigation)
   static Widget noTransition(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
     return child;
