@@ -17,14 +17,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: AppRoutes.router,
+
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: AppRoutes.login, // Define a rota inicial
-      onGenerateRoute: AppRoutes.generateRoute,
+      // initialRoute: AppRoutes.login,
+      // onGenerateRoute: AppRoutes.generateRoute,
     );
   }
 
