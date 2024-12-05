@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inventory_platform/features/login/presentation/bloc/login_bloc.dart';
-import '../../domain/usecases/sign_in_with_google.dart'; // Certifique-se de importar corretamente
+import '../../domain/usecases/sign_in_with_google.dart';
 import '../bloc/counter_bloc.dart';
 import '../bloc/counter_event.dart';
 import '../bloc/counter_state.dart';
@@ -65,18 +66,11 @@ class LoginPage extends StatelessWidget {
                   if (state is LoginLoading) {
                     return const CircularProgressIndicator();
                   }
-                  return ElevatedButton(
+                  return SignInButton(
+                    Buttons.Google,
                     onPressed: () {
                       context.read<LoginBloc>().add(GoogleSignInRequested());
                     },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 30),
-                      backgroundColor: Colors.deepPurple,
-                      textStyle: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    child: const Text('Sign in with Google'),
                   );
                 },
               ),

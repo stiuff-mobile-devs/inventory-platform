@@ -81,3 +81,7 @@ app.*.map.json
 
 # Dependency lock file (if needed)
 pubspec.lock
+
+# Others
+web/js/google_api.js
+web/index.html
