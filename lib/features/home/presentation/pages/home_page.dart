@@ -7,40 +7,148 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
-        title: const Text('Home Page'),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'Welcome to the Home Page!',
+            children: [
+              _buildHeader(context),
+              _buildWelcomeText(),
+              _buildMetricsGrid(),
+              _buildFooter(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Container(
+      color: const Color.fromARGB(255, 32, 32, 32),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Row(
+            children: [
+              Icon(Icons.all_inclusive_outlined, size: 30, color: Colors.white),
+              SizedBox(width: 10),
+              Text(
+                'Inventário Universal',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.deepPurple,
+                  color: Colors.white,
                 ),
-              ),
-              const SizedBox(height: 40),
-              ElevatedButton(
-                onPressed: () {
-                  context.go('/login');
-                },
-                style: ElevatedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-                  backgroundColor: Colors.deepPurple,
-                  textStyle: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                child: const Text('Go Back to Login'),
               ),
             ],
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.red),
+            onPressed: () {
+              context.go('/login');
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWelcomeText() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double textSize = constraints.maxWidth > 600 ? 28 : 21;
+
+        return Column(
+          children: [
+            const SizedBox(height: 20),
+            Text(
+              'Bem-vindo ao seu dashboard!',
+              style: TextStyle(
+                fontSize: textSize,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildMetricsGrid() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double textSize = constraints.maxWidth > 600 ? 22 : 12;
+        int crossAxisCount = constraints.maxWidth > 600 ? 3 : 1;
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: 16.0,
+              mainAxisSpacing: 16.0,
+              childAspectRatio: 1.5,
+            ),
+            itemCount: 4,
+            itemBuilder: (context, index) {
+              return Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 4,
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.bar_chart,
+                        size: 40,
+                        color: Colors.blue,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Métricas $index',
+                        style: TextStyle(
+                          fontSize: textSize,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Resumo estatístico',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildFooter() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20.0),
+      child: Container(
+        color: const Color.fromARGB(255, 32, 32, 32),
+        padding: const EdgeInsets.all(8.0),
+        child: const Center(
+          child: Text(
+            '© 2024 Inventário Universal.',
+            style: TextStyle(color: Colors.white),
           ),
         ),
       ),

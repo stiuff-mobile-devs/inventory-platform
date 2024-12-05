@@ -1,26 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import '../../domain/usecases/sign_in_with_google.dart';
-
-abstract class LoginEvent {}
-
-class GoogleSignInRequested extends LoginEvent {}
-
-abstract class LoginState {}
-
-class LoginInitial extends LoginState {}
-
-class LoginLoading extends LoginState {}
-
-class LoginSuccess extends LoginState {
-  final User user;
-  LoginSuccess(this.user);
-}
-
-class LoginFailure extends LoginState {
-  final String message;
-  LoginFailure(this.message);
-}
+import 'login_event.dart';
+import 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final SignInWithGoogle signInWithGoogle;
