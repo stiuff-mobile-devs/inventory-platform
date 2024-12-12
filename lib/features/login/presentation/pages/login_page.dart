@@ -5,6 +5,7 @@ import 'package:inventory_platform/features/login/presentation/bloc/login_bloc.d
 import 'package:inventory_platform/features/login/presentation/bloc/login_event.dart';
 import 'package:inventory_platform/features/login/presentation/bloc/login_state.dart';
 import '../../domain/usecases/sign_in_with_google.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class LoginPage extends StatelessWidget {
   final SignInWithGoogle signInWithGoogle;
@@ -222,20 +223,22 @@ class _AppInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Expanded(
+    return Expanded(
       flex: 1,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 28.0, vertical: 36.0),
+        padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 36.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
-              Icons.all_inclusive_outlined,
-              size: 100,
-              color: Color(0xFF0061FF),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SvgPicture.asset(
+                'assets/icons/JustLogoInventario.svg',
+                width: 100,
+              ),
             ),
-            Text(
+            const Text(
               "Inventário Universal",
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -243,8 +246,8 @@ class _AppInfo extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8),
-            Text(
+            const SizedBox(height: 8),
+            const Text(
               "Otimize o controle de seus itens com suporte a múltiplos métodos de captura.",
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -264,18 +267,20 @@ class _AppInfoMobile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 28.0, vertical: 36.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 36.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(
-            Icons.all_inclusive_outlined,
-            size: 100,
-            color: Colors.blue,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SvgPicture.asset(
+              'assets/icons/JustLogoInventario.svg',
+              width: 100,
+            ),
           ),
-          Text(
+          const Text(
             "Inventário Universal",
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -283,8 +288,8 @@ class _AppInfoMobile extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 8),
-          Text(
+          const SizedBox(height: 8),
+          const Text(
             "Otimize o controle de seus itens com suporte a múltiplos métodos de captura.",
             textAlign: TextAlign.center,
             style: TextStyle(

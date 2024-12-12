@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
 class HomePage extends StatelessWidget {
@@ -29,11 +30,17 @@ class HomePage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.all_inclusive_outlined, size: 30, color: Colors.white),
-              SizedBox(width: 10),
-              Text(
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SvgPicture.asset(
+                  'assets/icons/JustLogoInventario.svg',
+                  width: 30,
+                ),
+              ),
+              const SizedBox(width: 10),
+              const Text(
                 'Inventário Universal',
                 style: TextStyle(
                   fontSize: 24,
