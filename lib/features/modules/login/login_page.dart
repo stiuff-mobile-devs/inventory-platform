@@ -99,7 +99,7 @@ class LoginPageState extends State<LoginPage> {
               LoginHeader(width: screenWidth * 0.8, height: screenHeight * 0.2),
               SizedBox(height: screenHeight * 0.075),
               _buildTitleSection(),
-              _buildLoginDetails(screenWidth * 0.8),
+              _buildLoginDetails(Orientation.portrait, screenWidth * 0.8),
             ],
           ),
           Positioned(
@@ -131,7 +131,10 @@ class LoginPageState extends State<LoginPage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8.0, vertical: 16.0),
-                        child: _buildLoginDetails(availableWidth),
+                        child: _buildLoginDetails(
+                          Orientation.landscape,
+                          availableWidth,
+                        ),
                       ),
                     ],
                   ),
@@ -212,10 +215,33 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildLoginDetails(double availableWidth) {
+  Widget _buildLoginDetails(Orientation orientation, double availableWidth) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        orientation == Orientation.landscape
+            ? Padding(
+                padding: const EdgeInsets.only(left: 16.0, top: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Faça o seu login.',
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                    ),
+                    Divider(
+                      thickness: 5,
+                      color: Colors.black,
+                      endIndent: availableWidth * 0.65,
+                    ),
+                  ],
+                ),
+              )
+            : const SizedBox.shrink(),
         const LoginForm(),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),

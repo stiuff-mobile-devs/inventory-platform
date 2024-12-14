@@ -27,6 +27,7 @@ dev_dependencies:
     sdk: flutter
   flutter_launcher_icons: ^0.13.1
   flutter_lints: ^4.0.0
+  flutter_native_splash: ^2.0.5
 
 flutter_launcher_icons:
   android: "launcher_icon"
@@ -40,6 +41,16 @@ flutter_launcher_icons:
     image_path: "assets/images/AppLogoWeb-1024x1024.png"
     background_color: "#ffffff"
     theme_color: "#ffffff"
+
+flutter_native_splash:
+  color: "#ffffff" 
+  image: "assets/images/AppLogo-1024x1024.png" 
+  android: true 
+  ios: true 
+  web: true
+  fullscreen: true 
+  android_theme: "normal" 
+  ios_background_color: "#ffffff" 
 
 flutter:
 
