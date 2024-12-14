@@ -43,14 +43,18 @@ flutter_launcher_icons:
     theme_color: "#ffffff"
 
 flutter_native_splash:
-  color: "#ffffff" 
-  image: "assets/images/AppLogo-1024x1024.png" 
+  color: "#FFFFFF" 
+  image: "assets/images/JustLogoInventarioSplash-1024x1024.png" 
   android: true 
   ios: true 
   web: true
   fullscreen: true 
-  android_theme: "normal" 
-  ios_background_color: "#ffffff" 
+
+  android_12:
+    icon_background_color: "#FFFFFF"
+    image: "assets/images/JustLogoInventarioSplash-1024x1024.png" 
+    icon_background_color_dark: "#1a1a1a"
+    image_dark: "assets/images/JustLogoInventarioSplash-1024x1024.png" 
 
 flutter:
 
