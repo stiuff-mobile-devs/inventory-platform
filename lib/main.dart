@@ -1,14 +1,20 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:inventory_platform/core/injection_container.dart' as di;
-import 'package:inventory_platform/core/services/firebase_service.dart';
+import 'package:get/get.dart';
+import 'package:inventory_platform/core/theme/app_theme.dart';
+import 'package:inventory_platform/features/data/services/auth_service.dart';
+import 'package:inventory_platform/firebase_options.dart';
+import 'package:inventory_platform/routes/pages.dart';
 import 'package:inventory_platform/routes/routes.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await di.init();
-  await FirebaseInitializer.initializeFirebase();
-  await dotenv.load();
+  await dotenv.load(fileName: ".env");
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  Get.put(AuthService());
+
   runApp(const MyApp());
 }
 
@@ -17,14 +23,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: AppRoutes.router,
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Inventário Universal',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      initialRoute: AppRoutes.login,
+      theme: globalTheme,
+      getPages: AppPages.pages,
     );
   }
 }

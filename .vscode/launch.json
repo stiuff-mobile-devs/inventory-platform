@@ -5,21 +5,21 @@
             "name": "inventory-platform",
             "request": "launch",
             "type": "dart",
-            "deviceId": "chrome"
+            "deviceId": "R9XX202RXTT"
         },
         {
             "name": "inventory-platform (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile",
-            "deviceId": "chrome" 
+            "deviceId": "R9XX202RXTT" 
         },
         {
             "name": "inventory-platform (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release",
-            "deviceId": "chrome" 
+            "deviceId": "R9XX202RXTT" 
         }
     ]
 }
