@@ -17,9 +17,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
-  final LoginController controller = Get.find();
   final ScrollController _scrollController = ScrollController();
   bool _showScrollHint = false;
+  final controller = Get.find<LoginController>();
 
   void updateScrollHint() {
     if (!_scrollController.hasClients) return;
@@ -283,11 +283,13 @@ class LoginPageState extends State<LoginPage> {
     }
   }
 
-  void _showLoadingDialog(BuildContext context) {
-    showDialog(
+  Future<void> _showLoadingDialog(BuildContext context) async {
+    await showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => const LoadingDialog(),
+      builder: (context) {
+        return const LoadingDialog();
+      },
     );
   }
 }

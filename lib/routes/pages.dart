@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:inventory_platform/core/bindings.dart';
 import 'package:inventory_platform/features/modules/home/home_binding.dart';
 import 'package:inventory_platform/features/modules/help/help_page.dart';
 import 'package:inventory_platform/features/modules/home/home_page.dart';
@@ -12,27 +13,39 @@ abstract class AppPages {
     GetPage(
       name: AppRoutes.login,
       page: () => const LoginPage(),
-      binding: LoginBinding(),
+      bindings: [
+        CoreBindings(),
+        LoginBinding(),
+      ],
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 200),
     ),
     GetPage(
       name: AppRoutes.home,
       page: () => const HomePage(),
-      binding: HomeBinding(),
-      transition: Transition.fade,
+      bindings: [
+        CoreBindings(),
+        HomeBinding(),
+      ],
+      transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 200),
     ),
     GetPage(
       name: AppRoutes.settings,
       page: () => const SettingsPage(),
-      transition: Transition.fade,
+      bindings: [
+        CoreBindings(),
+      ],
+      transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 200),
     ),
     GetPage(
       name: AppRoutes.help,
       page: () => const HelpPage(),
-      transition: Transition.fade,
+      bindings: [
+        CoreBindings(),
+      ],
+      transition: Transition.noTransition,
       transitionDuration: const Duration(milliseconds: 200),
     ),
   ];

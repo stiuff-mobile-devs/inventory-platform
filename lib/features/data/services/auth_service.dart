@@ -1,15 +1,30 @@
+import 'package:get/get_utils/src/platform/platform.dart';
+import 'package:inventory_platform/core/utils/auth/auth_error.dart';
+import 'package:inventory_platform/core/utils/auth/auth_warning.dart';
+import 'package:inventory_platform/features/data/services/error_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:get/get.dart';
+import 'package:inventory_platform/features/data/services/connection_service.dart';
+import 'package:inventory_platform/features/data/services/warning_service.dart';
 
-class AuthService extends GetxService {
+class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final ErrorService _errorService = ErrorService();
+  final WarningService _warningService = WarningService();
+  final ConnectionService _connectionService = ConnectionService();
 
   User? get currentUser => _auth.currentUser;
+  bool get isUserLoggedIn => _auth.currentUser != null;
 
   Future<bool> signInWithGoogle() async {
     try {
+      final bool hasInternet =
+          await _connectionService.checkInternetConnection();
+      if (!hasInternet) {
+        throw NetworkError();
+      }
+
       if (GetPlatform.isWeb) {
         // Fluxo de login para a Web
         final GoogleAuthProvider googleProvider = GoogleAuthProvider();
@@ -19,7 +34,7 @@ class AuthService extends GetxService {
         final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
         if (googleUser == null) {
-          return false;
+          throw UserCancelledWarning();
         }
 
         final GoogleSignInAuthentication googleAuth =
@@ -35,8 +50,13 @@ class AuthService extends GetxService {
 
       return true;
     } catch (e) {
-      Get.snackbar('Erro', 'Falha no login com Google: $e',
-          snackPosition: SnackPosition.BOTTOM);
+      if (e is AuthError) {
+        _errorService.handleError(e);
+      } else if (e is AuthWarning) {
+        _warningService.handleWarning(e);
+      } else {
+        _errorService.handleError(Exception('Erro desconhecido.'));
+      }
       return false;
     }
   }
@@ -46,9 +66,13 @@ class AuthService extends GetxService {
       await _auth.signOut();
       await _googleSignIn.signOut();
     } catch (e) {
-      Get.snackbar('Erro', 'Erro ao realizar logout: $e');
+      if (e is AuthError) {
+        _errorService.handleError(e);
+      } else if (e is AuthWarning) {
+        _warningService.handleWarning(e);
+      } else {
+        _errorService.handleError(Exception('Erro desconhecido.'));
+      }
     }
   }
-
-  bool get isUserLoggedIn => _auth.currentUser != null;
 }

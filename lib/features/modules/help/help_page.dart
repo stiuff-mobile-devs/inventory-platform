@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:inventory_platform/widgets/base_scaffold.dart';
+import 'package:inventory_platform/features/widgets/base_scaffold.dart';
 
 class HelpPage extends StatelessWidget {
   const HelpPage({super.key});

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:inventory_platform/features/modules/home/home_controller.dart';
+import 'package:inventory_platform/features/widgets/connection_status_icon.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final HomeController controller;
@@ -26,6 +27,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           children: [
             _buildAppBarContent(),
             _buildDrawerToggleButton(),
+            _buildConnectionStateIcon(),
           ],
         ),
       ),
@@ -71,6 +73,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         },
       ),
     );
+  }
+
+  Widget _buildConnectionStateIcon() {
+    return const ConnectionStatusIcon();
   }
 
   @override

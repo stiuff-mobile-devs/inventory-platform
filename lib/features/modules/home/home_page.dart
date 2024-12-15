@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/features/modules/home/widgets/inventory_grid.dart';
 import 'package:inventory_platform/features/modules/home/widgets/page_indicators.dart';
-import 'package:inventory_platform/widgets/base_scaffold.dart';
+import 'package:inventory_platform/features/widgets/base_scaffold.dart';
 import 'package:inventory_platform/features/modules/home/home_controller.dart';
 import 'package:inventory_platform/features/modules/home/widgets/carousel_section.dart';
 
@@ -11,7 +11,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final HomeController controller = Get.find();
+    final controller = Get.find<HomeController>();
 
     return BaseScaffold(
       body: SingleChildScrollView(
