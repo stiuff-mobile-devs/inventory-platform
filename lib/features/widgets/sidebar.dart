@@ -121,13 +121,32 @@ class CustomSidebar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircleAvatar(
-              radius: (extended) ? 30 : 16,
-              backgroundImage: controller.userPhotoUrl.value.isNotEmpty
-                  ? NetworkImage(controller.userPhotoUrl.value)
-                  : null,
-              child: controller.userPhotoUrl.value.isEmpty
-                  ? const Icon(Icons.person, size: 24)
-                  : null,
+              radius: extended ? 30 : 16,
+              backgroundColor: Colors.grey.shade200,
+              child: controller.userPhotoUrl.value.isNotEmpty
+                  ? ClipOval(
+                      child: Image.network(
+                        controller.userPhotoUrl.value,
+                        fit: BoxFit.cover,
+                        width: (extended ? 60 : 32),
+                        height: (extended ? 60 : 32),
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.grey,
+                            width: double.infinity,
+                            height: double.infinity,
+                            child: Center(
+                              child: Icon(
+                                Icons.person,
+                                color: Colors.white,
+                                size: extended ? 48 : 24,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                  : const Icon(Icons.person, size: 24),
             ),
             if (extended) const SizedBox(width: 16),
             if (extended)
