@@ -89,3 +89,10 @@ web/index.html
 .env/
 android/keystore.properties
 ios/Runner/GoogleService-Info.plist
+firebase.json
+.firebaserc
+firebase.json
+pubspec.lock
+.firebase/
+.github/
+public/
