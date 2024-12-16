@@ -17,7 +17,7 @@ class ConnectionController extends GetxController {
 
   @override
   void onClose() {
-    // _connectionService.stopMonitoring();
+    _connectionService.stopMonitoring();
     super.onClose();
   }
 

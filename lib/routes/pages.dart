@@ -18,7 +18,7 @@ abstract class AppPages {
         LoginBinding(),
       ],
       transition: Transition.fadeIn,
-      transitionDuration: const Duration(milliseconds: 200),
+      transitionDuration: const Duration(milliseconds: 300),
     ),
     GetPage(
       name: AppRoutes.home,
@@ -27,8 +27,8 @@ abstract class AppPages {
         CoreBindings(),
         HomeBinding(),
       ],
-      transition: Transition.noTransition,
-      transitionDuration: const Duration(milliseconds: 200),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 300),
     ),
     GetPage(
       name: AppRoutes.settings,
@@ -36,8 +36,8 @@ abstract class AppPages {
       bindings: [
         CoreBindings(),
       ],
-      transition: Transition.noTransition,
-      transitionDuration: const Duration(milliseconds: 200),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 300),
     ),
     GetPage(
       name: AppRoutes.help,
@@ -45,8 +45,8 @@ abstract class AppPages {
       bindings: [
         CoreBindings(),
       ],
-      transition: Transition.noTransition,
-      transitionDuration: const Duration(milliseconds: 200),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 300),
     ),
   ];
 }
