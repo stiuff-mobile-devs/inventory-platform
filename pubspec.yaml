@@ -23,6 +23,7 @@ dependencies:
   awesome_snackbar_content: ^0.1.4
   connectivity_plus: ^6.1.1
   sidebarx: ^0.17.1
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:

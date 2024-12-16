@@ -73,10 +73,10 @@ class CarouselSection extends StatelessWidget {
   Widget _buildCarouselItem(CarouselItemModel item, BuildContext context) {
     return GestureDetector(
       onLongPress: () {
-        controller.isHovered.value = true;
+        controller.setHovered(true);
         Future.delayed(
           const Duration(seconds: 3),
-          () => controller.isHovered.value = false,
+          () => controller.setHovered(false),
         );
       },
       child: MouseRegion(
@@ -93,16 +93,31 @@ class CarouselSection extends StatelessWidget {
                 offset: const Offset(0, 2),
               ),
             ],
-            image: item.imagePath.isNotEmpty
-                ? DecorationImage(
-                    image: NetworkImage(item.imagePath),
-                    fit: BoxFit.cover,
-                  )
-                : null,
           ),
           child: Stack(
             alignment: Alignment.bottomCenter,
             children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Image.network(
+                  item.imagePath,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.grey,
+                      width: double.infinity,
+                      child: const Center(
+                        child: Icon(
+                          Icons.image_not_supported_rounded,
+                          color: Colors.white,
+                        ),
+                      ),
+                    );
+                  },
+                  fit: BoxFit.cover,
+                  height: double.infinity,
+                  width: double.infinity,
+                ),
+              ),
               AnimatedPositioned(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeOut,
@@ -115,36 +130,30 @@ class CarouselSection extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.only(
                         topRight: Radius.circular(10.0),
-                        bottomRight: Radius.circular(0.0),
                         topLeft: Radius.circular(10.0),
-                        bottomLeft: Radius.circular(0.0),
                       ),
                       color: Colors.black.withOpacity(0.6),
                     ),
                     padding: const EdgeInsets.all(8.0),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.title,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: (isExpanded ?? false) ? 20 : 16,
-                            ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.title,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: (isExpanded ?? false) ? 20 : 16,
                           ),
-                          Text(
-                            item.description,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: (isExpanded ?? false) ? 16 : 12,
-                            ),
-                            textAlign: TextAlign.center,
+                        ),
+                        Text(
+                          item.description,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: (isExpanded ?? false) ? 16 : 12,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
