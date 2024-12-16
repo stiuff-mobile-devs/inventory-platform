@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:inventory_platform/features/modules/controllers/sidebar_controller.dart';
 import 'package:sidebarx/sidebarx.dart';
-import 'package:inventory_platform/features/modules/home/home_controller.dart';
 
 class CustomSidebar extends StatelessWidget {
-  final HomeController controller;
+  CustomSidebar({super.key});
 
-  CustomSidebar({super.key, required this.controller});
+  final controller = Get.find<SidebarController>();
 
   final SidebarXController sidebarController =
       SidebarXController(selectedIndex: 0, extended: true);
@@ -106,16 +106,16 @@ class CustomSidebar extends StatelessWidget {
     );
   }
 
-  Widget _buildUserHeader(HomeController controller, bool extended) {
+  Widget _buildUserHeader(SidebarController controller, bool extended) {
     return Obx(() {
       return Container(
         padding: const EdgeInsets.all(16),
         decoration: const BoxDecoration(
-          color: Color(0xFF4A148C),
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
-          ),
+          color: Color.fromARGB(255, 57, 15, 107),
+          // borderRadius: BorderRadius.only(
+          //   topLeft: Radius.circular(16),
+          //   topRight: Radius.circular(16),
+          // ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

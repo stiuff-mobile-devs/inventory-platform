@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/services/mock_service.dart';
-import 'package:inventory_platform/features/widgets/base_scaffold.dart';
-// import 'package:inventory_platform/features/modules/home/home_controller.dart';
 import 'package:inventory_platform/features/widgets/carousel_section.dart' as w;
+import 'package:inventory_platform/features/modules/panel/widgets/inventory_grid.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/page_indicators.dart';
+// import 'package:inventory_platform/features/modules/panel/panel_controller.dart';
+import 'package:inventory_platform/features/widgets/base_scaffold.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class PanelPage extends StatelessWidget {
+  const PanelPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // final controller = Get.find<HomeController>();
+    // final controller = Get.find<PanelController>();
     final carouselController = Get.find<w.CarouselSectionController>();
+    final pageIndicatorsController = Get.find<PageIndicatorsController>();
+    final inventoryGridController = Get.find<InventoryGridController>();
     final mockService = Get.find<MockService>();
 
     return BaseScaffold(
@@ -20,12 +24,19 @@ class HomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionTitle('Minhas Organizações', context),
+            _buildSectionTitle('Acessados Recentemente', context),
             const SizedBox(height: 16),
             w.CarouselSection(
-              isExpanded: true,
+              isExpanded: false,
               controller: carouselController,
               items: mockService.organizationsList,
+            ),
+            const SizedBox(height: 20),
+            _buildSectionTitle('Meus Inventários', context),
+            const SizedBox(height: 16),
+            InventoryGridSection(controller: inventoryGridController),
+            PageIndicatorsSection(
+              controller: pageIndicatorsController,
             ),
           ],
         ),

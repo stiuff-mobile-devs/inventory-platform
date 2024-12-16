@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:inventory_platform/features/modules/home/home_controller.dart';
 import 'package:inventory_platform/features/widgets/connection_status_icon.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final HomeController controller;
-
-  const CustomAppBar({super.key, required this.controller});
+  const CustomAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {

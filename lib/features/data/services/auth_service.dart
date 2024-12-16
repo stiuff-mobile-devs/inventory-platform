@@ -1,11 +1,11 @@
 import 'package:get/get_utils/src/platform/platform.dart';
 import 'package:inventory_platform/core/utils/auth/auth_error.dart';
 import 'package:inventory_platform/core/utils/auth/auth_warning.dart';
-import 'package:inventory_platform/features/data/services/error_service.dart';
+import 'package:inventory_platform/core/services/error_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:inventory_platform/features/data/services/connection_service.dart';
-import 'package:inventory_platform/features/data/services/warning_service.dart';
+import 'package:inventory_platform/core/services/warning_service.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;

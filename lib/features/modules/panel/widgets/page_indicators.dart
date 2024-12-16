@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inventory_platform/features/modules/home/home_controller.dart';
+
+class PageIndicatorsController extends GetxController {
+  var pageIndex = 0.obs;
+
+  final List<String> inventoryItems =
+      List.generate(10, (index) => 'Inventário ${index + 1}');
+  final int itemsPerPage = 6;
+
+  int get pageCount => (inventoryItems.length / itemsPerPage).ceil();
+
+  void updatePageIndex(int index) {
+    pageIndex.value = index;
+  }
+}
 
 class PageIndicatorsSection extends StatelessWidget {
-  final HomeController controller;
+  final PageIndicatorsController controller;
 
   const PageIndicatorsSection({super.key, required this.controller});
 

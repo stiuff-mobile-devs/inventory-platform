@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:inventory_platform/features/modules/home/home_controller.dart';
+import 'package:get/get.dart';
+
+class InventoryGridController extends GetxController {
+  var pageIndex = 0.obs;
+
+  final List<String> inventoryItems =
+      List.generate(10, (index) => 'Inventário ${index + 1}');
+  final int itemsPerPage = 6;
+
+  bool get isPortrait =>
+      Get.context!.mediaQuery.orientation == Orientation.portrait;
+
+  void updatePageIndex(int index) {
+    pageIndex.value = index;
+  }
+}
 
 class InventoryGridSection extends StatelessWidget {
-  final HomeController controller;
+  final InventoryGridController controller;
 
   const InventoryGridSection({super.key, required this.controller});
 

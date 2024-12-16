@@ -5,6 +5,8 @@ import 'package:inventory_platform/features/modules/help/help_page.dart';
 import 'package:inventory_platform/features/modules/home/home_page.dart';
 import 'package:inventory_platform/features/modules/login/login_binding.dart';
 import 'package:inventory_platform/features/modules/login/login_page.dart';
+import 'package:inventory_platform/features/modules/panel/panel_binding.dart';
+import 'package:inventory_platform/features/modules/panel/panel_page.dart';
 import 'package:inventory_platform/features/modules/settings/settings_page.dart';
 import 'package:inventory_platform/routes/routes.dart';
 
@@ -44,6 +46,16 @@ abstract class AppPages {
       page: () => const HelpPage(),
       bindings: [
         CoreBindings(),
+      ],
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 300),
+    ),
+    GetPage(
+      name: AppRoutes.panel,
+      page: () => const PanelPage(),
+      bindings: [
+        CoreBindings(),
+        PanelBinding(),
       ],
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 300),

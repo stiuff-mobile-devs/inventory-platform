@@ -1,7 +1,7 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../core/utils/auth/auth_error.dart';
+import '../utils/auth/auth_error.dart';
 
 class ErrorService {
   void handleError(Exception e) {

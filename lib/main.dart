@@ -18,6 +18,7 @@ void main() async {
 
   Get.put(ConnectionService());
   Get.put(ConnectionController());
+
   runApp(const MyApp());
 }
 
