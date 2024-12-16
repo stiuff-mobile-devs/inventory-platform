@@ -87,3 +87,5 @@ pubspec.lock
 web/js/google_api.js
 web/index.html
 .env/
+android/keystore.properties
+ios/Runner/GoogleService-Info.plist
