@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inventory_platform/features/modules/controllers/sidebar_controller.dart';
+import 'package:inventory_platform/features/widgets/controllers/sidebar_controller.dart';
+import 'package:inventory_platform/routes/routes.dart';
 import 'package:sidebarx/sidebarx.dart';
 
 class CustomSidebar extends StatelessWidget {
@@ -77,7 +78,7 @@ class CustomSidebar extends StatelessWidget {
           icon: Icons.dashboard_rounded,
           label: 'Home',
           onTap: () {
-            Get.offAllNamed('/home');
+            Get.offAllNamed(AppRoutes.home);
             sidebarController.selectIndex(0);
           },
         ),
@@ -85,7 +86,7 @@ class CustomSidebar extends StatelessWidget {
           icon: Icons.settings_applications,
           label: 'Configurações',
           onTap: () {
-            Get.toNamed('/settings');
+            Get.offAllNamed(AppRoutes.settings);
             sidebarController.selectIndex(1);
           },
         ),
@@ -93,7 +94,7 @@ class CustomSidebar extends StatelessWidget {
           icon: Icons.help,
           label: 'Ajuda',
           onTap: () {
-            Get.toNamed('/help');
+            Get.offAllNamed(AppRoutes.help);
             sidebarController.selectIndex(2);
           },
         ),
@@ -130,6 +131,20 @@ class CustomSidebar extends StatelessWidget {
                         fit: BoxFit.cover,
                         width: (extended ? 60 : 32),
                         height: (extended ? 60 : 32),
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.blue,
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          );
+                        },
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
                             color: Colors.grey,

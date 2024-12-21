@@ -4,6 +4,7 @@ import 'package:inventory_platform/core/services/mock_service.dart';
 import 'package:inventory_platform/features/widgets/base_scaffold.dart';
 // import 'package:inventory_platform/features/modules/home/home_controller.dart';
 import 'package:inventory_platform/features/widgets/carousel_section.dart' as w;
+import 'package:inventory_platform/routes/routes.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -26,6 +27,7 @@ class HomePage extends StatelessWidget {
               isExpanded: true,
               controller: carouselController,
               items: mockService.organizationsList,
+              route: AppRoutes.panel,
             ),
           ],
         ),

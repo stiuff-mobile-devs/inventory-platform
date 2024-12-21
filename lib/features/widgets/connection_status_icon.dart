@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inventory_platform/features/modules/controllers/connection_controller.dart';
+import 'package:inventory_platform/features/widgets/controllers/connection_controller.dart';
 
 class ConnectionStatusIcon extends StatelessWidget {
   const ConnectionStatusIcon({super.key});
