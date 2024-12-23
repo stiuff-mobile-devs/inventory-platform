@@ -21,47 +21,68 @@ class _InventoryTabState extends State<InventoryTab> {
   static const int pageSize = 4;
   final PagingController<int, InventoryModel> _pagingController =
       PagingController(firstPageKey: 0);
-  final Map<String, bool> _groupExpansionState = {};
+  final TextEditingController _searchController = TextEditingController();
+  List<InventoryModel> _allInventories = [];
+  List<InventoryModel> _filteredInventories = [];
   final OrganizationModel organization = Get.arguments;
+
+  final Map<String, bool> _groupExpansionState = {};
 
   @override
   void initState() {
     super.initState();
     _pagingController.addPageRequestListener((pageKey) => _fetchPage(pageKey));
+    _searchController.addListener(_filterInventories);
   }
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      await Future.delayed(const Duration(seconds: 3));
-
       final mockService = Get.find<MockService>();
-
-      final List<InventoryModel> allInventories = mockService
+      _allInventories = mockService
           .getInventoriesForOrganization(organization.id)
         ..sort((a, b) => b.openedAt!.compareTo(a.openedAt!));
 
-      final startIndex = pageKey * pageSize;
-      final endIndex = startIndex + pageSize;
-
-      final List<InventoryModel> paginatedInventories = allInventories.sublist(
-        startIndex,
-        endIndex > allInventories.length ? allInventories.length : endIndex,
-      );
-
-      final isLastPage = endIndex >= allInventories.length;
-
-      if (mounted) {
-        if (isLastPage) {
-          _pagingController.appendLastPage(paginatedInventories);
-        } else {
-          _pagingController.appendPage(paginatedInventories, pageKey + 1);
-        }
-      }
+      _filteredInventories = List.from(_allInventories);
+      _updatePagingController(pageKey);
     } catch (error) {
       if (mounted) {
         _pagingController.error = error;
       }
     }
+  }
+
+  void _updatePagingController(int pageKey) {
+    final startIndex = pageKey * pageSize;
+    final endIndex = startIndex + pageSize;
+
+    final paginatedInventories = _filteredInventories.sublist(
+      startIndex,
+      endIndex > _filteredInventories.length
+          ? _filteredInventories.length
+          : endIndex,
+    );
+
+    final isLastPage = endIndex >= _filteredInventories.length;
+
+    if (mounted) {
+      if (isLastPage) {
+        _pagingController.appendLastPage(paginatedInventories);
+      } else {
+        _pagingController.appendPage(paginatedInventories, pageKey + 1);
+      }
+    }
+  }
+
+  void _filterInventories() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredInventories = _allInventories.where((inventory) {
+        return inventory.title.toLowerCase().contains(query) ||
+            inventory.id.toLowerCase().contains(query);
+      }).toList();
+    });
+    _pagingController.itemList?.clear();
+    _updatePagingController(0);
   }
 
   Future<void> _onRefresh() async {
@@ -77,8 +98,62 @@ class _InventoryTabState extends State<InventoryTab> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeader(organization.title),
+          _buildSearchBar(),
           _buildInventoryList(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey.shade300,
+          borderRadius: BorderRadius.circular(12.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10.0,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: TextField(
+          controller: _searchController,
+          style: const TextStyle(fontSize: 16.0),
+          cursorColor: Colors.black87,
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
+            hintText: 'Pesquisar por Nome ou Id',
+            hintStyle: TextStyle(
+              color: Colors.grey.shade700,
+              fontSize: 16.0,
+            ),
+            prefixIcon: const Icon(
+              Icons.search,
+              color: Colors.black54,
+            ),
+            filled: true,
+            fillColor: Colors.transparent,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.0),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.0),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.0),
+              borderSide: BorderSide(
+                color: Colors.black.withOpacity(0.2),
+                width: 1.5,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -91,7 +166,7 @@ class _InventoryTabState extends State<InventoryTab> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Seus Inventários',
+            'Meus Inventários',
             style: TextStyle(
               fontSize: 24.0,
               fontWeight: FontWeight.bold,
@@ -126,7 +201,8 @@ class _InventoryTabState extends State<InventoryTab> {
   Widget _buildInventoryList() {
     return Expanded(
       child: PagedListView<int, InventoryModel>(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+        padding: const EdgeInsets.only(
+            left: 16.0, right: 16.0, top: 16.0, bottom: 32.0),
         pagingController: _pagingController,
         builderDelegate: PagedChildBuilderDelegate<InventoryModel>(
           itemBuilder: (context, inventory, index) {
@@ -219,7 +295,7 @@ class _InventoryTabState extends State<InventoryTab> {
 
     return AnimatedCrossFade(
       duration: const Duration(milliseconds: 300),
-      firstChild: const SizedBox.shrink(),
+      firstChild: const Center(child: SizedBox.shrink()),
       secondChild: AnimatedOpacity(
         duration: const Duration(milliseconds: 0),
         opacity: _groupExpansionState[monthYear] == true ? 1.0 : 0.0,
@@ -262,12 +338,26 @@ class _InventoryTabState extends State<InventoryTab> {
                 : Text('Fechado em: $formattedClosedAt',
                     style:
                         TextStyle(color: Colors.grey.shade600, fontSize: 12.0)),
+            Text('Nº de revisão: ${inventory.revisionNumber}',
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 12.0)),
           ],
         ),
-        trailing: Icon(
-          inventory.status == "open" ? Icons.blur_circular : Icons.lock,
-          color: inventory.status == "open" ? Colors.green : Colors.red,
-          size: 20.0,
+        trailing: Stack(
+          alignment: Alignment.center,
+          children: [
+            Icon(
+              inventory.status == "open"
+                  ? Icons.circle_outlined
+                  : Icons.circle_outlined,
+              color: inventory.status == "open" ? Colors.green : Colors.red,
+              size: 20.0,
+            ),
+            Icon(
+              inventory.status == "open" ? Icons.circle : Icons.circle,
+              color: inventory.status == "open" ? Colors.green : Colors.red,
+              size: 12.0,
+            ),
+          ],
         ),
       ),
     );
@@ -282,6 +372,7 @@ class _InventoryTabState extends State<InventoryTab> {
   @override
   void dispose() {
     _pagingController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 }

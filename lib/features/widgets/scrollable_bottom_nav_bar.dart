@@ -59,8 +59,9 @@ class ScrollableBottomNavigationBarState
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const SizedBox(width: 20),
                   const Text(
-                    'Quick Access',
+                    'Navegação',
                     style: TextStyle(
                       color: Color.fromARGB(255, 54, 23, 148),
                       fontSize: 14,
