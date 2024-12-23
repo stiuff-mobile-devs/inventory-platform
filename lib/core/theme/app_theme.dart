@@ -4,6 +4,9 @@ final ThemeData globalTheme = ThemeData(
   primarySwatch: Colors.blue,
   primaryColor: Colors.blue,
   scaffoldBackgroundColor: Colors.white,
+  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    backgroundColor: Colors.deepPurple,
+  ),
   appBarTheme: const AppBarTheme(
     color: Colors.blue,
     elevation: 0,

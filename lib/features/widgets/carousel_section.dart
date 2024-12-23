@@ -46,50 +46,57 @@ class CarouselSection extends StatelessWidget {
   Widget build(BuildContext context) {
     controller.initializeHoverState(items.length);
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.setHovered(controller.carouselIndex.value, true);
+      Future.delayed(
+        const Duration(seconds: 3),
+        () => controller.setHovered(controller.carouselIndex.value, false),
+      );
+    });
+
     return Obx(
       () => Stack(
         alignment: Alignment.bottomCenter,
         children: [
-          CarouselSlider(
-            options: CarouselOptions(
-              height: (isExpanded ?? false)
-                  ? MediaQuery.of(context).size.height * 0.75
-                  : MediaQuery.of(context).size.height * 0.25,
-              viewportFraction: 0.8,
-              enableInfiniteScroll: true,
-              enlargeCenterPage: false,
-              autoPlay: false,
-              onPageChanged: (index, reason) {
-                controller.updateCarouselIndex(index);
-                controller.setHovered(index, true);
-                Future.delayed(
-                  const Duration(seconds: 3),
-                  () => controller.setHovered(index, false),
-                );
-              },
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20.0),
+            child: CarouselSlider(
+              options: CarouselOptions(
+                height: (isExpanded ?? false)
+                    ? MediaQuery.of(context).size.height * 0.75
+                    : MediaQuery.of(context).size.height * 0.25,
+                viewportFraction: 0.8,
+                enableInfiniteScroll: true,
+                enlargeCenterPage: false,
+                autoPlay: false,
+                onPageChanged: (index, reason) {
+                  controller.updateCarouselIndex(index);
+                  controller.setHovered(index, true);
+                  Future.delayed(
+                    const Duration(seconds: 3),
+                    () => controller.setHovered(index, false),
+                  );
+                },
+              ),
+              items: items
+                  .asMap()
+                  .entries
+                  .map(
+                    (entry) => _buildCarouselItem(
+                        entry.key, entry.value, 0.8, context,
+                        route: route),
+                  )
+                  .toList(),
             ),
-            items: items
-                .asMap()
-                .entries
-                .map(
-                  (entry) => _buildCarouselItem(
-                      entry.key, entry.value, 0.8, context,
-                      route: route),
-                )
-                .toList(),
           ),
           Positioned(
-            bottom: 10,
-            child: Opacity(
-              opacity:
-                  controller.isHoveredList.any((hover) => hover) ? 0.1 : 1.0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  items.length,
-                  (index) =>
-                      _buildIndicator(controller.carouselIndex.value, index),
-                ),
+            bottom: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                items.length,
+                (index) =>
+                    _buildIndicator(controller.carouselIndex.value, index),
               ),
             ),
           ),

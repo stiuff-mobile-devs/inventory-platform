@@ -1,37 +1,53 @@
-import 'package:inventory_platform/features/data/models/carousel_item_model.dart';
-
-class InventoryModel implements CarouselItemModel {
-  @override
+class InventoryModel {
+  final String id;
   final String title;
-  @override
   final String description;
-  @override
-  final String? imagePath;
-
   final String organizationId;
+  final DateTime? openedAt;
+  final DateTime? closedAt;
+  final DateTime? lastUpdatedAt;
+  final int revisionNumber;
+  final String status;
 
   InventoryModel({
+    required this.id,
     required this.title,
     required this.description,
-    this.imagePath,
     required this.organizationId,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'title': title,
-      'description': description,
-      'imagePath': imagePath,
-      'organizationId': organizationId,
-    };
-  }
+    this.openedAt,
+    this.closedAt,
+    DateTime? lastUpdatedAt,
+    required this.revisionNumber,
+    required this.status,
+  }) : lastUpdatedAt = lastUpdatedAt ?? DateTime.now();
 
   factory InventoryModel.fromJson(Map<String, dynamic> json) {
     return InventoryModel(
-      title: json['title'] as String,
-      description: json['description'] as String,
-      imagePath: json['imagePath'] as String?,
-      organizationId: json['organizationId'] as String,
+      id: json['id'],
+      title: json['title'],
+      description: json['description'],
+      organizationId: json['organizationId'],
+      openedAt:
+          json['openedAt'] != null ? DateTime.parse(json['openedAt']) : null,
+      closedAt:
+          json['closedAt'] != null ? DateTime.parse(json['closedAt']) : null,
+      lastUpdatedAt: json['lastUpdatedAt'] != null
+          ? DateTime.parse(json['lastUpdatedAt'])
+          : null,
+      revisionNumber: json['revisionNumber'],
+      status: json['status'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'description': description,
+        'organizationId': organizationId,
+        'openedAt': openedAt?.toIso8601String(),
+        'closedAt': closedAt?.toIso8601String(),
+        'lastUpdatedAt': lastUpdatedAt?.toIso8601String(),
+        'revisionNumber': revisionNumber,
+        'status': status,
+      };
 }

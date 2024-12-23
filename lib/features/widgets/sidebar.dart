@@ -75,7 +75,7 @@ class CustomSidebar extends StatelessWidget {
       ),
       items: [
         SidebarXItem(
-          icon: Icons.dashboard_rounded,
+          icon: Icons.home_rounded,
           label: 'Home',
           onTap: () {
             Get.offAllNamed(AppRoutes.home);
