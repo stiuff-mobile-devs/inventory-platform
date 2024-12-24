@@ -1,17 +1,15 @@
-import 'package:inventory_platform/features/data/models/carousel_item_model.dart';
-
-class OrganizationModel implements CarouselItemModel {
-  @override
+class OrganizationModel {
   final String title;
-  @override
   final String description;
-  @override
-  final String imagePath;
+  final String? imagePath;
+
+  final String id;
 
   OrganizationModel({
     required this.title,
     required this.description,
-    required this.imagePath,
+    this.imagePath,
+    required this.id,
   });
 
   Map<String, dynamic> toJson() {
@@ -19,6 +17,7 @@ class OrganizationModel implements CarouselItemModel {
       'title': title,
       'description': description,
       'imagePath': imagePath,
+      'id': id,
     };
   }
 
@@ -27,6 +26,7 @@ class OrganizationModel implements CarouselItemModel {
       title: json['title'] as String,
       description: json['description'] as String,
       imagePath: json['imagePath'] as String,
+      id: json['id'] as String,
     );
   }
 }

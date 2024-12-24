@@ -6,6 +6,6 @@ class HomeBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut<HomeController>(() => HomeController());
-    Get.lazyPut<CarouselSectionController>(() => CarouselSectionController());
+    Get.create<CarouselSectionController>(() => CarouselSectionController());
   }
 }

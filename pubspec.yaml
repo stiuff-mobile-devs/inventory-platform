@@ -24,6 +24,11 @@ dependencies:
   connectivity_plus: ^6.1.1
   sidebarx: ^0.17.1
   http: ^1.2.2
+  infinite_scroll_pagination: ^4.1.0
+  skeletonizer: ^1.4.2
+  intl: ^0.19.0
+  loading_indicator: ^3.1.1
+  fl_chart: ^0.69.2
 
 dev_dependencies:
   flutter_test:
