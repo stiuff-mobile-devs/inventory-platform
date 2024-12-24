@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/platform/platform.dart';
 import 'package:inventory_platform/core/utils/auth/auth_error.dart';
 import 'package:inventory_platform/core/utils/auth/auth_warning.dart';
@@ -16,6 +17,17 @@ class AuthService {
 
   User? get currentUser => _auth.currentUser;
   bool get isUserLoggedIn => _auth.currentUser != null;
+
+  AuthService() {
+    try {
+      if (GetPlatform.isWeb) {
+        _auth.setPersistence(Persistence.LOCAL);
+      }
+    } catch (e, stackTrace) {
+      debugPrint("Erro ao definir persistência: $e");
+      debugPrint(stackTrace.toString());
+    }
+  }
 
   Future<bool> signInWithGoogle() async {
     try {

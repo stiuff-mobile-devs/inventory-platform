@@ -3,7 +3,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:inventory_platform/features/widgets/connection_status_icon.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({super.key});
+  final bool? hideTitle;
+  final bool? showBackButton;
+
+  const CustomAppBar({super.key, this.hideTitle, this.showBackButton});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +26,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           alignment: Alignment.centerLeft,
           children: [
             _buildAppBarContent(),
+            if (showBackButton ?? false) _buildBackButton(context),
             _buildDrawerToggleButton(),
             _buildConnectionStateIcon(),
           ],
@@ -35,19 +39,24 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SvgPicture.asset(
-          'assets/icons/EnhancedAppIcon.svg',
-          height: 42,
-        ),
-        const SizedBox(width: 5),
-        const Text(
-          'Inventário Universal',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 36, 36, 36),
-            fontSize: 18.0,
+        Padding(
+          padding: const EdgeInsets.only(left: 6.0),
+          child: SvgPicture.asset(
+            'assets/icons/EnhancedAppIcon.svg',
+            height: 42,
           ),
         ),
+        const SizedBox(width: 5),
+        (hideTitle ?? false)
+            ? const SizedBox.shrink()
+            : const Text(
+                'Inventário Universal',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 36, 36, 36),
+                  fontSize: 18.0,
+                ),
+              ),
       ],
     );
   }
@@ -68,6 +77,25 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildBackButton(BuildContext context) {
+    return Positioned(
+      left: 45,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: const Icon(
+            Icons.keyboard_return,
+            size: 28,
+            color: Colors.black,
+          ),
+        ),
       ),
     );
   }

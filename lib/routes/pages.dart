@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:inventory_platform/core/bindings.dart';
 import 'package:inventory_platform/features/modules/home/home_binding.dart';
 import 'package:inventory_platform/features/modules/help/help_page.dart';
 import 'package:inventory_platform/features/modules/home/home_page.dart';
@@ -16,7 +15,6 @@ abstract class AppPages {
       name: AppRoutes.login,
       page: () => const LoginPage(),
       bindings: [
-        CoreBindings(),
         LoginBinding(),
       ],
       transition: Transition.fadeIn,
@@ -26,7 +24,6 @@ abstract class AppPages {
       name: AppRoutes.home,
       page: () => const HomePage(),
       bindings: [
-        CoreBindings(),
         HomeBinding(),
       ],
       transition: Transition.cupertino,
@@ -35,18 +32,14 @@ abstract class AppPages {
     GetPage(
       name: AppRoutes.settings,
       page: () => const SettingsPage(),
-      bindings: [
-        CoreBindings(),
-      ],
+      bindings: const [],
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 300),
     ),
     GetPage(
       name: AppRoutes.help,
       page: () => const HelpPage(),
-      bindings: [
-        CoreBindings(),
-      ],
+      bindings: const [],
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 300),
     ),
@@ -54,7 +47,6 @@ abstract class AppPages {
       name: AppRoutes.panel,
       page: () => const PanelPage(),
       bindings: [
-        CoreBindings(),
         PanelBinding(),
       ],
       transition: Transition.cupertino,

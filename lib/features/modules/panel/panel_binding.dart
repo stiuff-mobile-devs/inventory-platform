@@ -8,7 +8,7 @@ class PanelBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut<PanelController>(() => PanelController());
-    Get.lazyPut<CarouselController>(() => CarouselController());
+    Get.create<CarouselController>(() => CarouselController());
     Get.lazyPut<InventoryGridController>(() => InventoryGridController());
     Get.lazyPut<PageIndicatorsController>(() => PageIndicatorsController());
   }
