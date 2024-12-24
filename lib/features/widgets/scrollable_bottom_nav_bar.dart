@@ -44,6 +44,9 @@ class ScrollableBottomNavigationBarState
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateScrollIndicators();
+    });
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -81,7 +84,9 @@ class ScrollableBottomNavigationBarState
           ),
         ),
         Container(
+          width: double.infinity,
           color: Colors.deepPurple.shade800,
+          alignment: Alignment.center,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             height: _isExpanded ? 80.0 : 0.0,
@@ -97,15 +102,15 @@ class ScrollableBottomNavigationBarState
                           0, Icons.dashboard_rounded, 'Dashboard'),
                       _buildNavigationBarItem(
                           1, Icons.inventory_rounded, 'Inventories'),
-                      _buildNavigationBarItem(2, Icons.data_object, 'Entities'),
+                      _buildNavigationBarItem(2, Icons.data_object, 'Domains'),
                       _buildNavigationBarItem(3, Icons.tag, 'Tags'),
                       _buildNavigationBarItem(
-                          4, Icons.device_hub_rounded, 'Readers'),
+                          4, Icons.barcode_reader, 'Readers'),
                       _buildNavigationBarItem(
                           5, Icons.groups_rounded, 'Members'),
-                      _buildNavigationBarItem(6, Icons.info, 'Info'),
+                      _buildNavigationBarItem(6, Icons.device_hub, 'Entities'),
                       _buildNavigationBarItem(
-                          7, Icons.admin_panel_settings, 'Admin Settings'),
+                          7, Icons.admin_panel_settings, 'Admin'),
                     ],
                   ),
                 ),

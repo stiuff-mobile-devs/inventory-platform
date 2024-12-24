@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/admin_tab.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/dashboard_tab.dart';
-import 'package:inventory_platform/features/modules/panel/widgets/inventory_tab.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/domains_tab.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/entities_tab.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/inventories_tab.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/members_tab.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/readers_tab.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/tags_tab.dart';
 import 'package:inventory_platform/features/widgets/base_scaffold.dart';
 import 'package:inventory_platform/features/widgets/scrollable_bottom_nav_bar.dart';
 
@@ -16,13 +22,13 @@ class _PanelPageState extends State<PanelPage> {
 
   final List<Widget> _tabs = [
     const DashboardTab(),
-    const InventoryTab(),
-    const Center(child: Text('Entities')),
-    const Center(child: Text('Tags')),
-    const Center(child: Text('Readers')),
-    const Center(child: Text('Members')),
-    const Center(child: Text('Info')),
-    const Center(child: Text('Admin Settings')),
+    const InventoriesTab(),
+    const DomainsTab(),
+    const TagsTab(),
+    const ReadersTab(),
+    const MembersTab(),
+    const EntitiesTab(),
+    const AdminTab(),
   ];
 
   @override

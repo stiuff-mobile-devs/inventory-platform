@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/services/mock_service.dart';
+import 'package:inventory_platform/features/data/models/domain_model.dart';
 import 'package:inventory_platform/features/data/models/inventory_model.dart';
+import 'package:inventory_platform/features/data/models/member_model.dart';
 import 'package:inventory_platform/features/data/models/organization_model.dart';
+import 'package:inventory_platform/features/data/models/reader_model.dart';
+import 'package:inventory_platform/features/data/models/tag_model.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/status_chart.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/update_chart.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -16,6 +20,11 @@ class DashboardTab extends StatefulWidget {
 
 class _DashboardTabState extends State<DashboardTab> {
   List<InventoryModel> _allInventories = [];
+  List<DomainModel> _allDomains = [];
+  List<TagModel> _allTags = [];
+  List<ReaderModel> _allReaders = [];
+  List<MemberModel> _allMembers = [];
+
   final OrganizationModel organization = Get.arguments;
   int _currentIndex = 0;
 
@@ -111,10 +120,13 @@ class _DashboardTabState extends State<DashboardTab> {
         children: [
           _buildCard('Inventários', _allInventories.length,
               Icons.inventory_rounded, Colors.blueAccent),
-          _buildCard('Entities', 0, Icons.data_object, Colors.orangeAccent),
-          _buildCard('Tags', 0, Icons.tag, Colors.purpleAccent),
-          _buildCard('Readers', 0, Icons.device_hub_rounded, Colors.tealAccent),
-          _buildCard('Members', 0, Icons.groups_rounded, Colors.redAccent),
+          _buildCard('Domains', _allDomains.length, Icons.data_object,
+              Colors.orangeAccent),
+          _buildCard('Tags', _allTags.length, Icons.tag, Colors.purpleAccent),
+          _buildCard('Readers', _allReaders.length, Icons.device_hub_rounded,
+              Colors.tealAccent),
+          _buildCard('Members', _allMembers.length, Icons.groups_rounded,
+              Colors.redAccent),
         ],
       ),
     );
@@ -153,6 +165,10 @@ class _DashboardTabState extends State<DashboardTab> {
     final mockService = Get.find<MockService>();
     _allInventories =
         mockService.getInventoriesForOrganization(organization.id);
+    _allDomains = mockService.getDomainsForOrganization(organization.id);
+    _allTags = mockService.getTagsForOrganization(organization.id);
+    _allReaders = mockService.getReadersForOrganization(organization.id);
+    _allMembers = mockService.getMembersForOrganization(organization.id);
 
     return Scaffold(
       backgroundColor: Colors.grey.shade200,

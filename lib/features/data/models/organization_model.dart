@@ -1,11 +1,6 @@
-import 'package:inventory_platform/features/data/models/carousel_item_model.dart';
-
-class OrganizationModel implements CarouselItemModel {
-  @override
+class OrganizationModel {
   final String title;
-  @override
   final String description;
-  @override
   final String? imagePath;
 
   final String id;

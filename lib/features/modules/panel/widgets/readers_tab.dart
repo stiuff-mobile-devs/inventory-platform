@@ -1,51 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inventory_platform/core/services/mock_service.dart';
-import 'package:inventory_platform/features/data/models/organization_model.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:intl/intl.dart';
+import 'package:inventory_platform/core/services/mock_service.dart';
+import 'package:inventory_platform/features/data/models/reader_model.dart';
+import 'package:inventory_platform/features/data/models/organization_model.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/custom_error_message.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/custom_progress_indicator.dart';
-import 'package:inventory_platform/features/modules/panel/widgets/inventory_skeleton.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/list_item_skeleton.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:inventory_platform/features/data/models/inventory_model.dart';
-import 'package:intl/intl.dart';
 
-class InventoryTab extends StatefulWidget {
-  const InventoryTab({super.key});
+class ReadersTab extends StatefulWidget {
+  const ReadersTab({super.key});
 
   @override
-  State<InventoryTab> createState() => _InventoryTabState();
+  State<ReadersTab> createState() => _ReadersTabState();
 }
 
-class _InventoryTabState extends State<InventoryTab> {
+class _ReadersTabState extends State<ReadersTab> {
   static const int pageSize = 4;
-  final PagingController<int, InventoryModel> _pagingController =
+  final PagingController<int, ReaderModel> _pagingController =
       PagingController(firstPageKey: 0);
   final TextEditingController _searchController = TextEditingController();
-  List<InventoryModel> _allInventories = [];
-  List<InventoryModel> _filteredInventories = [];
+  List<ReaderModel> _allReaders = [];
+  List<ReaderModel> _filteredReaders = [];
   final OrganizationModel organization = Get.arguments;
   late final MockService mockService;
-
-  final Map<String, bool> _groupExpansionState = {};
 
   @override
   void initState() {
     super.initState();
     _pagingController.addPageRequestListener((pageKey) => _fetchPage(pageKey));
-    _searchController.addListener(_filterInventories);
+    _searchController.addListener(_filterReaders);
     mockService = Get.find<MockService>();
-    _allInventories = mockService.getInventoriesForOrganization(organization.id)
-      ..sort((a, b) => b.openedAt!.compareTo(a.openedAt!));
+    _allReaders = mockService.getReadersForOrganization(organization.id)
+      ..sort((a, b) => b.lastSeen.compareTo(a.lastSeen));
   }
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      _allInventories = mockService
-          .getInventoriesForOrganization(organization.id)
-        ..sort((a, b) => b.openedAt!.compareTo(a.openedAt!));
+      _allReaders = mockService.getReadersForOrganization(organization.id)
+        ..sort((a, b) => b.lastSeen.compareTo(a.lastSeen));
 
-      _filteredInventories = List.from(_allInventories);
+      _filteredReaders = List.from(_allReaders);
       _updatePagingController(pageKey);
     } catch (error) {
       if (mounted) {
@@ -58,30 +55,28 @@ class _InventoryTabState extends State<InventoryTab> {
     final startIndex = pageKey * pageSize;
     final endIndex = startIndex + pageSize;
 
-    final paginatedInventories = _filteredInventories.sublist(
+    final paginatedReaders = _filteredReaders.sublist(
       startIndex,
-      endIndex > _filteredInventories.length
-          ? _filteredInventories.length
-          : endIndex,
+      endIndex > _filteredReaders.length ? _filteredReaders.length : endIndex,
     );
 
-    final isLastPage = endIndex >= _filteredInventories.length;
+    final isLastPage = endIndex >= _filteredReaders.length;
 
     if (mounted) {
       if (isLastPage) {
-        _pagingController.appendLastPage(paginatedInventories);
+        _pagingController.appendLastPage(paginatedReaders);
       } else {
-        _pagingController.appendPage(paginatedInventories, pageKey + 1);
+        _pagingController.appendPage(paginatedReaders, pageKey + 1);
       }
     }
   }
 
-  void _filterInventories() {
+  void _filterReaders() {
     final query = _searchController.text.toLowerCase();
     setState(() {
-      _filteredInventories = _allInventories.where((inventory) {
-        return inventory.title.toLowerCase().contains(query) ||
-            inventory.id.toLowerCase().contains(query);
+      _filteredReaders = _allReaders.where((reader) {
+        return reader.name.toLowerCase().contains(query) ||
+            reader.mac.toLowerCase().contains(query);
       }).toList();
     });
     _pagingController.itemList?.clear();
@@ -102,7 +97,7 @@ class _InventoryTabState extends State<InventoryTab> {
         children: [
           _buildHeader(organization.title),
           _buildSearchBar(),
-          _buildInventoryList(),
+          _buildReaderList(),
         ],
       ),
     );
@@ -129,7 +124,7 @@ class _InventoryTabState extends State<InventoryTab> {
           cursorColor: Colors.black87,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
-            hintText: 'Pesquisar por Nome ou Id',
+            hintText: 'Pesquisar por Nome ou MAC',
             hintStyle: TextStyle(
               color: Colors.grey.shade700,
               fontSize: 16.0,
@@ -172,7 +167,7 @@ class _InventoryTabState extends State<InventoryTab> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text(
-                'Meus Inventários',
+                'Leitores',
                 style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
@@ -188,7 +183,7 @@ class _InventoryTabState extends State<InventoryTab> {
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   ),
                   child: Text(
-                    '${_allInventories.length}',
+                    '${_allReaders.length}',
                     style: const TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
@@ -224,22 +219,20 @@ class _InventoryTabState extends State<InventoryTab> {
     );
   }
 
-  Widget _buildInventoryList() {
+  Widget _buildReaderList() {
     return Expanded(
-      child: PagedListView<int, InventoryModel>(
+      child: PagedListView<int, ReaderModel>(
         padding: const EdgeInsets.only(
             left: 16.0, right: 16.0, top: 16.0, bottom: 32.0),
         pagingController: _pagingController,
-        builderDelegate: PagedChildBuilderDelegate<InventoryModel>(
-          itemBuilder: (context, inventory, index) {
-            final monthYear =
-                DateFormat('MMMM yyyy').format(inventory.openedAt!);
-            return _buildInventoryGroup(inventory, monthYear, index);
+        builderDelegate: PagedChildBuilderDelegate<ReaderModel>(
+          itemBuilder: (context, reader, index) {
+            return _buildReaderItem(reader, index);
           },
           firstPageProgressIndicatorBuilder: (_) =>
               const CustomProgressIndicator(),
           newPageProgressIndicatorBuilder: (_) =>
-              const Skeletonizer(child: InventorySkeleton()),
+              const Skeletonizer(child: ListItemSkeleton()),
           newPageErrorIndicatorBuilder: (_) => const CustomErrorMessage(
               message: "Não foi possível carregar mais itens."),
           noMoreItemsIndicatorBuilder: (_) => const CustomErrorMessage(
@@ -253,89 +246,7 @@ class _InventoryTabState extends State<InventoryTab> {
     );
   }
 
-  Widget _buildInventoryGroup(
-      InventoryModel inventory, String monthYear, int index) {
-    final isFirstItemInGroup = _isFirstItemInGroup(index, monthYear);
-    final isLastItemInGroup = _isLastItemInGroup(index, monthYear);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (isFirstItemInGroup) _buildMonthYearButton(monthYear),
-        _buildInventoryItem(inventory, monthYear),
-        if (isLastItemInGroup) const Divider(),
-      ],
-    );
-  }
-
-  bool _isFirstItemInGroup(int index, String monthYear) {
-    return index == 0 ||
-        DateFormat('MMMM yyyy')
-                .format(_pagingController.itemList![index - 1].openedAt!) !=
-            monthYear;
-  }
-
-  bool _isLastItemInGroup(int index, String monthYear) {
-    return index == _pagingController.itemList!.length - 1 ||
-        DateFormat('MMMM yyyy')
-                .format(_pagingController.itemList![index + 1].openedAt!) !=
-            monthYear;
-  }
-
-  Widget _buildMonthYearButton(String monthYear) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          elevation: 0,
-          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-              side: const BorderSide(color: Colors.black12)),
-        ),
-        onPressed: () => _toggleGroupExpansionState(monthYear),
-        child: Text(
-          monthYear,
-          style: const TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87),
-        ),
-      ),
-    );
-  }
-
-  void _toggleGroupExpansionState(String monthYear) {
-    setState(() {
-      _groupExpansionState[monthYear] =
-          !_groupExpansionState.containsKey(monthYear) ||
-              !_groupExpansionState[monthYear]!;
-    });
-  }
-
-  Widget _buildInventoryItem(InventoryModel inventory, String monthYear) {
-    final formattedOpenedAt = formatDate(inventory.openedAt);
-    final formattedLastUpdatedAt = formatDate(inventory.lastUpdatedAt);
-    final formattedClosedAt = formatDate(inventory.closedAt);
-
-    return AnimatedCrossFade(
-      duration: const Duration(milliseconds: 300),
-      firstChild: const Center(child: SizedBox.shrink()),
-      secondChild: AnimatedOpacity(
-        duration: const Duration(milliseconds: 0),
-        opacity: _groupExpansionState[monthYear] == true ? 1.0 : 0.0,
-        child: _buildInventoryCard(inventory, formattedOpenedAt,
-            formattedLastUpdatedAt, formattedClosedAt),
-      ),
-      crossFadeState: _groupExpansionState[monthYear] == true
-          ? CrossFadeState.showSecond
-          : CrossFadeState.showFirst,
-    );
-  }
-
-  Widget _buildInventoryCard(InventoryModel inventory, String formattedOpenedAt,
-      String formattedLastUpdatedAt, String formattedClosedAt) {
+  Widget _buildReaderItem(ReaderModel reader, int index) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
@@ -344,7 +255,7 @@ class _InventoryTabState extends State<InventoryTab> {
       child: ListTile(
         contentPadding:
             const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-        title: Text(inventory.title,
+        title: Text(reader.name,
             style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16.0,
@@ -352,47 +263,19 @@ class _InventoryTabState extends State<InventoryTab> {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(inventory.description,
-                style: TextStyle(color: Colors.grey.shade700)),
-            const SizedBox(height: 4),
-            Text('Aberto em: $formattedOpenedAt',
+            Text('Última visualização: ${formatDate(reader.lastSeen)}',
                 style: TextStyle(color: Colors.grey.shade600, fontSize: 12.0)),
-            !(inventory.closedAt != null)
-                ? Text('Atualizado em: $formattedLastUpdatedAt',
-                    style:
-                        TextStyle(color: Colors.grey.shade600, fontSize: 12.0))
-                : Text('Fechado em: $formattedClosedAt',
-                    style:
-                        TextStyle(color: Colors.grey.shade600, fontSize: 12.0)),
-            Text('Nº de revisão: ${inventory.revisionNumber}',
+            Text('Status: ${reader.status}',
                 style: TextStyle(color: Colors.grey.shade600, fontSize: 12.0)),
           ],
         ),
-        trailing: Stack(
-          alignment: Alignment.center,
-          children: [
-            Icon(
-              inventory.status == "open"
-                  ? Icons.circle_outlined
-                  : Icons.circle_outlined,
-              color: inventory.status == "open" ? Colors.green : Colors.red,
-              size: 20.0,
-            ),
-            Icon(
-              inventory.status == "open" ? Icons.circle : Icons.circle,
-              color: inventory.status == "open" ? Colors.green : Colors.red,
-              size: 12.0,
-            ),
-          ],
-        ),
+        trailing: const Icon(Icons.chevron_right),
       ),
     );
   }
 
-  String formatDate(DateTime? date) {
-    return date != null
-        ? DateFormat.yMMMMd().format(date)
-        : "Data Indisponível";
+  String formatDate(DateTime date) {
+    return DateFormat.yMMMMd().add_Hms().format(date);
   }
 
   @override

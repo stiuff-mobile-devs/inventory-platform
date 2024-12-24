@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class InventorySkeleton extends StatelessWidget {
-  const InventorySkeleton({super.key});
+class ListItemSkeleton extends StatelessWidget {
+  const ListItemSkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {

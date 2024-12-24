@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:inventory_platform/features/data/models/carousel_item_model.dart';
+import 'package:inventory_platform/features/data/models/organization_model.dart';
 
 class CarouselSectionController extends GetxController {
   var carouselIndex = 0.obs;
@@ -30,7 +30,7 @@ class CarouselSectionController extends GetxController {
 
 class CarouselSection extends StatelessWidget {
   final CarouselSectionController controller;
-  final List<CarouselItemModel> items;
+  final List<OrganizationModel> items;
 
   final bool? isExpanded;
   final String? route;
@@ -66,6 +66,7 @@ class CarouselSection extends StatelessWidget {
                     ? MediaQuery.of(context).size.height * 0.75
                     : MediaQuery.of(context).size.height * 0.25,
                 viewportFraction: 0.8,
+                initialPage: 1,
                 enableInfiniteScroll: true,
                 enlargeCenterPage: false,
                 autoPlay: false,
@@ -105,7 +106,7 @@ class CarouselSection extends StatelessWidget {
     );
   }
 
-  Widget _buildCarouselItem(int index, CarouselItemModel item,
+  Widget _buildCarouselItem(int index, OrganizationModel item,
       double viewportfraction, BuildContext context,
       {String? route}) {
     return GestureDetector(
