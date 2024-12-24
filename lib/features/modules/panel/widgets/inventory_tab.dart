@@ -25,6 +25,7 @@ class _InventoryTabState extends State<InventoryTab> {
   List<InventoryModel> _allInventories = [];
   List<InventoryModel> _filteredInventories = [];
   final OrganizationModel organization = Get.arguments;
+  late final MockService mockService;
 
   final Map<String, bool> _groupExpansionState = {};
 
@@ -33,11 +34,13 @@ class _InventoryTabState extends State<InventoryTab> {
     super.initState();
     _pagingController.addPageRequestListener((pageKey) => _fetchPage(pageKey));
     _searchController.addListener(_filterInventories);
+    mockService = Get.find<MockService>();
+    _allInventories = mockService.getInventoriesForOrganization(organization.id)
+      ..sort((a, b) => b.openedAt!.compareTo(a.openedAt!));
   }
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      final mockService = Get.find<MockService>();
       _allInventories = mockService
           .getInventoriesForOrganization(organization.id)
         ..sort((a, b) => b.openedAt!.compareTo(a.openedAt!));
@@ -165,13 +168,36 @@ class _InventoryTabState extends State<InventoryTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Meus Inventários',
-            style: TextStyle(
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                'Meus Inventários',
+                style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(121, 158, 158, 158),
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                  child: Text(
+                    '${_allInventories.length}',
+                    style: const TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
           Padding(
             padding: const EdgeInsets.only(top: 4.0),

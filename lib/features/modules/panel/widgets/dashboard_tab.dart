@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:inventory_platform/core/services/mock_service.dart';
 import 'package:inventory_platform/features/data/models/inventory_model.dart';
 import 'package:inventory_platform/features/data/models/organization_model.dart';
-import 'package:inventory_platform/features/modules/panel/widgets/inventory_chart.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/status_chart.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/update_chart.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -177,7 +177,7 @@ class _DashboardTabState extends State<DashboardTab> {
               children: [
                 CarouselSlider(
                   items: [
-                    InventoryChart(inventories: _allInventories),
+                    StatusChart(inventories: _allInventories),
                     UpdateChart(inventories: _allInventories),
                   ],
                   options: CarouselOptions(

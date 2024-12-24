@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:inventory_platform/features/data/models/inventory_model.dart';
 
-class InventoryChart extends StatelessWidget {
+class StatusChart extends StatelessWidget {
   final List<InventoryModel> inventories;
 
-  const InventoryChart({super.key, required this.inventories});
+  const StatusChart({super.key, required this.inventories});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class InventoryChart extends StatelessWidget {
                   Text(
                     'Situação dos Inventários (Últimos 30 dias)',
                     style:
-                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),

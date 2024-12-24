@@ -39,9 +39,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SvgPicture.asset(
-          'assets/icons/EnhancedAppIcon.svg',
-          height: 42,
+        Padding(
+          padding: const EdgeInsets.only(left: 6.0),
+          child: SvgPicture.asset(
+            'assets/icons/EnhancedAppIcon.svg',
+            height: 42,
+          ),
         ),
         const SizedBox(width: 5),
         (hideTitle ?? false)

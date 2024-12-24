@@ -104,6 +104,8 @@ class ScrollableBottomNavigationBarState
                       _buildNavigationBarItem(
                           5, Icons.groups_rounded, 'Members'),
                       _buildNavigationBarItem(6, Icons.info, 'Info'),
+                      _buildNavigationBarItem(
+                          7, Icons.admin_panel_settings, 'Admin Settings'),
                     ],
                   ),
                 ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/services/mock_service.dart';
 import 'package:inventory_platform/features/widgets/base_scaffold.dart';
-// import 'package:inventory_platform/features/modules/home/home_controller.dart';
 import 'package:inventory_platform/features/widgets/carousel_section.dart' as w;
 import 'package:inventory_platform/routes/routes.dart';
 
@@ -11,7 +10,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final controller = Get.find<HomeController>();
     final carouselController = Get.find<w.CarouselSectionController>();
     final mockService = Get.find<MockService>();
 
@@ -22,6 +20,8 @@ class HomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildHeader(context),
+            const SizedBox(height: 20),
+            _buildQuickActions(context),
             const SizedBox(height: 20),
             _buildSectionTitle('Minhas Organizações', context),
             const SizedBox(height: 16),
@@ -91,8 +91,88 @@ class HomePage extends StatelessWidget {
       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.bold,
             color: const Color.fromARGB(255, 36, 36, 36),
-            fontSize: 20,
+            fontSize: 24,
           ),
+    );
+  }
+
+  Widget _buildQuickActions(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Ações Rápidas',
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+                fontSize: 24,
+              ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildQuickActionButton(
+              icon: Icons.add_circle_rounded,
+              label: 'Criar uma nova Organização',
+              color: Colors.blue,
+              onPressed: () {},
+            ),
+            _buildQuickActionButton(
+              icon: Icons.supervised_user_circle,
+              label: 'Participar de Organização',
+              color: Colors.green,
+              onPressed: () {},
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildQuickActionButton({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onPressed,
+  }) {
+    return Expanded(
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: InkWell(
+            onTap: onPressed,
+            borderRadius: BorderRadius.circular(16),
+            splashColor: color.withOpacity(0.2),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: color.withOpacity(0.5), width: 1),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(icon, color: color, size: 28),
+                  const SizedBox(height: 8),
+                  Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.black87,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

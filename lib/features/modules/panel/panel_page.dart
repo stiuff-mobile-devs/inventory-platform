@@ -22,6 +22,7 @@ class _PanelPageState extends State<PanelPage> {
     const Center(child: Text('Readers')),
     const Center(child: Text('Members')),
     const Center(child: Text('Info')),
+    const Center(child: Text('Admin Settings')),
   ];
 
   @override
