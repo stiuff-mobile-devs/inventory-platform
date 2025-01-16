@@ -125,30 +125,6 @@ class UpdateChartState extends State<UpdateChart> {
             ),
           ),
         ),
-        // if (selectedDate != null &&
-        //     selectedUpdates != null &&
-        //     touchPosition != null)
-        //   Positioned(
-        //     left: touchPosition!.dx - 20,
-        //     top: touchPosition!.dy + 40,
-        //     child: Card(
-        //       elevation: 4.0,
-        //       shape: RoundedRectangleBorder(
-        //         borderRadius: BorderRadius.circular(8.0),
-        //       ),
-        //       child: Padding(
-        //         padding:
-        //             const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        //         child: Text(
-        //           'Data: $selectedDate\nAtualizações: $selectedUpdates',
-        //           style: const TextStyle(
-        //             fontSize: 14.0,
-        //             fontWeight: FontWeight.bold,
-        //           ),
-        //         ),
-        //       ),
-        //     ),
-        //   ),
       ],
     );
   }

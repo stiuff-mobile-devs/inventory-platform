@@ -2,31 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:inventory_platform/features/data/models/organization_model.dart';
-
-class CarouselSectionController extends GetxController {
-  var carouselIndex = 0.obs;
-  var isHoveredList = <bool>[].obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    isHoveredList.value = [];
-  }
-
-  void updateCarouselIndex(int index) {
-    carouselIndex.value = index;
-  }
-
-  void setHovered(int index, bool value) {
-    if (index >= 0 && index < isHoveredList.length) {
-      isHoveredList[index] = value;
-    }
-  }
-
-  void initializeHoverState(int itemCount) {
-    isHoveredList.value = List<bool>.filled(itemCount, false);
-  }
-}
+import 'package:inventory_platform/features/widgets/controllers/carousel_section_controller.dart';
 
 class CarouselSection extends StatelessWidget {
   final CarouselSectionController controller;

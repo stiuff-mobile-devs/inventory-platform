@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:inventory_platform/core/services/mock_service.dart';
 import 'package:inventory_platform/features/widgets/base_scaffold.dart';
 import 'package:inventory_platform/features/widgets/carousel_section.dart' as w;
+import 'package:inventory_platform/features/widgets/controllers/carousel_section_controller.dart';
 import 'package:inventory_platform/routes/routes.dart';
 
 class HomePage extends StatelessWidget {
@@ -10,7 +11,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final carouselController = Get.find<w.CarouselSectionController>();
+    final carouselController = Get.find<CarouselSectionController>();
     final mockService = Get.find<MockService>();
 
     return BaseScaffold(

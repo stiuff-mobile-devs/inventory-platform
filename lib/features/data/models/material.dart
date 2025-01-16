@@ -2,12 +2,12 @@ class Material {
   final String id;
   final String name;
   final String tag;
+  final List<String> images;
   final String location;
-  final String inventoryId;
   final String category;
   final int quantity;
   final String unit;
-  final String status;
+  final String status; // (is / isn't) functional
   final DateTime? createdAt;
   final DateTime? lastUpdatedAt;
   final String? notes;
@@ -17,8 +17,8 @@ class Material {
     required this.id,
     required this.name,
     required this.tag,
+    required this.images,
     required this.location,
-    required this.inventoryId,
     required this.category,
     required this.quantity,
     required this.unit,
@@ -35,8 +35,8 @@ class Material {
       id: json['id'],
       name: json['name'],
       tag: json['tag'],
+      images: List<String>.from(json['images'] ?? []),
       location: json['location'],
-      inventoryId: json['inventoryId'],
       category: json['category'],
       quantity: json['quantity'],
       unit: json['unit'],
@@ -57,8 +57,8 @@ class Material {
         'id': id,
         'name': name,
         'tag': tag,
+        'images': images,
         'location': location,
-        'inventoryId': inventoryId,
         'category': category,
         'quantity': quantity,
         'unit': unit,

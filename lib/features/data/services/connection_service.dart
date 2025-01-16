@@ -11,15 +11,6 @@ class ConnectionService {
       StreamController<bool>.broadcast();
   Stream<bool> get connectionStatus => _connectionStatusController.stream;
 
-  // Future<bool> checkInternetConnection() async {
-  //   try {
-  //     final result = await InternetAddress.lookup('google.com');
-  //     return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-  //   } catch (_) {
-  //     return false;
-  //   }
-  // }
-
   Future<bool> checkInternetConnection() async {
     try {
       final response = await http.get(Uri.parse('https://httpbin.org/get'));

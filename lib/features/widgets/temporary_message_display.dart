@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class CustomErrorMessage extends StatefulWidget {
+class TemporaryMessageDisplay extends StatefulWidget {
   final String? message;
-  const CustomErrorMessage({super.key, this.message});
+  const TemporaryMessageDisplay({super.key, this.message});
 
   @override
-  CustomErrorMessageState createState() => CustomErrorMessageState();
+  TemporaryMessageDisplayState createState() => TemporaryMessageDisplayState();
 }
 
-class CustomErrorMessageState extends State<CustomErrorMessage> {
+class TemporaryMessageDisplayState extends State<TemporaryMessageDisplay> {
   bool _isVisible = false;
 
   @override

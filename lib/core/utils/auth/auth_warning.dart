@@ -3,6 +3,6 @@ class AuthWarning implements Exception {
   AuthWarning(this.message);
 }
 
-class UserCancelledWarning extends AuthWarning {
-  UserCancelledWarning() : super("O login foi cancelado pelo usuário.");
+class SignInInterruptionWarning extends AuthWarning {
+  SignInInterruptionWarning() : super("O login foi cancelado pelo usuário.");
 }

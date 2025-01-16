@@ -1,3 +1,5 @@
+import 'package:inventory_platform/features/data/models/generic_list_item_model.dart';
+
 class TagModel {
   final String id;
   final String serial;
@@ -34,4 +36,21 @@ class TagModel {
         'materialId': materialId,
         'organizationId': organizationId,
       };
+
+  static List<GenericListItemModel> turnIntoGenericListItemModel(
+      List<TagModel> inList) {
+    return inList.map((originalItem) {
+      return GenericListItemModel(
+        id: originalItem.id,
+        upperHeaderField: originalItem.serial,
+        lowerHeaderField: originalItem.id,
+        status: !(originalItem.lastSeen
+                .isBefore(DateTime.now().subtract(const Duration(days: 30))))
+            ? 'open'
+            : 'finalized',
+        initialDate: originalItem.createdAt,
+        lastUpdatedAt: originalItem.lastSeen,
+      );
+    }).toList();
+  }
 }

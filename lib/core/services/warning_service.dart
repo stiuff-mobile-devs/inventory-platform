@@ -7,7 +7,7 @@ class WarningService {
   void handleWarning(Exception e) {
     String? warningMessage;
 
-    if (e is UserCancelledWarning) {
+    if (e is SignInInterruptionWarning) {
       warningMessage = e.message;
     }
 

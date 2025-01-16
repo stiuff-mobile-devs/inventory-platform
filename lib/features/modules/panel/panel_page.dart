@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:inventory_platform/core/services/mock_service.dart';
+import 'package:inventory_platform/features/data/models/domain_model.dart';
+import 'package:inventory_platform/features/data/models/generic_list_item_model.dart';
+import 'package:inventory_platform/features/data/models/inventory_model.dart';
+import 'package:inventory_platform/features/data/models/member_model.dart';
+import 'package:inventory_platform/features/data/models/organization_model.dart';
+import 'package:inventory_platform/features/data/models/reader_model.dart';
+import 'package:inventory_platform/features/data/models/tag_model.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/admin_tab.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/dashboard_tab.dart';
-import 'package:inventory_platform/features/modules/panel/widgets/domains_tab.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/entities_tab.dart';
-import 'package:inventory_platform/features/modules/panel/widgets/inventories_tab.dart';
-import 'package:inventory_platform/features/modules/panel/widgets/members_tab.dart';
-import 'package:inventory_platform/features/modules/panel/widgets/readers_tab.dart';
-import 'package:inventory_platform/features/modules/panel/widgets/tags_tab.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/generic_list_tab.dart';
 import 'package:inventory_platform/features/widgets/base_scaffold.dart';
 import 'package:inventory_platform/features/widgets/scrollable_bottom_nav_bar.dart';
 
@@ -19,17 +24,73 @@ class PanelPage extends StatefulWidget {
 
 class _PanelPageState extends State<PanelPage> {
   int _selectedTabIndex = 0;
+  late final MockService mockService;
+  late final OrganizationModel organization;
 
-  final List<Widget> _tabs = [
+  List<Widget> _tabs = [
     const DashboardTab(),
-    const InventoriesTab(),
-    const DomainsTab(),
-    const TagsTab(),
-    const ReadersTab(),
-    const MembersTab(),
-    const EntitiesTab(),
-    const AdminTab(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    organization = Get.arguments;
+
+    mockService = Get.find<MockService>();
+
+    List<GenericListItemModel> inventories =
+        InventoryModel.turnIntoGenericListItemModel(
+            mockService.getInventoriesForOrganization(organization.id));
+
+    List<GenericListItemModel> domains =
+        DomainModel.turnIntoGenericListItemModel(
+            mockService.getDomainsForOrganization(organization.id));
+
+    List<GenericListItemModel> tags = TagModel.turnIntoGenericListItemModel(
+        mockService.getTagsForOrganization(organization.id));
+
+    List<GenericListItemModel> readers =
+        ReaderModel.turnIntoGenericListItemModel(
+            mockService.getReadersForOrganization(organization.id));
+
+    List<GenericListItemModel> members =
+        MemberModel.turnIntoGenericListItemModel(
+            mockService.getMembersForOrganization(organization.id));
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _tabs = [
+        const DashboardTab(),
+        GenericListTab(
+          tabName: 'Inventories',
+          items: inventories,
+          searchParameters: 'Título ou Id',
+        ),
+        GenericListTab(
+          tabName: 'Domains',
+          items: domains,
+          searchParameters: 'Título ou Id',
+        ),
+        GenericListTab(
+          tabName: 'Tags',
+          items: tags,
+          searchParameters: 'Serial ou Id',
+        ),
+        GenericListTab(
+          tabName: 'Readers',
+          items: readers,
+          searchParameters: 'Nome ou MAC',
+        ),
+        GenericListTab(
+          tabName: 'Members',
+          items: members,
+          searchParameters: 'Nome ou Email',
+        ),
+        const EntitiesTab(),
+        const AdminTab(),
+      ];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,8 +1,10 @@
+import 'package:inventory_platform/features/data/models/generic_list_item_model.dart';
+
 class DomainModel {
   final String id;
   final String organizationId;
 
-  final String name;
+  final String title;
   final String categoryId;
   final String status;
   final String? description;
@@ -16,7 +18,7 @@ class DomainModel {
   DomainModel({
     required this.id,
     required this.organizationId,
-    required this.name,
+    required this.title,
     required this.categoryId,
     required this.status,
     this.description,
@@ -33,7 +35,7 @@ class DomainModel {
     return DomainModel(
       id: json['id'],
       organizationId: json['organizationId'],
-      name: json['name'],
+      title: json['name'],
       categoryId: json['category'],
       status: json['status'],
       description: json['description'],
@@ -54,7 +56,7 @@ class DomainModel {
   Map<String, dynamic> toJson() => {
         'id': id,
         'organizationId': organizationId,
-        'name': name,
+        'name': title,
         'category': categoryId,
         'status': status,
         'description': description,
@@ -65,4 +67,18 @@ class DomainModel {
         'lastUpdatedAt': lastUpdatedAt?.toIso8601String(),
         'attributes': attributes,
       };
+
+  static List<GenericListItemModel> turnIntoGenericListItemModel(
+      List<DomainModel> inList) {
+    return inList.map((originalItem) {
+      return GenericListItemModel(
+        id: originalItem.id,
+        upperHeaderField: originalItem.title,
+        lowerHeaderField: originalItem.description ?? '',
+        status: originalItem.status,
+        initialDate: originalItem.createdAt,
+        lastUpdatedAt: originalItem.lastUpdatedAt,
+      );
+    }).toList();
+  }
 }
