@@ -46,7 +46,7 @@ class AuthService {
         final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
         if (googleUser == null) {
-          throw UserCancelledWarning();
+          throw SignInInterruptionWarning();
         }
 
         final GoogleSignInAuthentication googleAuth =

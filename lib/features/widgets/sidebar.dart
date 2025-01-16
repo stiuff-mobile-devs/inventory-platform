@@ -13,9 +13,9 @@ class CustomSidebar extends StatelessWidget {
       SidebarXController(selectedIndex: 0, extended: true);
 
   final List<String> routes = [
-    '/home',
-    '/settings',
-    '/help',
+    AppRoutes.home,
+    AppRoutes.settings,
+    AppRoutes.help,
   ];
 
   void _updateSelectedIndex(String route) {
@@ -66,8 +66,8 @@ class CustomSidebar extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.white),
         selectedIconTheme: const IconThemeData(color: Colors.white),
       ),
-      extendedTheme: const SidebarXTheme(
-        width: 260,
+      extendedTheme: SidebarXTheme(
+        width: MediaQuery.of(context).size.width > 600 ? 300 : 260,
       ),
       headerBuilder: (context, extended) => Padding(
         padding: const EdgeInsets.only(top: 30.0),
@@ -108,86 +108,95 @@ class CustomSidebar extends StatelessWidget {
   }
 
   Widget _buildUserHeader(SidebarController controller, bool extended) {
-    return Obx(() {
-      return Container(
-        padding: const EdgeInsets.all(16),
-        decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 57, 15, 107),
-          // borderRadius: BorderRadius.only(
-          //   topLeft: Radius.circular(16),
-          //   topRight: Radius.circular(16),
-          // ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: extended ? 30 : 16,
-              backgroundColor: Colors.grey.shade200,
-              child: controller.userPhotoUrl.value.isNotEmpty
-                  ? ClipOval(
-                      child: Image.network(
-                        controller.userPhotoUrl.value,
-                        fit: BoxFit.cover,
-                        width: (extended ? 60 : 32),
-                        height: (extended ? 60 : 32),
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) {
-                            return child;
-                          }
-                          return Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.blue,
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                  : null,
-                            ),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            color: Colors.grey,
-                            width: double.infinity,
-                            height: double.infinity,
-                            child: Center(
-                              child: Icon(
-                                Icons.person,
-                                color: Colors.white,
-                                size: extended ? 48 : 24,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    )
-                  : const Icon(Icons.person, size: 24),
-            ),
-            if (extended) const SizedBox(width: 16),
-            if (extended)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    controller.userName.value.split(' ')[0],
-                    style: const TextStyle(
+    return Obx(
+      () {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: const BoxDecoration(
+            color: Color.fromARGB(255, 57, 15, 107),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildUserAvatar(controller, extended),
+              if (extended) const SizedBox(width: 16),
+              if (extended) _buildUserInfo(controller),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildUserAvatar(SidebarController controller, bool extended) {
+    return CircleAvatar(
+      radius: extended ? 30 : 16,
+      backgroundColor: Colors.grey.shade200,
+      child: controller.userPhotoUrl.value.isNotEmpty
+          ? ClipOval(
+              child: Image.network(
+                controller.userPhotoUrl.value,
+                fit: BoxFit.cover,
+                width: extended ? 60 : 32,
+                height: extended ? 60 : 32,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  }
+                  return FutureBuilder<void>(
+                    future: Future.delayed(const Duration(milliseconds: 300)),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.blue,
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
+                          ),
+                        );
+                      }
+                      return child;
+                    },
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return CircleAvatar(
+                    backgroundColor: Colors.grey,
+                    child: Icon(
+                      Icons.person,
                       color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      size: extended ? 48 : 24,
                     ),
-                  ),
-                  Text(
-                    controller.userEmail.value,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
-          ],
+            )
+          : const Icon(Icons.person, size: 24),
+    );
+  }
+
+  Widget _buildUserInfo(SidebarController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          controller.userName.value.split(' ')[0],
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
         ),
-      );
-    });
+        Text(
+          controller.userEmail.value,
+          style: const TextStyle(
+            color: Colors.white70,
+            fontSize: 12,
+          ),
+        ),
+      ],
+    );
   }
 }

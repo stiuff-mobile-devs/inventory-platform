@@ -1,20 +1,22 @@
+import 'package:inventory_platform/features/data/models/generic_list_item_model.dart';
+
 class InventoryModel {
   final String id;
   final String title;
   final String description;
   final String organizationId;
-  final DateTime? openedAt;
-  final DateTime? closedAt;
-  final DateTime? lastUpdatedAt;
   final int revisionNumber;
   final String status;
+  final DateTime? createdAt;
+  final DateTime? closedAt;
+  final DateTime? lastUpdatedAt;
 
   InventoryModel({
     required this.id,
     required this.title,
     required this.description,
     required this.organizationId,
-    this.openedAt,
+    this.createdAt,
     this.closedAt,
     DateTime? lastUpdatedAt,
     required this.revisionNumber,
@@ -27,7 +29,7 @@ class InventoryModel {
       title: json['title'],
       description: json['description'],
       organizationId: json['organizationId'],
-      openedAt:
+      createdAt:
           json['openedAt'] != null ? DateTime.parse(json['openedAt']) : null,
       closedAt:
           json['closedAt'] != null ? DateTime.parse(json['closedAt']) : null,
@@ -44,10 +46,25 @@ class InventoryModel {
         'title': title,
         'description': description,
         'organizationId': organizationId,
-        'openedAt': openedAt?.toIso8601String(),
+        'openedAt': createdAt?.toIso8601String(),
         'closedAt': closedAt?.toIso8601String(),
         'lastUpdatedAt': lastUpdatedAt?.toIso8601String(),
         'revisionNumber': revisionNumber,
         'status': status,
       };
+
+  static List<GenericListItemModel> turnIntoGenericListItemModel(
+      List<InventoryModel> inList) {
+    return inList.map((originalItem) {
+      return GenericListItemModel(
+        id: originalItem.id,
+        upperHeaderField: originalItem.title,
+        lowerHeaderField: originalItem.description,
+        status: originalItem.status,
+        initialDate: originalItem.createdAt,
+        finalDate: originalItem.closedAt,
+        lastUpdatedAt: originalItem.lastUpdatedAt,
+      );
+    }).toList();
+  }
 }

@@ -1,3 +1,5 @@
+import 'package:inventory_platform/features/data/models/generic_list_item_model.dart';
+
 class ReaderModel {
   final String name;
   final String organizationId;
@@ -31,4 +33,19 @@ class ReaderModel {
         'status': status,
         'lastSeen': lastSeen.toIso8601String(),
       };
+
+  static List<GenericListItemModel> turnIntoGenericListItemModel(
+      List<ReaderModel> inList) {
+    return inList.map((originalItem) {
+      return GenericListItemModel(
+        id: originalItem.mac,
+        upperHeaderField: originalItem.name,
+        lowerHeaderField: originalItem.mac,
+        status: originalItem.status,
+        initialDate: originalItem.lastSeen,
+        finalDate: originalItem.lastSeen,
+        lastUpdatedAt: originalItem.lastSeen,
+      );
+    }).toList();
+  }
 }

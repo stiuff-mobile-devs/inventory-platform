@@ -1,3 +1,5 @@
+import 'package:inventory_platform/features/data/models/generic_list_item_model.dart';
+
 class MemberModel {
   final String id;
   final String name;
@@ -37,4 +39,19 @@ class MemberModel {
         'createdAt': createdAt.toIso8601String(),
         'organizations': organizations,
       };
+
+  static List<GenericListItemModel> turnIntoGenericListItemModel(
+      List<MemberModel> inList) {
+    return inList.map((originalItem) {
+      return GenericListItemModel(
+        id: originalItem.email,
+        upperHeaderField: originalItem.name,
+        lowerHeaderField: originalItem.email,
+        status: originalItem.status,
+        initialDate: originalItem.createdAt,
+        finalDate: originalItem.createdAt,
+        lastUpdatedAt: originalItem.createdAt,
+      );
+    }).toList();
+  }
 }
