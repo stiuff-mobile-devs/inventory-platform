@@ -6,6 +6,7 @@ import 'package:inventory_platform/data/models/member_model.dart';
 import 'package:inventory_platform/data/models/organization_model.dart';
 import 'package:inventory_platform/data/models/reader_model.dart';
 import 'package:inventory_platform/data/models/tag_model.dart';
+import 'package:inventory_platform/data/models/user_model.dart';
 
 class MockService extends GetxController {
   var organizationsList = <OrganizationModel>[].obs;
@@ -110,15 +111,24 @@ class MockService extends GetxController {
     ];
   }
 
+  UserModel getSampleUser() {
+    return UserModel(
+      id: 'u1',
+      name: 'Usuário 1',
+      email: 'usuario1@exemplo.com',
+    );
+  }
+
   List<MemberModel> getMemberSampleData() {
+    UserModel sampleUser = getSampleUser();
     return [
       MemberModel(
         id: 'm1',
-        name: 'Membro 1',
-        email: 'membro1@exemplo.com',
+        user: sampleUser,
         role: 'Admin',
         isActive: 1,
         createdAt: DateTime.now(),
+        lastSeen: DateTime.now(),
       ),
     ];
   }

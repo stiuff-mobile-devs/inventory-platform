@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_utils/src/platform/platform.dart';
+import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:inventory_platform/data/providers/utils_provider.dart';
+import 'package:inventory_platform/data/models/user_model.dart';
+import 'package:inventory_platform/data/repositories/user_repository.dart';
 
 import 'error_service.dart';
 import 'connection_service.dart';
@@ -18,6 +20,8 @@ class AuthService {
   final ConnectionService _connectionService;
 
   final UtilsProvider _utilsProvider;
+
+  final UserRepository _userRepository = Get.find<UserRepository>();
 
   String? _cachedProfileImageUrl;
 
@@ -105,6 +109,22 @@ class AuthService {
       }
 
       success = true;
+
+      if (success) {
+        final user = _auth.currentUser;
+        if (user != null) {
+          final existingUser = _userRepository.getUserById(user.uid);
+          if (existingUser == null) {
+            final userModel = UserModel(
+              id: user.uid,
+              name: user.displayName ?? 'Unknown',
+              email: user.email ?? 'Unknown',
+              profileImageUrl: user.photoURL,
+            );
+            _userRepository.addUser(userModel);
+          }
+        }
+      }
     });
 
     return success;

@@ -5,6 +5,7 @@ import 'package:inventory_platform/routes/routes.dart';
 class SidebarController extends GetxController {
   final AuthService _authService = Get.find<AuthService>();
 
+  var userId = ''.obs;
   var userName = ''.obs;
   var userEmail = ''.obs;
   var userPhotoUrl = ''.obs;
@@ -22,6 +23,7 @@ class SidebarController extends GetxController {
   void _loadUserInfo() {
     var user = _authService.currentUser;
     if (user != null) {
+      userId.value = user.uid;
       userName.value = user.displayName ?? 'Usuário';
       userEmail.value = user.email ?? '';
       userPhotoUrl.value = user.photoURL ?? '';

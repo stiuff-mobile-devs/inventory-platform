@@ -6,6 +6,7 @@ import 'package:inventory_platform/core/services/connection_service.dart';
 import 'package:inventory_platform/core/services/error_service.dart';
 import 'package:inventory_platform/core/services/warning_service.dart';
 import 'package:inventory_platform/data/providers/utils_provider.dart';
+import 'package:inventory_platform/data/repositories/user_repository.dart';
 import 'package:inventory_platform/features/common/controllers/connection_controller.dart';
 import 'package:inventory_platform/features/common/controllers/sidebar_controller.dart';
 import 'package:inventory_platform/core/services/mock_service.dart';
@@ -22,6 +23,8 @@ class CoreBindings extends Bindings {
     Get.put<WarningService>(WarningService());
 
     Get.put<UtilsProvider>(UtilsProvider());
+
+    Get.put<UserRepository>(UserRepository());
 
     Get.put<AuthService>(AuthService(
       firebaseAuth: firebaseAuth,

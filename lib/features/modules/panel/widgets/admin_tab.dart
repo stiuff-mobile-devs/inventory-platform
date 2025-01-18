@@ -177,11 +177,11 @@ class _AdminTabState extends State<AdminTab> {
                   leading: CircleAvatar(
                     backgroundColor: Colors.grey,
                     child: Text(
-                      member.name.substring(0, 1).toUpperCase(),
+                      member.user.name.substring(0, 1).toUpperCase(),
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),
-                  title: Text(member.name),
+                  title: Text(member.user.name),
                   subtitle: Text(member.role),
                   trailing: IconButton(
                     icon: const Icon(Icons.remove_circle, color: Colors.red),

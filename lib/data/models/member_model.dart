@@ -1,9 +1,9 @@
 import 'package:inventory_platform/data/models/generic_list_item_model.dart';
+import 'package:inventory_platform/data/models/user_model.dart';
 
 class MemberModel {
   final String id;
-  final String name;
-  final String? email;
+  final UserModel user;
   final String role;
   final int isActive;
   final DateTime? createdAt;
@@ -11,8 +11,7 @@ class MemberModel {
 
   MemberModel({
     required this.id,
-    required this.name,
-    this.email,
+    required this.user,
     required this.role,
     required this.isActive,
     this.createdAt,
@@ -22,17 +21,18 @@ class MemberModel {
   factory MemberModel.fromJson(Map<String, dynamic> json) {
     return MemberModel(
       id: json['id'],
-      name: json['name'],
-      email: json['email'],
+      user: UserModel.fromJson(json['user']),
       role: json['role'],
       isActive: json['isActive'],
       createdAt: DateTime.parse(json['createdAt']),
+      lastSeen:
+          json['lastSeen'] != null ? DateTime.parse(json['lastSeen']) : null,
     );
   }
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'email': email,
+        'user': user.toJson(),
         'role': role,
         'isActive': isActive,
         'createdAt': createdAt?.toIso8601String(),
@@ -43,9 +43,9 @@ class MemberModel {
       List<MemberModel> inList) {
     return inList.map((originalItem) {
       return GenericListItemModel(
-        id: originalItem.email,
-        upperHeaderField: originalItem.name,
-        lowerHeaderField: originalItem.email,
+        id: originalItem.user.email,
+        upperHeaderField: originalItem.user.name,
+        lowerHeaderField: originalItem.user.email,
         isActive: originalItem.isActive,
         initialDate: originalItem.createdAt,
         lastUpdatedAt: originalItem.createdAt,
