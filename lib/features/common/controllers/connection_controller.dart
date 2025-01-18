@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:inventory_platform/features/data/services/connection_service.dart';
+import 'package:inventory_platform/core/services/connection_service.dart';
 
 class ConnectionController extends GetxController {
   late ConnectionService _connectionService;

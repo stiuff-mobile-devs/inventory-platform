@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/services/mock_service.dart';
-import 'package:inventory_platform/features/data/models/domain_model.dart';
-import 'package:inventory_platform/features/data/models/generic_list_item_model.dart';
-import 'package:inventory_platform/features/data/models/inventory_model.dart';
-import 'package:inventory_platform/features/data/models/member_model.dart';
-import 'package:inventory_platform/features/data/models/organization_model.dart';
-import 'package:inventory_platform/features/data/models/reader_model.dart';
-import 'package:inventory_platform/features/data/models/tag_model.dart';
+import 'package:inventory_platform/data/models/domain_model.dart';
+import 'package:inventory_platform/data/models/generic_list_item_model.dart';
+import 'package:inventory_platform/data/models/inventory_model.dart';
+import 'package:inventory_platform/data/models/member_model.dart';
+import 'package:inventory_platform/data/models/organization_model.dart';
+import 'package:inventory_platform/data/models/reader_model.dart';
+import 'package:inventory_platform/data/models/tag_model.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/admin_tab.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/dashboard_tab.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/entities_tab.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/generic_list_tab.dart';
-import 'package:inventory_platform/features/widgets/base_scaffold.dart';
-import 'package:inventory_platform/features/widgets/scrollable_bottom_nav_bar.dart';
+import 'package:inventory_platform/features/common/widgets/base_scaffold.dart';
+import 'package:inventory_platform/features/common/widgets/scrollable_bottom_nav_bar.dart';
 
 class PanelPage extends StatefulWidget {
   const PanelPage({super.key});
@@ -62,14 +62,14 @@ class _PanelPageState extends State<PanelPage> {
       _tabs = [
         const DashboardTab(),
         GenericListTab(
-          tabName: 'Inventories',
+          tabName: 'Inventários',
           items: inventories,
           searchParameters: 'Título ou Id',
           firstDetailFieldName: 'Criado em',
           secondDetailFieldName: 'Última atualização em',
         ),
         GenericListTab(
-          tabName: 'Domains',
+          tabName: 'Domínios',
           items: domains,
           searchParameters: 'Título ou Id',
           firstDetailFieldName: 'Criado em',
@@ -83,14 +83,14 @@ class _PanelPageState extends State<PanelPage> {
           secondDetailFieldName: 'Visto pela última vez em',
         ),
         GenericListTab(
-          tabName: 'Readers',
+          tabName: 'Leitores',
           items: readers,
           searchParameters: 'Nome ou MAC',
           firstDetailFieldName: 'Criado em',
           secondDetailFieldName: 'Visto pela última vez em',
         ),
         GenericListTab(
-          tabName: 'Members',
+          tabName: 'Membros',
           items: members,
           searchParameters: 'Nome ou Email',
           firstDetailFieldName: 'Criado em',

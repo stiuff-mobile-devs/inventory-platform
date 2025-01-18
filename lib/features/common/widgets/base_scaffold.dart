@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:inventory_platform/core/theme/app_theme.dart';
-import 'package:inventory_platform/features/widgets/app_bar.dart';
-import 'package:inventory_platform/features/widgets/sidebar.dart';
+import 'package:inventory_platform/features/common/widgets/app_bar.dart';
+import 'package:inventory_platform/features/common/widgets/sidebar.dart';
 
 class BaseScaffold extends StatelessWidget {
   final Widget body;

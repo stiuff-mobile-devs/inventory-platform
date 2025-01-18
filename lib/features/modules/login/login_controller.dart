@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/services/error_service.dart';
-import 'package:inventory_platform/features/data/services/auth_service.dart';
+import 'package:inventory_platform/core/services/auth_service.dart';
 import 'package:inventory_platform/routes/routes.dart';
 
 class LoginController extends GetxController {

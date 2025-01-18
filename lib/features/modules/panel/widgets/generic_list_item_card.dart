@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:inventory_platform/features/data/models/generic_list_item_model.dart';
+import 'package:inventory_platform/data/models/generic_list_item_model.dart';
 
 class GenericListItemCard extends StatelessWidget {
   final GenericListItemModel item;

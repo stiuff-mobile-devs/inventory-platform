@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:inventory_platform/features/data/models/generic_list_item_model.dart';
-import 'package:inventory_platform/features/data/models/organization_model.dart';
+import 'package:inventory_platform/data/models/generic_list_item_model.dart';
+import 'package:inventory_platform/data/models/organization_model.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/generic_list_header.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/generic_list_item_card.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/search_bar_widget.dart';
-import 'package:inventory_platform/features/widgets/custom_progress_indicator.dart';
-import 'package:inventory_platform/features/widgets/list_item_skeleton.dart';
-import 'package:inventory_platform/features/widgets/temporary_message_display.dart';
+import 'package:inventory_platform/features/common/widgets/custom_progress_indicator.dart';
+import 'package:inventory_platform/features/common/widgets/list_item_skeleton.dart';
+import 'package:inventory_platform/features/common/widgets/temporary_message_display.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class GenericListTab extends StatefulWidget {

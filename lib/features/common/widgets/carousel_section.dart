@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:inventory_platform/features/data/models/organization_model.dart';
-import 'package:inventory_platform/features/widgets/controllers/carousel_section_controller.dart';
+import 'package:inventory_platform/data/models/organization_model.dart';
+import 'package:inventory_platform/features/common/controllers/carousel_section_controller.dart';
 
 class CarouselSection extends StatelessWidget {
   final CarouselSectionController controller;

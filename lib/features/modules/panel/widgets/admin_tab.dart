@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/services/mock_service.dart';
-import 'package:inventory_platform/features/data/models/member_model.dart';
-import 'package:inventory_platform/features/data/models/organization_model.dart';
+import 'package:inventory_platform/data/models/member_model.dart';
+import 'package:inventory_platform/data/models/organization_model.dart';
 
 class AdminTab extends StatefulWidget {
   const AdminTab({super.key});

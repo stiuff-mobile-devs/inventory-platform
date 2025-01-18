@@ -1,9 +1,9 @@
-import 'package:inventory_platform/features/data/models/domain_model.dart';
-import 'package:inventory_platform/features/data/models/entity_model.dart';
-import 'package:inventory_platform/features/data/models/inventory_model.dart';
-import 'package:inventory_platform/features/data/models/member_model.dart';
-import 'package:inventory_platform/features/data/models/reader_model.dart';
-import 'package:inventory_platform/features/data/models/tag_model.dart';
+import 'package:inventory_platform/data/models/domain_model.dart';
+import 'package:inventory_platform/data/models/entity_model.dart';
+import 'package:inventory_platform/data/models/inventory_model.dart';
+import 'package:inventory_platform/data/models/member_model.dart';
+import 'package:inventory_platform/data/models/reader_model.dart';
+import 'package:inventory_platform/data/models/tag_model.dart';
 
 class OrganizationModel {
   final String id;

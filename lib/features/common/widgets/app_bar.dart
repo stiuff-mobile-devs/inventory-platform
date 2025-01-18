@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:inventory_platform/features/widgets/connection_status_icon.dart';
+import 'package:inventory_platform/features/common/widgets/connection_status_icon.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool? hideTitle;

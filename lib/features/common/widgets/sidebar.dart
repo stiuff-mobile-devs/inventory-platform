@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inventory_platform/features/widgets/controllers/sidebar_controller.dart';
+import 'package:inventory_platform/features/common/controllers/sidebar_controller.dart';
 import 'package:inventory_platform/routes/routes.dart';
 import 'package:sidebarx/sidebarx.dart';
 
@@ -70,10 +70,15 @@ class CustomSidebar extends StatelessWidget {
       extendedTheme: SidebarXTheme(
         width: MediaQuery.of(context).size.width > 600 ? 300 : 260,
       ),
-      headerBuilder: (context, extended) => Padding(
-        padding: const EdgeInsets.only(top: 30.0, bottom: 15.0),
-        child: _buildUserHeader(controller, extended),
-      ),
+      headerBuilder: (context, extended) {
+        return Padding(
+          padding: EdgeInsets.only(
+            top: 30.0,
+            bottom: GetPlatform.isWeb ? 15.0 : 0.0,
+          ),
+          child: _buildUserHeader(controller, extended),
+        );
+      },
       items: [
         SidebarXItem(
           icon: Icons.home_rounded,

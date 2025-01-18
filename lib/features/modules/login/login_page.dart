@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/features/modules/login/login_controller.dart';
-import 'package:inventory_platform/features/widgets/loading_dialog.dart';
+import 'package:inventory_platform/features/common/widgets/loading_dialog.dart';
 import 'package:inventory_platform/features/modules/login/widgets/login_form.dart';
 import 'package:inventory_platform/features/modules/login/widgets/google_login_button.dart';
 import 'package:inventory_platform/features/modules/login/widgets/login_header.dart';

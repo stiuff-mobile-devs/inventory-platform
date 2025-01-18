@@ -1,48 +1,54 @@
-import 'package:inventory_platform/features/data/models/generic_list_item_model.dart';
+import 'package:inventory_platform/data/models/generic_list_item_model.dart';
 
-class ReaderModel {
+class MemberModel {
+  final String id;
   final String name;
-  final String mac;
+  final String? email;
+  final String role;
   final int isActive;
   final DateTime? createdAt;
   final DateTime? lastSeen;
 
-  ReaderModel({
+  MemberModel({
+    required this.id,
     required this.name,
-    required this.mac,
+    this.email,
+    required this.role,
     required this.isActive,
     this.createdAt,
     this.lastSeen,
   });
 
-  factory ReaderModel.fromJson(Map<String, dynamic> json) {
-    return ReaderModel(
+  factory MemberModel.fromJson(Map<String, dynamic> json) {
+    return MemberModel(
+      id: json['id'],
       name: json['name'],
-      mac: json['mac'],
+      email: json['email'],
+      role: json['role'],
       isActive: json['isActive'],
       createdAt: DateTime.parse(json['createdAt']),
-      lastSeen: DateTime.parse(json['lastSeen']),
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        'mac': mac,
+        'id': id,
+        'email': email,
+        'role': role,
         'isActive': isActive,
         'createdAt': createdAt?.toIso8601String(),
         'lastSeen': lastSeen?.toIso8601String(),
       };
 
   static List<GenericListItemModel> turnAllIntoGenericListItemModel(
-      List<ReaderModel> inList) {
+      List<MemberModel> inList) {
     return inList.map((originalItem) {
       return GenericListItemModel(
-        id: originalItem.mac,
+        id: originalItem.email,
         upperHeaderField: originalItem.name,
-        lowerHeaderField: originalItem.mac,
+        lowerHeaderField: originalItem.email,
         isActive: originalItem.isActive,
         initialDate: originalItem.createdAt,
-        lastUpdatedAt: originalItem.lastSeen,
+        lastUpdatedAt: originalItem.createdAt,
       );
     }).toList();
   }
