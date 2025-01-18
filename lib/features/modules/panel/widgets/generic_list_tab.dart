@@ -252,8 +252,9 @@ class _GenericListTabState extends State<GenericListTab> {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(item.lowerHeaderField,
-                style: TextStyle(color: Colors.grey.shade700)),
+            if (item.lowerHeaderField != null)
+              Text(item.lowerHeaderField!,
+                  style: TextStyle(color: Colors.grey.shade700)),
             const SizedBox(height: 4),
             Text('Aberto em: $formattedOpenedAt',
                 style: TextStyle(color: Colors.grey.shade600, fontSize: 12.0)),
@@ -265,15 +266,15 @@ class _GenericListTabState extends State<GenericListTab> {
           alignment: Alignment.center,
           children: [
             Icon(
-              item.status == "open"
+              item.isActive == 1
                   ? Icons.circle_outlined
                   : Icons.circle_outlined,
-              color: item.status == "open" ? Colors.green : Colors.red,
+              color: item.isActive == 1 ? Colors.green : Colors.red,
               size: 20.0,
             ),
             Icon(
-              item.status == "open" ? Icons.circle : Icons.circle,
-              color: item.status == "open" ? Colors.green : Colors.red,
+              item.isActive == 1 ? Icons.circle : Icons.circle,
+              color: item.isActive == 1 ? Colors.green : Colors.red,
               size: 12.0,
             ),
           ],

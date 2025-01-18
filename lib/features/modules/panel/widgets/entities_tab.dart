@@ -219,7 +219,7 @@ class _EntitiesTabState extends State<EntitiesTab> {
         duration: const Duration(milliseconds: 0),
         opacity: _groupExpansionState[groupType] == true ? 1.0 : 0.0,
         child: ListTile(
-          title: Text(entity.name),
+          title: Text(entity.title),
         ),
       ),
       crossFadeState: _groupExpansionState[groupType] == true

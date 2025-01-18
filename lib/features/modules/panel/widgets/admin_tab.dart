@@ -21,7 +21,8 @@ class _AdminTabState extends State<AdminTab> {
     super.initState();
     mockService = Get.find<MockService>();
     _allMembers = mockService.getMembersForOrganization(organization.id)
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      ..sort((a, b) => (b.createdAt ?? DateTime.now())
+          .compareTo(a.createdAt ?? DateTime.now()));
   }
 
   @override
@@ -107,11 +108,12 @@ class _AdminTabState extends State<AdminTab> {
               labelText: "Nome da Organização",
             ),
             const SizedBox(height: 16.0),
-            _buildCustomTextField(
-              initialValue: organization.description,
-              labelText: "Descrição",
-              maxLines: 3,
-            ),
+            if (organization.description != null)
+              _buildCustomTextField(
+                initialValue: organization.description!,
+                labelText: "Descrição",
+                maxLines: 3,
+              ),
             const SizedBox(height: 16.0),
             Row(
               children: [

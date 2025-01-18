@@ -40,22 +40,22 @@ class _PanelPageState extends State<PanelPage> {
     mockService = Get.find<MockService>();
 
     List<GenericListItemModel> inventories =
-        InventoryModel.turnIntoGenericListItemModel(
+        InventoryModel.turnAllIntoGenericListItemModel(
             mockService.getInventoriesForOrganization(organization.id));
 
     List<GenericListItemModel> domains =
-        DomainModel.turnIntoGenericListItemModel(
+        DomainModel.turnAllIntoGenericListItemModel(
             mockService.getDomainsForOrganization(organization.id));
 
     List<GenericListItemModel> tags = TagModel.turnIntoGenericListItemModel(
         mockService.getTagsForOrganization(organization.id));
 
     List<GenericListItemModel> readers =
-        ReaderModel.turnIntoGenericListItemModel(
+        ReaderModel.turnAllIntoGenericListItemModel(
             mockService.getReadersForOrganization(organization.id));
 
     List<GenericListItemModel> members =
-        MemberModel.turnIntoGenericListItemModel(
+        MemberModel.turnAllIntoGenericListItemModel(
             mockService.getMembersForOrganization(organization.id));
 
     WidgetsBinding.instance.addPostFrameCallback((_) {

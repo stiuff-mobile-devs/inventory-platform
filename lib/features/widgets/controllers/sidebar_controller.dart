@@ -15,6 +15,10 @@ class SidebarController extends GetxController {
     _loadUserInfo();
   }
 
+  Future<String?> getProfileImageUrl() {
+    return _authService.getProfileImageUrl();
+  }
+
   void _loadUserInfo() {
     var user = _authService.currentUser;
     if (user != null) {

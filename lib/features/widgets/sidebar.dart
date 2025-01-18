@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/features/widgets/controllers/sidebar_controller.dart';
@@ -70,7 +71,7 @@ class CustomSidebar extends StatelessWidget {
         width: MediaQuery.of(context).size.width > 600 ? 300 : 260,
       ),
       headerBuilder: (context, extended) => Padding(
-        padding: const EdgeInsets.only(top: 30.0),
+        padding: const EdgeInsets.only(top: 30.0, bottom: 15.0),
         child: _buildUserHeader(controller, extended),
       ),
       items: [
@@ -129,51 +130,54 @@ class CustomSidebar extends StatelessWidget {
   }
 
   Widget _buildUserAvatar(SidebarController controller, bool extended) {
-    return CircleAvatar(
-      radius: extended ? 30 : 16,
-      backgroundColor: Colors.grey.shade200,
-      child: controller.userPhotoUrl.value.isNotEmpty
-          ? ClipOval(
-              child: Image.network(
-                controller.userPhotoUrl.value,
+    final double radius = extended ? 30 : 16;
+    final double size = extended ? 60 : 32;
+    final double iconSize = extended ? 48 : 24;
+
+    return FutureBuilder<String?>(
+      future: controller.getProfileImageUrl(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircleAvatar(
+            radius: radius,
+            backgroundColor: Colors.grey.shade200,
+            child: const CircularProgressIndicator(),
+          );
+        }
+
+        if (snapshot.hasData && snapshot.data != null) {
+          return CircleAvatar(
+            radius: radius,
+            backgroundColor: Colors.grey.shade200,
+            child: ClipOval(
+              child: CachedNetworkImage(
+                imageUrl: snapshot.data!,
                 fit: BoxFit.cover,
-                width: extended ? 60 : 32,
-                height: extended ? 60 : 32,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) {
-                    return child;
-                  }
-                  return FutureBuilder<void>(
-                    future: Future.delayed(const Duration(milliseconds: 300)),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.blue,
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                : null,
-                          ),
-                        );
-                      }
-                      return child;
-                    },
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    child: Icon(
-                      Icons.person,
-                      color: Colors.white,
-                      size: extended ? 48 : 24,
-                    ),
-                  );
-                },
+                width: size,
+                height: size,
+                placeholder: (context, url) => const CircularProgressIndicator(
+                  strokeWidth: 2.0,
+                ),
+                errorWidget: (context, url, error) => Icon(
+                  Icons.person,
+                  size: iconSize,
+                  color: Colors.grey,
+                ),
               ),
-            )
-          : const Icon(Icons.person, size: 24),
+            ),
+          );
+        }
+
+        return CircleAvatar(
+          radius: radius,
+          backgroundColor: Colors.grey.shade200,
+          child: Icon(
+            Icons.person,
+            size: iconSize,
+            color: Colors.grey,
+          ),
+        );
+      },
     );
   }
 

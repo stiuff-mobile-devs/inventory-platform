@@ -3,24 +3,20 @@ import 'package:inventory_platform/features/data/models/generic_list_item_model.
 class InventoryModel {
   final String id;
   final String title;
-  final String description;
-  final String organizationId;
-  final int revisionNumber;
-  final String status;
+  final String? description;
+  final String revisionNumber;
+  final int isActive;
   final DateTime? createdAt;
-  final DateTime? closedAt;
   final DateTime? lastUpdatedAt;
 
   InventoryModel({
     required this.id,
     required this.title,
-    required this.description,
-    required this.organizationId,
+    this.description,
     this.createdAt,
-    this.closedAt,
     DateTime? lastUpdatedAt,
     required this.revisionNumber,
-    required this.status,
+    required this.isActive,
   }) : lastUpdatedAt = lastUpdatedAt ?? DateTime.now();
 
   factory InventoryModel.fromJson(Map<String, dynamic> json) {
@@ -28,41 +24,32 @@ class InventoryModel {
       id: json['id'],
       title: json['title'],
       description: json['description'],
-      organizationId: json['organizationId'],
-      createdAt:
-          json['openedAt'] != null ? DateTime.parse(json['openedAt']) : null,
-      closedAt:
-          json['closedAt'] != null ? DateTime.parse(json['closedAt']) : null,
-      lastUpdatedAt: json['lastUpdatedAt'] != null
-          ? DateTime.parse(json['lastUpdatedAt'])
-          : null,
       revisionNumber: json['revisionNumber'],
-      status: json['status'],
+      isActive: json['isActive'],
+      createdAt: DateTime.parse(json['openedAt']),
+      lastUpdatedAt: DateTime.parse(json['lastUpdatedAt']),
     );
   }
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'title': title,
+        'isActive': isActive,
         'description': description,
-        'organizationId': organizationId,
         'openedAt': createdAt?.toIso8601String(),
-        'closedAt': closedAt?.toIso8601String(),
         'lastUpdatedAt': lastUpdatedAt?.toIso8601String(),
         'revisionNumber': revisionNumber,
-        'status': status,
       };
 
-  static List<GenericListItemModel> turnIntoGenericListItemModel(
+  static List<GenericListItemModel> turnAllIntoGenericListItemModel(
       List<InventoryModel> inList) {
     return inList.map((originalItem) {
       return GenericListItemModel(
         id: originalItem.id,
         upperHeaderField: originalItem.title,
         lowerHeaderField: originalItem.description,
-        status: originalItem.status,
+        isActive: originalItem.isActive,
         initialDate: originalItem.createdAt,
-        finalDate: originalItem.closedAt,
         lastUpdatedAt: originalItem.lastUpdatedAt,
       );
     }).toList();

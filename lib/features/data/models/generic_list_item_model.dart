@@ -1,8 +1,8 @@
 class GenericListItemModel {
   final String? id;
   final String upperHeaderField;
-  final String lowerHeaderField;
-  final String status;
+  final String? lowerHeaderField;
+  final int isActive;
   final DateTime? initialDate;
   final DateTime? finalDate;
   final DateTime? lastUpdatedAt;
@@ -11,9 +11,9 @@ class GenericListItemModel {
     this.id,
     required this.upperHeaderField,
     required this.lowerHeaderField,
-    required this.status,
+    required this.isActive,
     this.initialDate,
     this.finalDate,
-    DateTime? lastUpdatedAt,
-  }) : lastUpdatedAt = lastUpdatedAt ?? DateTime.now();
+    this.lastUpdatedAt,
+  });
 }

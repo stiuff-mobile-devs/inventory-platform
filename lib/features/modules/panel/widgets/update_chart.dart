@@ -29,11 +29,20 @@ class UpdateChartState extends State<UpdateChart> {
       children: [
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Card(
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0)),
-            elevation: 3,
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.75,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.0),
+              boxShadow: const [
+                BoxShadow(
+                  blurRadius: 1.0,
+                  color: Colors.black38,
+                  offset: Offset(1.0, 1.0),
+                  spreadRadius: 0.5,
+                ),
+              ],
+            ),
             child: const Padding(
               padding: EdgeInsets.all(16.0),
               child: Column(
@@ -51,7 +60,7 @@ class UpdateChartState extends State<UpdateChart> {
         Container(
           margin: const EdgeInsets.only(top: 72.0),
           padding: const EdgeInsets.only(
-              left: 8.0, top: 16.0, bottom: 16.0, right: 34.0),
+              left: 8.0, top: 16.0, bottom: 16.0, right: 38.0),
           child: Center(
             child: SizedBox(
               height: 200.0,

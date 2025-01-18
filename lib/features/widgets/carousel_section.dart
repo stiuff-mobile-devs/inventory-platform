@@ -161,13 +161,14 @@ class CarouselSection extends StatelessWidget {
                               fontSize: (isExpanded ?? false) ? 20 : 16,
                             ),
                           ),
-                          Text(
-                            item.description,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: (isExpanded ?? false) ? 16 : 12,
+                          if (item.description != null)
+                            Text(
+                              item.description!,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: (isExpanded ?? false) ? 16 : 12,
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),

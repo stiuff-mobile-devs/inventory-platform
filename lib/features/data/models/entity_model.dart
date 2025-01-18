@@ -1,15 +1,13 @@
 class EntityModel {
   final String id;
-  final String organizationId;
-  final String name;
+  final String title;
   final String type;
   final Map<String, dynamic>? attributes;
   final DateTime? createdAt;
 
   EntityModel({
     required this.id,
-    required this.organizationId,
-    required this.name,
+    required this.title,
     required this.type,
     this.attributes,
     DateTime? createdAt,
@@ -18,21 +16,16 @@ class EntityModel {
   factory EntityModel.fromJson(Map<String, dynamic> json) {
     return EntityModel(
       id: json['id'],
-      organizationId: json['organizationId'],
-      name: json['name'],
+      title: json['name'],
       type: json['type'],
-      attributes: json['attributes'] != null
-          ? Map<String, dynamic>.from(json['attributes'])
-          : null,
-      createdAt:
-          json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
+      attributes: Map<String, dynamic>.from(json['attributes']),
+      createdAt: DateTime.parse(json['createdAt']),
     );
   }
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'organizationId': organizationId,
-        'name': name,
+        'name': title,
         'type': type,
         'attributes': attributes,
         'createdAt': createdAt?.toIso8601String(),

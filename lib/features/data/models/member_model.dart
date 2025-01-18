@@ -3,20 +3,20 @@ import 'package:inventory_platform/features/data/models/generic_list_item_model.
 class MemberModel {
   final String id;
   final String name;
-  final String email;
+  final String? email;
   final String role;
-  final String status;
-  final DateTime createdAt;
-  final List<String> organizations;
+  final int isActive;
+  final DateTime? createdAt;
+  final DateTime? lastUpdatedAt;
 
   MemberModel({
     required this.id,
     required this.name,
-    required this.email,
+    this.email,
     required this.role,
-    required this.status,
-    required this.createdAt,
-    required this.organizations,
+    required this.isActive,
+    this.createdAt,
+    this.lastUpdatedAt,
   });
 
   factory MemberModel.fromJson(Map<String, dynamic> json) {
@@ -25,9 +25,8 @@ class MemberModel {
       name: json['name'],
       email: json['email'],
       role: json['role'],
-      status: json['status'],
+      isActive: json['isActive'],
       createdAt: DateTime.parse(json['createdAt']),
-      organizations: List<String>.from(json['organizations'] ?? []),
     );
   }
 
@@ -35,19 +34,19 @@ class MemberModel {
         'id': id,
         'email': email,
         'role': role,
-        'status': status,
-        'createdAt': createdAt.toIso8601String(),
-        'organizations': organizations,
+        'isActive': isActive,
+        'createdAt': createdAt?.toIso8601String(),
+        'lastUpdatedAt': lastUpdatedAt?.toIso8601String(),
       };
 
-  static List<GenericListItemModel> turnIntoGenericListItemModel(
+  static List<GenericListItemModel> turnAllIntoGenericListItemModel(
       List<MemberModel> inList) {
     return inList.map((originalItem) {
       return GenericListItemModel(
         id: originalItem.email,
         upperHeaderField: originalItem.name,
         lowerHeaderField: originalItem.email,
-        status: originalItem.status,
+        isActive: originalItem.isActive,
         initialDate: originalItem.createdAt,
         finalDate: originalItem.createdAt,
         lastUpdatedAt: originalItem.createdAt,

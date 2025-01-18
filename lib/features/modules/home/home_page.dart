@@ -121,7 +121,7 @@ class HomePage extends StatelessWidget {
             ),
             _buildQuickActionButton(
               icon: Icons.supervised_user_circle,
-              label: 'Participar de Organização',
+              label: 'Participar de uma Organização',
               color: Colors.green,
               onPressed: () {},
             ),

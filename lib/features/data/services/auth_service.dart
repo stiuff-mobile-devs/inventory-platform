@@ -15,6 +15,8 @@ class AuthService {
   final WarningService _warningService = WarningService();
   final ConnectionService _connectionService = ConnectionService();
 
+  String? _cachedProfileImageUrl;
+
   User? get currentUser => _auth.currentUser;
   bool get isUserLoggedIn => _auth.currentUser != null;
 
@@ -29,8 +31,67 @@ class AuthService {
     }
   }
 
-  Future<bool> signInWithGoogle() async {
+  Future<void> retryWithExponentialBackoff(
+      Future<void> Function() action) async {
+    const int maxRetries = 5;
+    int retryCount = 0;
+    int delay = 1000;
+
+    while (retryCount < maxRetries) {
+      try {
+        await action();
+        return;
+      } catch (e) {
+        retryCount++;
+        if (retryCount >= maxRetries) rethrow;
+        await Future.delayed(Duration(milliseconds: delay));
+        delay *= 2;
+      }
+    }
+  }
+
+  Future<String?> getProfileImageUrl() async {
+    if (_cachedProfileImageUrl != null) {
+      return _cachedProfileImageUrl;
+    }
+
     try {
+      final User? user = _auth.currentUser;
+
+      if (user == null) {
+        throw AuthError("Usuário não autenticado.");
+      }
+
+      if (user.photoURL != null && user.photoURL!.isNotEmpty) {
+        _cachedProfileImageUrl = user.photoURL!;
+        return _cachedProfileImageUrl;
+      }
+
+      if (!GetPlatform.isWeb) {
+        final GoogleSignInAccount? googleUser =
+            await _googleSignIn.signInSilently();
+        if (googleUser != null && googleUser.photoUrl != null) {
+          _cachedProfileImageUrl = googleUser.photoUrl;
+          return _cachedProfileImageUrl;
+        }
+      }
+
+      throw AuthWarning("Imagem de perfil não encontrada.");
+    } catch (e) {
+      if (e is AuthError || e is AuthWarning) {
+        _warningService.handleWarning(e as Exception);
+      } else {
+        _errorService
+            .handleError(Exception("Erro ao obter a URL da imagem de perfil."));
+      }
+      return null;
+    }
+  }
+
+  Future<bool> signInWithGoogle() async {
+    bool success = false;
+
+    await retryWithExponentialBackoff(() async {
       final bool hasInternet =
           await _connectionService.checkInternetConnection();
       if (!hasInternet) {
@@ -38,13 +99,10 @@ class AuthService {
       }
 
       if (GetPlatform.isWeb) {
-        // Fluxo de login para a Web
         final GoogleAuthProvider googleProvider = GoogleAuthProvider();
         await _auth.signInWithPopup(googleProvider);
       } else {
-        // Fluxo de login para dispositivos móveis
         final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-
         if (googleUser == null) {
           throw SignInInterruptionWarning();
         }
@@ -60,31 +118,17 @@ class AuthService {
         await _auth.signInWithCredential(credential);
       }
 
-      return true;
-    } catch (e) {
-      if (e is AuthError) {
-        _errorService.handleError(e);
-      } else if (e is AuthWarning) {
-        _warningService.handleWarning(e);
-      } else {
-        _errorService.handleError(Exception('Erro desconhecido.'));
-      }
-      return false;
-    }
+      success = true;
+    });
+
+    return success;
   }
 
   Future<void> signOut() async {
-    try {
+    await retryWithExponentialBackoff(() async {
       await _auth.signOut();
       await _googleSignIn.signOut();
-    } catch (e) {
-      if (e is AuthError) {
-        _errorService.handleError(e);
-      } else if (e is AuthWarning) {
-        _warningService.handleWarning(e);
-      } else {
-        _errorService.handleError(Exception('Erro desconhecido.'));
-      }
-    }
+      _cachedProfileImageUrl = null;
+    });
   }
 }

@@ -24,262 +24,213 @@ class MockService extends GetxController {
         id: '0',
         title: "Laboratórios",
         description: "Descrição do item 1",
-        // imagePath: "https://via.placeholder.com/1920x1080",
         imagePath: "assets/images/Laboratory_1920x1080.jpg",
       ),
       OrganizationModel(
         id: '1',
         title: "Embarcações",
         description: "Descrição do item 2",
-        // imagePath: "https://via.placeholder.com/1920x1080",
         imagePath: "assets/images/Warship_1920x1080.jpg",
       ),
     ]);
-    loadInventories([
+    loadInventoriesInOrganization([
       InventoryModel(
         id: 'inv1',
         title: "Inventário 1",
         description: "Descrição do inventário 1",
-        organizationId: '1',
         createdAt: DateTime.now().subtract(const Duration(days: 30 * 15)),
-        closedAt: null,
         lastUpdatedAt: DateTime.now().subtract(const Duration(days: 1)),
-        revisionNumber: 1,
-        status: "open",
+        revisionNumber: "1.0.0",
+        isActive: 0,
       ),
       InventoryModel(
         id: 'inv2',
         title: "Inventário 2",
         description: "Descrição do inventário 2",
-        organizationId: '1',
         createdAt: DateTime.now().subtract(const Duration(days: 30 * 7)),
-        closedAt: DateTime.now().subtract(const Duration(days: 5)),
         lastUpdatedAt: DateTime.now().subtract(const Duration(days: 5)),
-        revisionNumber: 2,
-        status: "finalized",
+        revisionNumber: "2.0.0",
+        isActive: 1,
       ),
       InventoryModel(
         id: 'inv3',
         title: "Inventário 3",
         description: "Descrição do inventário 3",
-        organizationId: '1',
         createdAt: DateTime.now().subtract(const Duration(days: 30 * 4)),
-        closedAt: null,
         lastUpdatedAt: DateTime.now().subtract(const Duration(days: 2)),
-        revisionNumber: 1,
-        status: "open",
+        revisionNumber: "1.0.0",
+        isActive: 1,
       ),
       InventoryModel(
         id: 'inv4',
         title: "Inventário 4",
         description: "Descrição do inventário 4",
-        organizationId: '1',
         createdAt: DateTime.now().subtract(const Duration(days: 30 * 2)),
-        closedAt: DateTime.now().subtract(const Duration(days: 10)),
         lastUpdatedAt: DateTime.now().subtract(const Duration(days: 10)),
-        revisionNumber: 3,
-        status: "finalized",
+        revisionNumber: "3.0.0",
+        isActive: 0,
       ),
       InventoryModel(
         id: 'inv5',
         title: "Inventário 5",
         description: "Descrição do inventário 5",
-        organizationId: '1',
         createdAt: DateTime.now().subtract(const Duration(days: 30)),
-        closedAt: DateTime.now().subtract(const Duration(days: 10)),
         lastUpdatedAt: DateTime.now().subtract(const Duration(days: 10)),
-        revisionNumber: 2,
-        status: "finalized",
+        revisionNumber: "2.0.0",
+        isActive: 0,
       ),
       InventoryModel(
         id: 'inv6',
         title: "Inventário 6",
         description: "Descrição do inventário 6",
-        organizationId: '1',
         createdAt: DateTime.now().subtract(const Duration(days: 21)),
-        closedAt: DateTime.now().subtract(const Duration(days: 10)),
         lastUpdatedAt: DateTime.now().subtract(const Duration(days: 10)),
-        revisionNumber: 2,
-        status: "finalized",
+        revisionNumber: "2.0.0",
+        isActive: 0,
       ),
       InventoryModel(
         id: 'inv7',
         title: "Inventário 7",
         description: "Descrição do inventário 7",
-        organizationId: '1',
         createdAt: DateTime.now().subtract(const Duration(days: 15)),
-        closedAt: DateTime.now().subtract(const Duration(days: 10)),
         lastUpdatedAt: DateTime.now().subtract(const Duration(days: 10)),
-        revisionNumber: 2,
-        status: "finalized",
+        revisionNumber: "2.0.0",
+        isActive: 0,
       ),
       InventoryModel(
         id: 'inv8',
         title: "Inventário 8",
         description: "Descrição do inventário 8",
-        organizationId: '1',
         createdAt: DateTime.now().subtract(const Duration(days: 6)),
-        closedAt: DateTime.now().subtract(const Duration(days: 10)),
         lastUpdatedAt: DateTime.now().subtract(const Duration(days: 10)),
-        revisionNumber: 2,
-        status: "finalized",
+        revisionNumber: "2.0.0",
+        isActive: 0,
       ),
-    ]);
-    loadDomains([
+    ], '1');
+    loadDomainsInOrganization([
       DomainModel(
         id: 'd1',
         title: "Domínio 1",
         description: "Descrição do domínio 1",
-        organizationId: '0',
-        status: "active",
-        createdAt: DateTime.now().subtract(const Duration(days: 30)),
-        lastUpdatedAt: DateTime.now().subtract(const Duration(days: 1)),
-        categoryId: '1',
+        isActive: 1,
+        createdAt: DateTime.now(),
+        lastUpdatedAt: DateTime.now(),
       ),
       DomainModel(
         id: 'd2',
         title: "Domínio 2",
         description: "Descrição do domínio 2",
-        organizationId: '0',
-        status: "inactive",
-        createdAt: DateTime.now().subtract(const Duration(days: 60)),
-        lastUpdatedAt: DateTime.now().subtract(const Duration(days: 5)),
-        categoryId: '2',
+        isActive: 0,
+        createdAt: DateTime.now(),
+        lastUpdatedAt: DateTime.now(),
       ),
       DomainModel(
         id: 'd3',
         title: "Domínio 3",
         description: "Descrição do domínio 3",
-        organizationId: '1',
-        status: "active",
-        createdAt: DateTime.now().subtract(const Duration(days: 15)),
-        lastUpdatedAt: DateTime.now().subtract(const Duration(days: 2)),
-        categoryId: '3',
+        isActive: 1,
+        createdAt: DateTime.now(),
+        lastUpdatedAt: DateTime.now(),
       ),
       DomainModel(
         id: 'd4',
         title: "Domínio 4",
         description: "Descrição do domínio 4",
-        organizationId: '1',
-        status: "inactive",
-        createdAt: DateTime.now().subtract(const Duration(days: 90)),
-        lastUpdatedAt: DateTime.now().subtract(const Duration(days: 10)),
-        categoryId: '4',
+        isActive: 0,
+        createdAt: DateTime.now(),
+        lastUpdatedAt: DateTime.now(),
       ),
-    ]);
-    loadTags([
+    ], '1');
+    loadTagsInOrganization([
       TagModel(
         id: '30E94591236D2925D9B04F80',
         serial: 'B04F80',
+        isActive: 1,
         lastSeen: DateTime.now().subtract(const Duration(hours: 5)),
         createdAt: DateTime.now().subtract(const Duration(days: 15)),
-        materialId: 'm1',
-        organizationId: '0',
       ),
       TagModel(
         id: '930416F4D73454F3DD758F6F',
         serial: '758F6F',
+        isActive: 1,
         lastSeen: DateTime.now().subtract(const Duration(hours: 3)),
         createdAt: DateTime.now().subtract(const Duration(days: 10)),
-        materialId: 'm2',
-        organizationId: '0',
       ),
       TagModel(
         id: '943603D1D7F0E9A4FC85C512',
         serial: '85C512',
+        isActive: 1,
         lastSeen: DateTime.now().subtract(const Duration(hours: 8)),
         createdAt: DateTime.now().subtract(const Duration(days: 20)),
-        materialId: 'm3',
-        organizationId: '1',
       ),
       TagModel(
         id: 'AB386234890D8EC1F0DEC134',
         serial: 'DEC134',
+        isActive: 1,
         lastSeen: DateTime.now().subtract(const Duration(hours: 1)),
         createdAt: DateTime.now().subtract(const Duration(days: 5)),
-        materialId: 'm4',
-        organizationId: '1',
       ),
-    ]);
-    loadReaders([
+    ], '1');
+    loadReadersInOrganization([
       ReaderModel(
         name: 'Leitor 1',
-        organizationId: '1',
         mac: '00:14:22:01:23:45',
-        status: 'Ativo',
+        isActive: 1,
+        createdAt: DateTime.now().subtract(const Duration(days: 2)),
         lastSeen: DateTime.now().subtract(const Duration(hours: 1)),
       ),
       ReaderModel(
         name: 'Leitor 2',
-        organizationId: '1',
         mac: '00:14:22:01:23:46',
-        status: 'Inativo',
+        isActive: 0,
+        createdAt: DateTime.now().subtract(const Duration(days: 2)),
         lastSeen: DateTime.now().subtract(const Duration(days: 1)),
       ),
       ReaderModel(
         name: 'Leitor 3',
-        organizationId: '1',
         mac: '00:14:22:01:23:47',
-        status: 'Ativo',
+        isActive: 1,
+        createdAt: DateTime.now().subtract(const Duration(days: 2)),
         lastSeen: DateTime.now().subtract(const Duration(hours: 2)),
       ),
       ReaderModel(
         name: 'Leitor 4',
-        organizationId: '1',
         mac: '00:14:22:01:23:48',
-        status: 'Inativo',
+        isActive: 0,
+        createdAt: DateTime.now().subtract(const Duration(days: 2)),
         lastSeen: DateTime.now().subtract(const Duration(days: 3)),
       ),
-    ]);
-    loadOrganizations([
-      // Carregar organizações
-      OrganizationModel(
-        id: '0',
-        title: "Laboratórios",
-        description: "Descrição do item 1",
-        imagePath: "assets/images/Laboratory_1920x1080.jpg",
-      ),
-      OrganizationModel(
-        id: '1',
-        title: "Embarcações",
-        description: "Descrição do item 2",
-        imagePath: "assets/images/Warship_1920x1080.jpg",
-      ),
-    ]);
-    loadMembers([
+    ], '1');
+    loadMembersInOrganization([
       MemberModel(
         id: 'm1',
         name: 'Membro 1',
         email: 'membro1@exemplo.com',
         role: 'Admin',
-        status: 'Ativo',
+        isActive: 1,
         createdAt: DateTime.now(),
-        organizations: ['0', '1'],
       ),
       MemberModel(
         id: 'm2',
         name: 'Membro 2',
         email: 'membro2@exemplo.com',
         role: 'Membro',
-        status: 'Ativo',
+        isActive: 1,
         createdAt: DateTime.now(),
-        organizations: ['1'],
       ),
       MemberModel(
         id: 'm3',
         name: 'Membro 3',
         email: 'membro3@exemplo.com',
         role: 'Admin',
-        status: 'Inativo',
-        createdAt: DateTime.now().subtract(const Duration(days: 5)),
-        organizations: ['0'],
+        isActive: 0,
+        createdAt: DateTime.now(),
       ),
-    ]);
-    loadEntities([
+    ], '1');
+    loadEntitiesInOrganization([
       EntityModel(
         id: '1',
-        organizationId: '1',
-        name: 'Universidade Federal do Rio Grande – FURG',
+        title: 'Universidade Federal do Rio Grande – FURG',
         type: 'Company',
         attributes: {
           'contactName': 'Newton Pereira',
@@ -292,8 +243,7 @@ class MockService extends GetxController {
       ),
       EntityModel(
         id: '2',
-        organizationId: '1',
-        name: 'Global Asbest RP. HZ. LTD',
+        title: 'Global Asbest RP. HZ. LTD',
         type: 'Laboratories',
         attributes: {
           'address':
@@ -303,8 +253,7 @@ class MockService extends GetxController {
       ),
       EntityModel(
         id: '3',
-        organizationId: '1',
-        name: 'CESS - Universidade Federal Fluminense',
+        title: 'CESS - Universidade Federal Fluminense',
         type: 'Laboratories',
         attributes: {
           'address':
@@ -314,8 +263,7 @@ class MockService extends GetxController {
       ),
       EntityModel(
         id: '4',
-        organizationId: '1',
-        name: 'BV Solutions Marine & Offshore',
+        title: 'BV Solutions Marine & Offshore',
         type: 'IHM Companies',
         attributes: {
           'surveyor': 'Rio de Janeiro',
@@ -326,8 +274,7 @@ class MockService extends GetxController {
       ),
       EntityModel(
         id: '5',
-        organizationId: '1',
-        name: 'Centro de Estudos Sistemas Sustentáveis (UFF)',
+        title: 'Centro de Estudos Sistemas Sustentáveis (UFF)',
         type: 'IHM Companies',
         attributes: {
           'surveyor': 'Rio de Janeiro',
@@ -336,98 +283,88 @@ class MockService extends GetxController {
         },
         createdAt: DateTime.parse('2024-11-05T04:57:11'),
       ),
-    ]);
-  }
-
-  void addOrganization(OrganizationModel item) {
-    organizationsList.add(item);
+    ], '1');
   }
 
   void loadOrganizations(List<OrganizationModel> items) {
     organizationsList.value = items;
   }
 
-  void addInventory(InventoryModel item) {
-    inventoriesList.add(item);
+  void loadInventoriesInOrganization(List<InventoryModel> items, String orgId) {
+    OrganizationModel? organization = organizationsList
+        .firstWhereOrNull((organization) => organization.id == orgId);
+    if (organization == null) return;
+    organization.inventories = items;
   }
 
-  void loadInventories(List<InventoryModel> items) {
-    inventoriesList.value = items;
+  void loadDomainsInOrganization(List<DomainModel> items, String orgId) {
+    OrganizationModel? organization = organizationsList
+        .firstWhereOrNull((organization) => organization.id == orgId);
+    if (organization == null) return;
+    organization.domains = items;
   }
 
-  void addDomain(DomainModel item) {
-    domainsList.add(item);
+  void loadTagsInOrganization(List<TagModel> items, String orgId) {
+    OrganizationModel? organization = organizationsList
+        .firstWhereOrNull((organization) => organization.id == orgId);
+    if (organization == null) return;
+    organization.tags = items;
   }
 
-  void loadDomains(List<DomainModel> items) {
-    domainsList.value = items;
+  void loadReadersInOrganization(List<ReaderModel> items, String orgId) {
+    OrganizationModel? organization = organizationsList
+        .firstWhereOrNull((organization) => organization.id == orgId);
+    if (organization == null) return;
+    organization.readers = items;
   }
 
-  void addTag(TagModel item) {
-    tagsList.add(item);
+  void loadMembersInOrganization(List<MemberModel> items, String orgId) {
+    OrganizationModel? organization = organizationsList
+        .firstWhereOrNull((organization) => organization.id == orgId);
+    if (organization == null) return;
+    organization.members = items;
   }
 
-  void loadTags(List<TagModel> items) {
-    tagsList.value = items;
-  }
-
-  void addReader(ReaderModel item) {
-    readersList.add(item);
-  }
-
-  void loadReaders(List<ReaderModel> items) {
-    readersList.value = items;
-  }
-
-  void addMember(MemberModel member) {
-    membersList.add(member);
-  }
-
-  void loadMembers(List<MemberModel> members) {
-    membersList.value = members;
-  }
-
-  void addEntity(EntityModel entity) {
-    entitiesList.add(entity);
-  }
-
-  void loadEntities(List<EntityModel> entities) {
-    entitiesList.value = entities;
+  void loadEntitiesInOrganization(List<EntityModel> items, String orgId) {
+    OrganizationModel? organization = organizationsList
+        .firstWhereOrNull((organization) => organization.id == orgId);
+    if (organization == null) return;
+    organization.entities = items;
   }
 
   List<InventoryModel> getInventoriesForOrganization(String organizationId) {
-    return inventoriesList
-        .where((inventory) => inventory.organizationId == organizationId)
-        .toList();
+    OrganizationModel organization = organizationsList
+        .firstWhere((organization) => organization.id == organizationId);
+    return organization.inventories!.toList();
   }
 
   List<DomainModel> getDomainsForOrganization(String organizationId) {
-    return domainsList
-        .where((domain) => domain.organizationId == organizationId)
-        .toList();
+    OrganizationModel organization = organizationsList
+        .firstWhere((organization) => organization.id == organizationId);
+    return organization.domains!.toList();
   }
 
   List<TagModel> getTagsForOrganization(String organizationId) {
-    return tagsList
-        .where((tag) => tag.organizationId == organizationId)
-        .toList();
+    OrganizationModel organization = organizationsList
+        .firstWhere((organization) => organization.id == organizationId);
+    return organization.tags!.toList();
   }
 
   List<ReaderModel> getReadersForOrganization(String organizationId) {
-    return readersList
-        .where((reader) => reader.organizationId == organizationId)
-        .toList();
+    OrganizationModel organization = organizationsList
+        .firstWhere((organization) => organization.id == organizationId);
+    return organization.readers!.toList();
   }
 
   List<MemberModel> getMembersForOrganization(String organizationId) {
-    return membersList
-        .where((member) => member.organizations.contains(organizationId))
-        .toList();
+    OrganizationModel organization = organizationsList
+        .firstWhere((organization) => organization.id == organizationId);
+    return organization.members!.toList();
   }
 
   List<EntityModel> getEntitiesForOrganization(String organizationId) {
-    return entitiesList
-        .where((entity) => entity.organizationId == organizationId)
-        .toList();
+    OrganizationModel organization = organizationsList
+        .firstWhere((organization) => organization.id == organizationId);
+    return organization.entities!.toList();
   }
 }

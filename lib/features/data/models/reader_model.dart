@@ -2,47 +2,46 @@ import 'package:inventory_platform/features/data/models/generic_list_item_model.
 
 class ReaderModel {
   final String name;
-  final String organizationId;
-
   final String mac;
-  final String status;
-  final DateTime lastSeen;
+  final int isActive;
+  final DateTime? createdAt;
+  final DateTime? lastSeen;
 
   ReaderModel({
     required this.name,
-    required this.organizationId,
     required this.mac,
-    required this.status,
-    required this.lastSeen,
+    required this.isActive,
+    this.createdAt,
+    this.lastSeen,
   });
 
   factory ReaderModel.fromJson(Map<String, dynamic> json) {
     return ReaderModel(
       name: json['name'],
-      organizationId: json['organizationId'],
       mac: json['mac'],
-      status: json['status'],
+      isActive: json['isActive'],
+      createdAt: DateTime.parse(json['createdAt']),
       lastSeen: DateTime.parse(json['lastSeen']),
     );
   }
 
   Map<String, dynamic> toJson() => {
         'name': name,
-        'organizationId': organizationId,
         'mac': mac,
-        'status': status,
-        'lastSeen': lastSeen.toIso8601String(),
+        'isActive': isActive,
+        'createdAt': createdAt?.toIso8601String(),
+        'lastSeen': lastSeen?.toIso8601String(),
       };
 
-  static List<GenericListItemModel> turnIntoGenericListItemModel(
+  static List<GenericListItemModel> turnAllIntoGenericListItemModel(
       List<ReaderModel> inList) {
     return inList.map((originalItem) {
       return GenericListItemModel(
         id: originalItem.mac,
         upperHeaderField: originalItem.name,
         lowerHeaderField: originalItem.mac,
-        status: originalItem.status,
-        initialDate: originalItem.lastSeen,
+        isActive: originalItem.isActive,
+        initialDate: originalItem.createdAt,
         finalDate: originalItem.lastSeen,
         lastUpdatedAt: originalItem.lastSeen,
       );
