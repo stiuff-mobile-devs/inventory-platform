@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:inventory_platform/core/enums/tab_type_enum.dart';
 import 'package:inventory_platform/core/services/mock_service.dart';
 import 'package:inventory_platform/data/models/domain_model.dart';
 import 'package:inventory_platform/data/models/generic_list_item_model.dart';
@@ -62,35 +63,35 @@ class _PanelPageState extends State<PanelPage> {
       _tabs = [
         const DashboardTab(),
         GenericListTab(
-          tabName: 'Inventários',
+          tabType: TabType.inventories,
           items: inventories,
           searchParameters: 'Título ou Id',
           firstDetailFieldName: 'Criado em',
           secondDetailFieldName: 'Última atualização em',
         ),
         GenericListTab(
-          tabName: 'Domínios',
+          tabType: TabType.domains,
           items: domains,
           searchParameters: 'Título ou Id',
           firstDetailFieldName: 'Criado em',
           secondDetailFieldName: 'Última atualização em',
         ),
         GenericListTab(
-          tabName: 'Tags',
+          tabType: TabType.tags,
           items: tags,
           searchParameters: 'Serial ou Id',
           firstDetailFieldName: 'Criado em',
           secondDetailFieldName: 'Visto pela última vez em',
         ),
         GenericListTab(
-          tabName: 'Leitores',
+          tabType: TabType.readers,
           items: readers,
           searchParameters: 'Nome ou MAC',
           firstDetailFieldName: 'Criado em',
           secondDetailFieldName: 'Visto pela última vez em',
         ),
         GenericListTab(
-          tabName: 'Membros',
+          tabType: TabType.members,
           items: members,
           searchParameters: 'Nome ou Email',
           firstDetailFieldName: 'Criado em',

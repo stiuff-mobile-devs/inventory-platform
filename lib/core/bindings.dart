@@ -5,7 +5,7 @@ import 'package:inventory_platform/core/services/auth_service.dart';
 import 'package:inventory_platform/core/services/connection_service.dart';
 import 'package:inventory_platform/core/services/error_service.dart';
 import 'package:inventory_platform/core/services/warning_service.dart';
-import 'package:inventory_platform/data/providers/retry_provider.dart';
+import 'package:inventory_platform/data/providers/utils_provider.dart';
 import 'package:inventory_platform/features/common/controllers/connection_controller.dart';
 import 'package:inventory_platform/features/common/controllers/sidebar_controller.dart';
 import 'package:inventory_platform/core/services/mock_service.dart';
@@ -21,7 +21,7 @@ class CoreBindings extends Bindings {
     Get.put<ErrorService>(ErrorService());
     Get.put<WarningService>(WarningService());
 
-    Get.put<RetryProvider>(RetryProvider());
+    Get.put<UtilsProvider>(UtilsProvider());
 
     Get.put<AuthService>(AuthService(
       firebaseAuth: firebaseAuth,
@@ -29,7 +29,7 @@ class CoreBindings extends Bindings {
       errorService: Get.find<ErrorService>(),
       warningService: Get.find<WarningService>(),
       connectionService: Get.find<ConnectionService>(),
-      retryProvider: Get.find<RetryProvider>(),
+      utilsProvider: Get.find<UtilsProvider>(),
     ));
 
     Get.put<ConnectionController>(ConnectionController());

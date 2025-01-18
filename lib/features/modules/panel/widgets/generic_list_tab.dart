@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:inventory_platform/core/enums/tab_type_enum.dart';
 import 'package:inventory_platform/data/models/generic_list_item_model.dart';
 import 'package:inventory_platform/data/models/organization_model.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/generic_list_header.dart';
@@ -13,7 +14,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 class GenericListTab extends StatefulWidget {
   final List<GenericListItemModel> items;
-  final String tabName;
+  final TabType tabType;
   final String? searchParameters;
   final String? firstDetailFieldName;
   final String? secondDetailFieldName;
@@ -23,7 +24,7 @@ class GenericListTab extends StatefulWidget {
     this.searchParameters,
     this.firstDetailFieldName,
     this.secondDetailFieldName,
-    required this.tabName,
+    required this.tabType,
     required this.items,
   });
 
@@ -61,7 +62,7 @@ class _GenericListTabState extends State<GenericListTab> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GenericListHeader(
-            tabName: widget.tabName,
+            tabType: widget.tabType,
             itemCount: _allItemsList.length,
             organizationName: _organization.title,
           ),

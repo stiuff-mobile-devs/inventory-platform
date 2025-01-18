@@ -13,18 +13,27 @@ class MockService extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    addSampleOrganization();
+    addSampleOrganizations();
     loadOrganizationData('1');
   }
 
-  void addSampleOrganization() {
-    var organization = OrganizationModel(
-      id: '1',
-      title: "Embarcações",
-      description: 'Uma organização de exemplo com dados fictícios.',
-      imagePath: "assets/images/Warship_1920x1080.jpg",
+  void addSampleOrganizations() {
+    organizationsList.addAll(
+      [
+        OrganizationModel(
+          id: '2',
+          title: "Laboratórios",
+          description: 'Uma organização para testes inicialmente vazia.',
+          imagePath: "assets/images/Laboratory_1920x1080.jpg",
+        ),
+        OrganizationModel(
+          id: '1',
+          title: "Embarcações",
+          description: 'Uma organização de exemplo com dados fictícios.',
+          imagePath: "assets/images/Warship_1920x1080.jpg",
+        ),
+      ],
     );
-    organizationsList.add(organization);
   }
 
   void loadOrganizationData(String orgId) {

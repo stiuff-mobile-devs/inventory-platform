@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/platform/platform.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:inventory_platform/data/providers/retry_provider.dart';
+import 'package:inventory_platform/data/providers/utils_provider.dart';
 
 import 'error_service.dart';
 import 'connection_service.dart';
@@ -17,7 +17,7 @@ class AuthService {
   final WarningService _warningService;
   final ConnectionService _connectionService;
 
-  final RetryProvider _retryProvider;
+  final UtilsProvider _utilsProvider;
 
   String? _cachedProfileImageUrl;
 
@@ -30,13 +30,13 @@ class AuthService {
     required ErrorService errorService,
     required WarningService warningService,
     required ConnectionService connectionService,
-    required RetryProvider retryProvider,
+    required UtilsProvider utilsProvider,
   })  : _auth = firebaseAuth,
         _googleSignIn = googleSignIn,
         _errorService = errorService,
         _warningService = warningService,
         _connectionService = connectionService,
-        _retryProvider = retryProvider {
+        _utilsProvider = utilsProvider {
     _initializePersistence();
   }
 
@@ -82,7 +82,7 @@ class AuthService {
   Future<bool> signInWithGoogle() async {
     bool success = false;
 
-    await _retryProvider.retryWithExponentialBackoff(() async {
+    await _utilsProvider.retryWithExponentialBackoff(() async {
       final hasInternet = await _connectionService.checkInternetConnection();
       if (!hasInternet) throw NetworkError();
 
@@ -111,7 +111,7 @@ class AuthService {
   }
 
   Future<void> signOut() async {
-    await _retryProvider.retryWithExponentialBackoff(() async {
+    await _utilsProvider.retryWithExponentialBackoff(() async {
       await _auth.signOut();
       if (!GetPlatform.isWeb) await _googleSignIn.signOut();
       _cachedProfileImageUrl = null;
