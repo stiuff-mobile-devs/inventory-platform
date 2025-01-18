@@ -42,7 +42,6 @@ class ReaderModel {
         lowerHeaderField: originalItem.mac,
         isActive: originalItem.isActive,
         initialDate: originalItem.createdAt,
-        finalDate: originalItem.lastSeen,
         lastUpdatedAt: originalItem.lastSeen,
       );
     }).toList();

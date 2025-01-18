@@ -9,12 +9,6 @@ import 'package:inventory_platform/features/data/models/tag_model.dart';
 
 class MockService extends GetxController {
   var organizationsList = <OrganizationModel>[].obs;
-  var inventoriesList = <InventoryModel>[].obs;
-  var domainsList = <DomainModel>[].obs;
-  var tagsList = <TagModel>[].obs;
-  var readersList = <ReaderModel>[].obs;
-  var membersList = <MemberModel>[].obs;
-  var entitiesList = <EntityModel>[].obs;
 
   @override
   void onInit() {
@@ -333,38 +327,44 @@ class MockService extends GetxController {
   }
 
   List<InventoryModel> getInventoriesForOrganization(String organizationId) {
-    OrganizationModel organization = organizationsList
-        .firstWhere((organization) => organization.id == organizationId);
-    return organization.inventories!.toList();
+    OrganizationModel? organization = organizationsList
+        .firstWhereOrNull((organization) => organization.id == organizationId);
+    if (organization == null) [];
+    return organization!.inventories!.toList();
   }
 
   List<DomainModel> getDomainsForOrganization(String organizationId) {
-    OrganizationModel organization = organizationsList
-        .firstWhere((organization) => organization.id == organizationId);
-    return organization.domains!.toList();
+    OrganizationModel? organization = organizationsList
+        .firstWhereOrNull((organization) => organization.id == organizationId);
+    if (organization == null) [];
+    return organization!.domains!.toList();
   }
 
   List<TagModel> getTagsForOrganization(String organizationId) {
-    OrganizationModel organization = organizationsList
-        .firstWhere((organization) => organization.id == organizationId);
-    return organization.tags!.toList();
+    OrganizationModel? organization = organizationsList
+        .firstWhereOrNull((organization) => organization.id == organizationId);
+    if (organization == null) [];
+    return organization!.tags!.toList();
   }
 
   List<ReaderModel> getReadersForOrganization(String organizationId) {
-    OrganizationModel organization = organizationsList
-        .firstWhere((organization) => organization.id == organizationId);
-    return organization.readers!.toList();
+    OrganizationModel? organization = organizationsList
+        .firstWhereOrNull((organization) => organization.id == organizationId);
+    if (organization == null) [];
+    return organization!.readers!.toList();
   }
 
   List<MemberModel> getMembersForOrganization(String organizationId) {
-    OrganizationModel organization = organizationsList
-        .firstWhere((organization) => organization.id == organizationId);
-    return organization.members!.toList();
+    OrganizationModel? organization = organizationsList
+        .firstWhereOrNull((organization) => organization.id == organizationId);
+    if (organization == null) [];
+    return organization!.members!.toList();
   }
 
   List<EntityModel> getEntitiesForOrganization(String organizationId) {
-    OrganizationModel organization = organizationsList
-        .firstWhere((organization) => organization.id == organizationId);
-    return organization.entities!.toList();
+    OrganizationModel? organization = organizationsList
+        .firstWhereOrNull((organization) => organization.id == organizationId);
+    if (organization == null) [];
+    return organization!.entities!.toList();
   }
 }

@@ -173,18 +173,22 @@ class ScrollableBottomNavigationBarState
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              color: isSelected ? Colors.white : Colors.grey.shade300,
-              size: isSelected ? 28 : 24,
+            Flexible(
+              child: Icon(
+                icon,
+                color: isSelected ? Colors.white : Colors.grey.shade300,
+                size: isSelected ? 28 : 24,
+              ),
             ),
             if (isSelected)
-              Text(
-                label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
+              Flexible(
+                child: Text(
+                  label,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
           ],

@@ -7,7 +7,7 @@ class MemberModel {
   final String role;
   final int isActive;
   final DateTime? createdAt;
-  final DateTime? lastUpdatedAt;
+  final DateTime? lastSeen;
 
   MemberModel({
     required this.id,
@@ -16,7 +16,7 @@ class MemberModel {
     required this.role,
     required this.isActive,
     this.createdAt,
-    this.lastUpdatedAt,
+    this.lastSeen,
   });
 
   factory MemberModel.fromJson(Map<String, dynamic> json) {
@@ -36,7 +36,7 @@ class MemberModel {
         'role': role,
         'isActive': isActive,
         'createdAt': createdAt?.toIso8601String(),
-        'lastUpdatedAt': lastUpdatedAt?.toIso8601String(),
+        'lastSeen': lastSeen?.toIso8601String(),
       };
 
   static List<GenericListItemModel> turnAllIntoGenericListItemModel(
@@ -48,7 +48,6 @@ class MemberModel {
         lowerHeaderField: originalItem.email,
         isActive: originalItem.isActive,
         initialDate: originalItem.createdAt,
-        finalDate: originalItem.createdAt,
         lastUpdatedAt: originalItem.createdAt,
       );
     }).toList();
