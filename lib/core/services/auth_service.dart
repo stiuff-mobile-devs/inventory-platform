@@ -1,51 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get_utils/src/platform/platform.dart';
+import 'package:inventory_platform/core/services/connection_service.dart';
+import 'package:inventory_platform/core/utils/auth/auth_error.dart';
+import 'package:inventory_platform/core/utils/auth/auth_warning.dart';
+import 'package:inventory_platform/core/services/error_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:inventory_platform/core/services/utils_service.dart';
-import 'package:inventory_platform/data/models/user_model.dart';
-import 'package:inventory_platform/data/repositories/user_repository.dart';
-
-import 'error_service.dart';
-import 'connection_service.dart';
-import 'warning_service.dart';
-import '../utils/auth/auth_error.dart';
-import '../utils/auth/auth_warning.dart';
+import 'package:inventory_platform/core/services/warning_service.dart';
 
 class AuthService {
-  final FirebaseAuth _auth;
-  final GoogleSignIn _googleSignIn;
-  final ErrorService _errorService;
-  final WarningService _warningService;
-  final ConnectionService _connectionService;
-
-  final UserRepository _userRepository;
-
-  final UtilsService _utilsService;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final ErrorService _errorService = ErrorService();
+  final WarningService _warningService = WarningService();
+  final ConnectionService _connectionService = ConnectionService();
 
   String? _cachedProfileImageUrl;
 
   User? get currentUser => _auth.currentUser;
   bool get isUserLoggedIn => _auth.currentUser != null;
 
-  AuthService({
-    required FirebaseAuth firebaseAuth,
-    required GoogleSignIn googleSignIn,
-    required ErrorService errorService,
-    required WarningService warningService,
-    required ConnectionService connectionService,
-    required UserRepository userRepository,
-  })  : _auth = firebaseAuth,
-        _googleSignIn = googleSignIn,
-        _errorService = errorService,
-        _warningService = warningService,
-        _connectionService = connectionService,
-        _userRepository = userRepository,
-        _utilsService = UtilsService() {
-    _initializePersistence();
-  }
-
-  void _initializePersistence() {
+  AuthService() {
     try {
       if (GetPlatform.isWeb) {
         _auth.setPersistence(Persistence.LOCAL);
@@ -57,29 +32,39 @@ class AuthService {
   }
 
   Future<String?> getProfileImageUrl() async {
-    if (_cachedProfileImageUrl != null) return _cachedProfileImageUrl;
+    if (_cachedProfileImageUrl != null) {
+      return _cachedProfileImageUrl;
+    }
 
     try {
-      final User? user = currentUser;
+      final User? user = _auth.currentUser;
 
-      if (user == null) throw AuthError("Usuário não autenticado.");
+      if (user == null) {
+        throw AuthError("Usuário não autenticado.");
+      }
+
       if (user.photoURL != null && user.photoURL!.isNotEmpty) {
-        _cachedProfileImageUrl = user.photoURL;
+        _cachedProfileImageUrl = user.photoURL!;
         return _cachedProfileImageUrl;
       }
 
       if (!GetPlatform.isWeb) {
         final GoogleSignInAccount? googleUser =
             await _googleSignIn.signInSilently();
-        if (googleUser?.photoUrl != null) {
-          _cachedProfileImageUrl = googleUser!.photoUrl;
+        if (googleUser != null && googleUser.photoUrl != null) {
+          _cachedProfileImageUrl = googleUser.photoUrl;
           return _cachedProfileImageUrl;
         }
       }
 
       throw AuthWarning("Imagem de perfil não encontrada.");
     } catch (e) {
-      _handleErrorOrWarning(e, "Erro ao obter a URL da imagem de perfil.");
+      if (e is AuthError || e is AuthWarning) {
+        _warningService.handleWarning(e as Exception);
+      } else {
+        _errorService
+            .handleError(Exception("Erro ao obter a URL da imagem de perfil."));
+      }
       return null;
     }
   }
@@ -87,63 +72,39 @@ class AuthService {
   Future<bool> signInWithGoogle() async {
     bool success = false;
 
-    await _utilsService.retryWithExponentialBackoff(() async {
-      final hasInternet = await _connectionService.checkInternetConnection();
-      if (!hasInternet) throw NetworkError();
+    final bool hasInternet = await _connectionService.checkInternetConnection();
+    if (!hasInternet) {
+      throw NetworkError();
+    }
 
-      if (GetPlatform.isWeb) {
-        final GoogleAuthProvider googleProvider = GoogleAuthProvider();
-        await _auth.signInWithPopup(googleProvider);
-      } else {
-        final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-        if (googleUser == null) throw SignInInterruptionWarning();
-
-        final GoogleSignInAuthentication googleAuth =
-            await googleUser.authentication;
-
-        final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
-
-        await _auth.signInWithCredential(credential);
+    if (GetPlatform.isWeb) {
+      final GoogleAuthProvider googleProvider = GoogleAuthProvider();
+      await _auth.signInWithPopup(googleProvider);
+    } else {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        throw SignInInterruptionWarning();
       }
 
-      success = true;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
-      if (success) {
-        final user = _auth.currentUser;
-        if (user != null) {
-          final existingUser = _userRepository.getUserById(user.uid);
-          if (existingUser == null) {
-            final userModel = UserModel(
-              id: user.uid,
-              name: user.displayName ?? 'Unknown',
-              email: user.email ?? 'Unknown',
-              profileImageUrl: user.photoURL,
-            );
-            _userRepository.addUser(userModel);
-          }
-        }
-      }
-    });
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      await _auth.signInWithCredential(credential);
+    }
+
+    success = true;
 
     return success;
   }
 
   Future<void> signOut() async {
-    await _utilsService.retryWithExponentialBackoff(() async {
-      await _auth.signOut();
-      if (!GetPlatform.isWeb) await _googleSignIn.signOut();
-      _cachedProfileImageUrl = null;
-    });
-  }
-
-  void _handleErrorOrWarning(dynamic e, String defaultErrorMessage) {
-    if (e is AuthWarning) {
-      _warningService.handleWarning(e as Exception);
-    } else if (e is AuthError) {
-      _errorService.handleError(Exception(defaultErrorMessage));
-    }
+    await _auth.signOut();
+    await _googleSignIn.signOut();
+    _cachedProfileImageUrl = null;
   }
 }

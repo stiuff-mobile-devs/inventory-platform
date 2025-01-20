@@ -1,6 +1,4 @@
 import 'package:get/get.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:inventory_platform/core/services/auth_service.dart';
 import 'package:inventory_platform/core/services/connection_service.dart';
 import 'package:inventory_platform/core/services/error_service.dart';
@@ -21,9 +19,6 @@ import 'package:inventory_platform/core/services/mock_service.dart';
 class CoreBindings extends Bindings {
   @override
   void dependencies() {
-    final firebaseAuth = FirebaseAuth.instance;
-    final googleSignIn = GoogleSignIn();
-
     Get.put<ConnectionService>(ConnectionService());
     Get.put<ErrorService>(ErrorService());
     Get.put<WarningService>(WarningService());
@@ -39,14 +34,7 @@ class CoreBindings extends Bindings {
 
     Get.put<OrganizationRepository>(OrganizationRepository());
 
-    Get.put<AuthService>(AuthService(
-      firebaseAuth: firebaseAuth,
-      googleSignIn: googleSignIn,
-      errorService: Get.find<ErrorService>(),
-      warningService: Get.find<WarningService>(),
-      connectionService: Get.find<ConnectionService>(),
-      userRepository: Get.find<UserRepository>(),
-    ));
+    Get.put<AuthService>(AuthService());
 
     Get.put<ConnectionController>(ConnectionController());
     Get.put<SidebarController>(SidebarController());
