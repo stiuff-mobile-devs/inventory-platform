@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/enums/tab_type_enum.dart';
-import 'package:inventory_platform/data/providers/utils_provider.dart';
+import 'package:inventory_platform/core/services/utils_service.dart';
 import 'package:inventory_platform/routes/routes.dart';
 
 class GenericListHeader extends StatelessWidget {
   final TabType tabType;
   final int itemCount;
   final String organizationName;
-  final UtilsProvider _utilsProvider;
+  final UtilsService _utilsService;
 
   GenericListHeader({
     super.key,
     required this.tabType,
     required this.itemCount,
     required this.organizationName,
-  }) : _utilsProvider = Get.find<UtilsProvider>();
+  }) : _utilsService = UtilsService();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class GenericListHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                _utilsProvider.tabName(tabType),
+                _utilsService.tabName(tabType),
                 style: const TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
@@ -89,7 +89,7 @@ class GenericListHeader extends StatelessWidget {
                   );
                 },
                 label: Text(
-                    'Adicionar ${_utilsProvider.tabNameToSingular(tabType)}'),
+                    'Adicionar ${_utilsService.tabNameToSingular(tabType)}'),
                 icon: const Icon(Icons.add),
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.blue,

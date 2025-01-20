@@ -14,4 +14,11 @@ class GenericListItemModel {
     this.initialDate,
     this.lastUpdatedAt,
   });
+
+  String? get getId => id;
+  String get getUpperHeaderField => upperHeaderField;
+  String? get getLowerHeaderField => lowerHeaderField;
+  int get getIsActive => isActive;
+  DateTime? get getInitialDate => initialDate;
+  DateTime? get getLastUpdatedAt => lastUpdatedAt;
 }

@@ -2,21 +2,40 @@ import 'package:inventory_platform/data/models/generic_list_item_model.dart';
 import 'package:inventory_platform/data/models/user_model.dart';
 
 class MemberModel {
-  final String id;
-  final UserModel user;
-  final String role;
-  final int isActive;
-  final DateTime? createdAt;
-  final DateTime? lastSeen;
+  String _id;
+  UserModel _user;
+  String _role;
+  int _isActive;
+  DateTime? _createdAt;
+  DateTime? _lastSeen;
 
   MemberModel({
-    required this.id,
-    required this.user,
-    required this.role,
-    required this.isActive,
-    this.createdAt,
-    this.lastSeen,
-  });
+    required String id,
+    required UserModel user,
+    required String role,
+    required int isActive,
+    DateTime? createdAt,
+    DateTime? lastSeen,
+  })  : _id = id,
+        _user = user,
+        _role = role,
+        _isActive = isActive,
+        _createdAt = createdAt,
+        _lastSeen = lastSeen;
+
+  String get id => _id;
+  UserModel get user => _user;
+  String get role => _role;
+  int get isActive => _isActive;
+  DateTime? get createdAt => _createdAt;
+  DateTime? get lastSeen => _lastSeen;
+
+  set id(String id) => _id = id;
+  set user(UserModel user) => _user = user;
+  set role(String role) => _role = role;
+  set isActive(int isActive) => _isActive = isActive;
+  set createdAt(DateTime? createdAt) => _createdAt = createdAt;
+  set lastSeen(DateTime? lastSeen) => _lastSeen = lastSeen;
 
   factory MemberModel.fromJson(Map<String, dynamic> json) {
     return MemberModel(
@@ -31,12 +50,12 @@ class MemberModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'user': user.toJson(),
-        'role': role,
-        'isActive': isActive,
-        'createdAt': createdAt?.toIso8601String(),
-        'lastSeen': lastSeen?.toIso8601String(),
+        'id': _id,
+        'user': _user.toJson(),
+        'role': _role,
+        'isActive': _isActive,
+        'createdAt': _createdAt?.toIso8601String(),
+        'lastSeen': _lastSeen?.toIso8601String(),
       };
 
   static List<GenericListItemModel> turnAllIntoGenericListItemModel(

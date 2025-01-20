@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:inventory_platform/data/providers/utils_provider.dart';
+import 'package:inventory_platform/core/services/utils_service.dart';
 import 'package:inventory_platform/data/models/user_model.dart';
 import 'package:inventory_platform/data/repositories/user_repository.dart';
 
@@ -19,9 +19,9 @@ class AuthService {
   final WarningService _warningService;
   final ConnectionService _connectionService;
 
-  final UtilsProvider _utilsProvider;
+  final UserRepository _userRepository;
 
-  final UserRepository _userRepository = Get.find<UserRepository>();
+  final UtilsService _utilsService;
 
   String? _cachedProfileImageUrl;
 
@@ -34,13 +34,14 @@ class AuthService {
     required ErrorService errorService,
     required WarningService warningService,
     required ConnectionService connectionService,
-    required UtilsProvider utilsProvider,
+    required UserRepository userRepository,
   })  : _auth = firebaseAuth,
         _googleSignIn = googleSignIn,
         _errorService = errorService,
         _warningService = warningService,
         _connectionService = connectionService,
-        _utilsProvider = utilsProvider {
+        _userRepository = userRepository,
+        _utilsService = UtilsService() {
     _initializePersistence();
   }
 
@@ -86,7 +87,7 @@ class AuthService {
   Future<bool> signInWithGoogle() async {
     bool success = false;
 
-    await _utilsProvider.retryWithExponentialBackoff(() async {
+    await _utilsService.retryWithExponentialBackoff(() async {
       final hasInternet = await _connectionService.checkInternetConnection();
       if (!hasInternet) throw NetworkError();
 
@@ -131,7 +132,7 @@ class AuthService {
   }
 
   Future<void> signOut() async {
-    await _utilsProvider.retryWithExponentialBackoff(() async {
+    await _utilsService.retryWithExponentialBackoff(() async {
       await _auth.signOut();
       if (!GetPlatform.isWeb) await _googleSignIn.signOut();
       _cachedProfileImageUrl = null;

@@ -7,9 +7,14 @@ import 'package:inventory_platform/data/models/organization_model.dart';
 import 'package:inventory_platform/data/models/reader_model.dart';
 import 'package:inventory_platform/data/models/tag_model.dart';
 import 'package:inventory_platform/data/models/user_model.dart';
+import 'package:inventory_platform/data/repositories/organization_repository.dart';
 
 class MockService extends GetxController {
-  var organizationsList = <OrganizationModel>[].obs;
+  final OrganizationRepository organizationRepository;
+
+  MockService({
+    required this.organizationRepository,
+  });
 
   @override
   void onInit() {
@@ -19,7 +24,7 @@ class MockService extends GetxController {
   }
 
   void addSampleOrganizations() {
-    organizationsList.addAll(
+    organizationRepository.addAllOrganizations(
       [
         OrganizationModel(
           id: '2',
@@ -38,12 +43,17 @@ class MockService extends GetxController {
   }
 
   void loadOrganizationData(String orgId) {
-    loadData<InventoryModel>(orgId, loadInventoriesInOrganization);
-    loadData<DomainModel>(orgId, loadDomainsInOrganization);
-    loadData<TagModel>(orgId, loadTagsInOrganization);
-    loadData<ReaderModel>(orgId, loadReadersInOrganization);
-    loadData<MemberModel>(orgId, loadMembersInOrganization);
-    loadData<EntityModel>(orgId, loadEntitiesInOrganization);
+    loadData<InventoryModel>(
+        orgId, organizationRepository.appendInventoriesInOrganization);
+    loadData<DomainModel>(
+        orgId, organizationRepository.appendDomainsInOrganization);
+    loadData<TagModel>(orgId, organizationRepository.appendTagsInOrganization);
+    loadData<ReaderModel>(
+        orgId, organizationRepository.appendReadersInOrganization);
+    loadData<MemberModel>(
+        orgId, organizationRepository.appendMembersInOrganization);
+    loadData<EntityModel>(
+        orgId, organizationRepository.appendEntitiesInOrganization);
   }
 
   void loadData<T>(String orgId, Function(List<T>, String) loadFunction) {
@@ -149,69 +159,5 @@ class MockService extends GetxController {
         },
       ),
     ];
-  }
-
-  void loadInventoriesInOrganization(List<InventoryModel> items, String orgId) {
-    _loadDataInOrganization(orgId, (org) => org.inventories = items);
-  }
-
-  void loadDomainsInOrganization(List<DomainModel> items, String orgId) {
-    _loadDataInOrganization(orgId, (org) => org.domains = items);
-  }
-
-  void loadTagsInOrganization(List<TagModel> items, String orgId) {
-    _loadDataInOrganization(orgId, (org) => org.tags = items);
-  }
-
-  void loadReadersInOrganization(List<ReaderModel> items, String orgId) {
-    _loadDataInOrganization(orgId, (org) => org.readers = items);
-  }
-
-  void loadMembersInOrganization(List<MemberModel> items, String orgId) {
-    _loadDataInOrganization(orgId, (org) => org.members = items);
-  }
-
-  void loadEntitiesInOrganization(List<EntityModel> items, String orgId) {
-    _loadDataInOrganization(orgId, (org) => org.entities = items);
-  }
-
-  void _loadDataInOrganization(
-      String orgId, Function(OrganizationModel) setter) {
-    OrganizationModel? organization = organizationsList
-        .firstWhereOrNull((organization) => organization.id == orgId);
-    if (organization == null) return;
-    setter(organization);
-  }
-
-  List<T> getDataForOrganization<T>(
-      String orgId, List<T> Function(OrganizationModel) getter) {
-    OrganizationModel? organization = organizationsList
-        .firstWhereOrNull((organization) => organization.id == orgId);
-    if (organization == null) return [];
-    return getter(organization);
-  }
-
-  List<InventoryModel> getInventoriesForOrganization(String orgId) {
-    return getDataForOrganization(orgId, (org) => org.inventories!);
-  }
-
-  List<DomainModel> getDomainsForOrganization(String orgId) {
-    return getDataForOrganization(orgId, (org) => org.domains!);
-  }
-
-  List<TagModel> getTagsForOrganization(String orgId) {
-    return getDataForOrganization(orgId, (org) => org.tags!);
-  }
-
-  List<ReaderModel> getReadersForOrganization(String orgId) {
-    return getDataForOrganization(orgId, (org) => org.readers!);
-  }
-
-  List<MemberModel> getMembersForOrganization(String orgId) {
-    return getDataForOrganization(orgId, (org) => org.members!);
-  }
-
-  List<EntityModel> getEntitiesForOrganization(String orgId) {
-    return getDataForOrganization(orgId, (org) => org.entities!);
   }
 }

@@ -1,19 +1,41 @@
 import 'package:inventory_platform/data/models/generic_list_item_model.dart';
 
 class TagModel {
-  final String id;
-  final String serial;
-  final int isActive;
-  final DateTime? createdAt;
-  final DateTime? lastSeen;
+  String _id;
+  String _serial;
+  int _isActive;
+  DateTime? _createdAt;
+  DateTime? _lastSeen;
 
   TagModel({
-    required this.id,
-    required this.serial,
-    required this.isActive,
-    required this.lastSeen,
-    required this.createdAt,
-  }) : assert(id.length == 24, 'ID must have exactly 24 characters.');
+    required String id,
+    required String serial,
+    required int isActive,
+    required DateTime? lastSeen,
+    required DateTime? createdAt,
+  })  : _id = id,
+        _serial = serial,
+        _isActive = isActive,
+        _lastSeen = lastSeen,
+        _createdAt = createdAt {
+    assert(id.length == 24, 'ID must have exactly 24 characters.');
+  }
+
+  String get id => _id;
+  set id(String id) {
+    assert(id.length == 24, 'ID must have exactly 24 characters.');
+    _id = id;
+  }
+
+  String get serial => _serial;
+  int get isActive => _isActive;
+  DateTime? get createdAt => _createdAt;
+  DateTime? get lastSeen => _lastSeen;
+
+  set isActive(int isActive) => _isActive = isActive;
+  set serial(String serial) => _serial = serial;
+  set createdAt(DateTime? createdAt) => _createdAt = createdAt;
+  set lastSeen(DateTime? lastSeen) => _lastSeen = lastSeen;
 
   factory TagModel.fromJson(Map<String, dynamic> json) {
     return TagModel(
@@ -26,11 +48,11 @@ class TagModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'serial': serial,
-        'isActive': isActive,
-        'lastSeen': lastSeen?.toIso8601String(),
-        'createdAt': createdAt?.toIso8601String(),
+        'id': _id,
+        'serial': _serial,
+        'isActive': _isActive,
+        'lastSeen': _lastSeen?.toIso8601String(),
+        'createdAt': _createdAt?.toIso8601String(),
       };
 
   static List<GenericListItemModel> turnIntoGenericListItemModel(

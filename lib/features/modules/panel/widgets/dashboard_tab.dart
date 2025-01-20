@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inventory_platform/core/services/mock_service.dart';
 import 'package:inventory_platform/data/models/domain_model.dart';
 import 'package:inventory_platform/data/models/inventory_model.dart';
 import 'package:inventory_platform/data/models/member_model.dart';
 import 'package:inventory_platform/data/models/organization_model.dart';
 import 'package:inventory_platform/data/models/reader_model.dart';
 import 'package:inventory_platform/data/models/tag_model.dart';
+import 'package:inventory_platform/data/repositories/organization_repository.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/status_chart.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/update_chart.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -24,6 +24,8 @@ class _DashboardTabState extends State<DashboardTab> {
   List<TagModel> _allTags = [];
   List<ReaderModel> _allReaders = [];
   List<MemberModel> _allMembers = [];
+
+  final _organizationRepository = Get.find<OrganizationRepository>();
 
   final OrganizationModel organization = Get.arguments;
   int _currentIndex = 0;
@@ -162,13 +164,15 @@ class _DashboardTabState extends State<DashboardTab> {
 
   @override
   Widget build(BuildContext context) {
-    final mockService = Get.find<MockService>();
     _allInventories =
-        mockService.getInventoriesForOrganization(organization.id);
-    _allDomains = mockService.getDomainsForOrganization(organization.id);
-    _allTags = mockService.getTagsForOrganization(organization.id);
-    _allReaders = mockService.getReadersForOrganization(organization.id);
-    _allMembers = mockService.getMembersForOrganization(organization.id);
+        _organizationRepository.getInventoriesForOrganization(organization.id);
+    _allDomains =
+        _organizationRepository.getDomainsForOrganization(organization.id);
+    _allTags = _organizationRepository.getTagsForOrganization(organization.id);
+    _allReaders =
+        _organizationRepository.getReadersForOrganization(organization.id);
+    _allMembers =
+        _organizationRepository.getMembersForOrganization(organization.id);
 
     return Scaffold(
       backgroundColor: Colors.grey.shade200,

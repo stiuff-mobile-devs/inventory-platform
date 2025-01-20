@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inventory_platform/core/services/mock_service.dart';
 import 'package:inventory_platform/data/models/member_model.dart';
 import 'package:inventory_platform/data/models/organization_model.dart';
+import 'package:inventory_platform/data/repositories/organization_repository.dart';
 
 class AdminTab extends StatefulWidget {
   const AdminTab({super.key});
@@ -13,14 +13,16 @@ class AdminTab extends StatefulWidget {
 
 class _AdminTabState extends State<AdminTab> {
   final OrganizationModel organization = Get.arguments;
-  late final MockService mockService;
   List<MemberModel> _allMembers = [];
+
+  final OrganizationRepository _organizationRepository =
+      Get.find<OrganizationRepository>();
 
   @override
   void initState() {
     super.initState();
-    mockService = Get.find<MockService>();
-    _allMembers = mockService.getMembersForOrganization(organization.id)
+    _allMembers = _organizationRepository
+        .getMembersForOrganization(organization.id)
       ..sort((a, b) => (b.createdAt ?? DateTime.now())
           .compareTo(a.createdAt ?? DateTime.now()));
   }

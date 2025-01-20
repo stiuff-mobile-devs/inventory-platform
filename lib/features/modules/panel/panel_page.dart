@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/enums/tab_type_enum.dart';
-import 'package:inventory_platform/core/services/mock_service.dart';
 import 'package:inventory_platform/data/models/domain_model.dart';
 import 'package:inventory_platform/data/models/generic_list_item_model.dart';
 import 'package:inventory_platform/data/models/inventory_model.dart';
@@ -9,6 +8,7 @@ import 'package:inventory_platform/data/models/member_model.dart';
 import 'package:inventory_platform/data/models/organization_model.dart';
 import 'package:inventory_platform/data/models/reader_model.dart';
 import 'package:inventory_platform/data/models/tag_model.dart';
+import 'package:inventory_platform/data/repositories/organization_repository.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/admin_tab.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/dashboard_tab.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/entities_tab.dart';
@@ -25,8 +25,10 @@ class PanelPage extends StatefulWidget {
 
 class _PanelPageState extends State<PanelPage> {
   int _selectedTabIndex = 0;
-  late final MockService mockService;
   late final OrganizationModel organization;
+
+  final OrganizationRepository _organizationRepository =
+      Get.find<OrganizationRepository>();
 
   List<Widget> _tabs = [
     const DashboardTab(),
@@ -38,26 +40,24 @@ class _PanelPageState extends State<PanelPage> {
 
     organization = Get.arguments;
 
-    mockService = Get.find<MockService>();
-
     List<GenericListItemModel> inventories =
-        InventoryModel.turnAllIntoGenericListItemModel(
-            mockService.getInventoriesForOrganization(organization.id));
+        InventoryModel.turnAllIntoGenericListItemModel(_organizationRepository
+            .getInventoriesForOrganization(organization.id));
 
     List<GenericListItemModel> domains =
         DomainModel.turnAllIntoGenericListItemModel(
-            mockService.getDomainsForOrganization(organization.id));
+            _organizationRepository.getDomainsForOrganization(organization.id));
 
     List<GenericListItemModel> tags = TagModel.turnIntoGenericListItemModel(
-        mockService.getTagsForOrganization(organization.id));
+        _organizationRepository.getTagsForOrganization(organization.id));
 
     List<GenericListItemModel> readers =
         ReaderModel.turnAllIntoGenericListItemModel(
-            mockService.getReadersForOrganization(organization.id));
+            _organizationRepository.getReadersForOrganization(organization.id));
 
     List<GenericListItemModel> members =
         MemberModel.turnAllIntoGenericListItemModel(
-            mockService.getMembersForOrganization(organization.id));
+            _organizationRepository.getMembersForOrganization(organization.id));
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _tabs = [

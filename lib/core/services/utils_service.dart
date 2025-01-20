@@ -1,6 +1,6 @@
 import 'package:inventory_platform/core/enums/tab_type_enum.dart';
 
-class UtilsProvider {
+class UtilsService {
   Future<void> retryWithExponentialBackoff(
       Future<void> Function() action) async {
     const int maxRetries = 5;

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:inventory_platform/core/services/mock_service.dart';
 import 'package:inventory_platform/data/models/entity_model.dart';
 import 'package:inventory_platform/data/models/organization_model.dart';
+import 'package:inventory_platform/data/repositories/organization_repository.dart';
 import 'package:inventory_platform/features/common/widgets/temporary_message_display.dart';
 import 'package:inventory_platform/features/common/widgets/custom_progress_indicator.dart';
 import 'package:inventory_platform/features/common/widgets/list_item_skeleton.dart';
@@ -23,7 +23,9 @@ class _EntitiesTabState extends State<EntitiesTab> {
   List<EntityModel> _allEntities = [];
   List<EntityModel> _filteredEntities = [];
   final OrganizationModel organization = Get.arguments;
-  late final MockService mockService;
+
+  final OrganizationRepository _organizationRepository =
+      Get.find<OrganizationRepository>();
 
   final Map<String, bool> _groupExpansionState = {};
 
@@ -31,14 +33,15 @@ class _EntitiesTabState extends State<EntitiesTab> {
   void initState() {
     super.initState();
     _pagingController.addPageRequestListener((pageKey) => _fetchPage(pageKey));
-    mockService = Get.find<MockService>();
-    _allEntities = mockService.getEntitiesForOrganization(organization.id)
+    _allEntities = _organizationRepository
+        .getEntitiesForOrganization(organization.id)
       ..sort((a, b) => a.type.compareTo(b.type));
   }
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      _allEntities = mockService.getEntitiesForOrganization(organization.id)
+      _allEntities = _organizationRepository
+          .getEntitiesForOrganization(organization.id)
         ..sort((a, b) => a.type.compareTo(b.type));
 
       _filteredEntities = List.from(_allEntities);

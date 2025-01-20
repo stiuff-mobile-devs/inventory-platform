@@ -1,41 +1,62 @@
-import 'package:inventory_platform/data/models/domain_model.dart';
-import 'package:inventory_platform/data/models/entity_model.dart';
-import 'package:inventory_platform/data/models/inventory_model.dart';
-import 'package:inventory_platform/data/models/member_model.dart';
-import 'package:inventory_platform/data/models/reader_model.dart';
-import 'package:inventory_platform/data/models/tag_model.dart';
-
 class OrganizationModel {
-  final String id;
-  final String title;
-  final String? description;
-  final String? imagePath;
+  String _id;
+  String _title;
+  String? _description;
+  String? _imagePath;
 
-  List<MemberModel>? members;
-  List<ReaderModel>? readers;
-  List<EntityModel>? entities;
-  List<TagModel>? tags;
-  List<InventoryModel>? inventories;
-  List<DomainModel>? domains;
+  List<String>? _memberIds;
+  List<String>? _readerIds;
+  List<String>? _entityIds;
+  List<String>? _tagIds;
+  List<String>? _inventoryIds;
+  List<String>? _domainIds;
 
   OrganizationModel({
-    required this.id,
-    required this.title,
-    this.description,
-    this.imagePath,
-  })  : members = [],
-        readers = [],
-        entities = [],
-        tags = [],
-        inventories = [],
-        domains = [];
+    required String id,
+    required String title,
+    String? description,
+    String? imagePath,
+  })  : _id = id,
+        _title = title,
+        _description = description,
+        _imagePath = imagePath,
+        _memberIds = [],
+        _readerIds = [],
+        _entityIds = [],
+        _tagIds = [],
+        _inventoryIds = [],
+        _domainIds = [];
+
+  String get id => _id;
+  String get title => _title;
+  String? get description => _description;
+  String? get imagePath => _imagePath;
+
+  List<String>? get members => _memberIds;
+  List<String>? get readers => _readerIds;
+  List<String>? get entities => _entityIds;
+  List<String>? get tags => _tagIds;
+  List<String>? get inventories => _inventoryIds;
+  List<String>? get domains => _domainIds;
+
+  set id(String id) => _id = id;
+  set title(String title) => _title = title;
+  set description(String? description) => _description = description;
+  set imagePath(String? imagePath) => _imagePath = imagePath;
+
+  set members(List<String>? members) => _memberIds = members;
+  set readers(List<String>? readers) => _readerIds = readers;
+  set entities(List<String>? entities) => _entityIds = entities;
+  set tags(List<String>? tags) => _tagIds = tags;
+  set inventories(List<String>? inventories) => _inventoryIds = inventories;
+  set domains(List<String>? domains) => _domainIds = domains;
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'title': title,
-      'description': description,
-      'imagePath': imagePath,
+      'id': _id,
+      'title': _title,
+      'description': _description,
+      'imagePath': _imagePath,
     };
   }
 

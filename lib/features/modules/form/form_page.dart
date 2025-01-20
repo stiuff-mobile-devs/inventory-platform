@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/enums/tab_type_enum.dart';
-import 'package:inventory_platform/core/services/mock_service.dart';
-import 'package:inventory_platform/data/providers/utils_provider.dart';
+import 'package:inventory_platform/core/services/utils_service.dart';
 import 'package:inventory_platform/features/common/widgets/base_scaffold.dart';
 import 'package:inventory_platform/features/modules/form/widgets/domain_form.dart';
 import 'package:inventory_platform/features/modules/form/widgets/inventory_form.dart';
@@ -17,10 +16,9 @@ class FormPage extends StatefulWidget {
 }
 
 class _FormPageState extends State<FormPage> {
-  late final MockService mockService;
+  late final UtilsService _utilsService;
   late final TabType tabType;
   late final String organizationName;
-  late final UtilsProvider _utilsProvider;
 
   final GlobalKey<InventoryFormState> _inventoryFormKey =
       GlobalKey<InventoryFormState>();
@@ -30,7 +28,7 @@ class _FormPageState extends State<FormPage> {
   @override
   void initState() {
     super.initState();
-    _utilsProvider = Get.find<UtilsProvider>();
+    _utilsService = UtilsService();
     tabType = Get.arguments[0];
     organizationName = Get.arguments[1];
   }
@@ -77,7 +75,7 @@ class _FormPageState extends State<FormPage> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Text(
-                    'Adicionar ${_utilsProvider.tabNameToSingular(tabType)}',
+                    'Adicionar ${_utilsService.tabNameToSingular(tabType)}',
                     style: const TextStyle(
                       fontSize: 32.0,
                       fontWeight: FontWeight.bold,
