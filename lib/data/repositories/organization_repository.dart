@@ -12,6 +12,7 @@ import 'package:inventory_platform/data/repositories/inventory_repository.dart';
 import 'package:inventory_platform/data/repositories/member_repository.dart';
 import 'package:inventory_platform/data/repositories/reader_repository.dart';
 import 'package:inventory_platform/data/repositories/tag_repository.dart';
+import 'package:uuid/uuid.dart';
 
 class OrganizationRepository {
   final List<OrganizationModel> _organizations = [];
@@ -279,5 +280,14 @@ class OrganizationRepository {
   void appendEntitiesInOrganization(List<EntityModel> items, String orgId) {
     _appendItemsInOrganization(
         items, orgId, _entityRepository.addEntity, (org) => org.entities);
+  }
+
+  String generateUniqueId() {
+    var uuid = const Uuid();
+    String id;
+    do {
+      id = uuid.v4();
+    } while (_organizations.any((organization) => organization.id == id));
+    return id;
   }
 }

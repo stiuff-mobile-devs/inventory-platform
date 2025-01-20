@@ -2,9 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/enums/tab_type_enum.dart';
 import 'package:inventory_platform/core/services/utils_service.dart';
+import 'package:inventory_platform/data/models/organization_model.dart';
+import 'package:inventory_platform/data/repositories/organization_repository.dart';
 import 'package:inventory_platform/features/common/widgets/base_scaffold.dart';
 import 'package:inventory_platform/features/modules/form/widgets/domain_form.dart';
+import 'package:inventory_platform/features/modules/form/widgets/entity_form.dart';
 import 'package:inventory_platform/features/modules/form/widgets/inventory_form.dart';
+import 'package:inventory_platform/features/modules/form/widgets/member_form.dart';
+import 'package:inventory_platform/features/modules/form/widgets/reader_form.dart';
+import 'package:inventory_platform/features/modules/form/widgets/tag_form.dart';
+import 'package:inventory_platform/features/modules/panel/panel_controller.dart';
 
 class FormPage extends StatefulWidget {
   const FormPage({
@@ -18,40 +25,96 @@ class FormPage extends StatefulWidget {
 class _FormPageState extends State<FormPage> {
   late final UtilsService _utilsService;
   late final TabType tabType;
-  late final String organizationName;
+  late final OrganizationModel organization;
+
+  final OrganizationRepository _organizationRepository =
+      Get.find<OrganizationRepository>();
 
   final GlobalKey<InventoryFormState> _inventoryFormKey =
       GlobalKey<InventoryFormState>();
   final GlobalKey<DomainFormState> _domainFormKey =
       GlobalKey<DomainFormState>();
+  final GlobalKey<TagFormState> _tagFormKey = GlobalKey<TagFormState>();
+  final GlobalKey<ReaderFormState> _readerFormKey =
+      GlobalKey<ReaderFormState>();
+  final GlobalKey<MemberFormState> _memberFormKey =
+      GlobalKey<MemberFormState>();
+  final GlobalKey<EntityFormState> _entityFormKey =
+      GlobalKey<EntityFormState>();
+
+  final PanelController _panelController = Get.find<PanelController>();
 
   @override
   void initState() {
     super.initState();
     _utilsService = UtilsService();
     tabType = Get.arguments[0];
-    organizationName = Get.arguments[1];
+    organization = Get.arguments[1];
   }
 
   void _submitForm() {
     bool isFormValid = false;
+    dynamic formData;
 
-    if (tabType == TabType.inventories) {
-      isFormValid = _inventoryFormKey.currentState?.submitForm() ?? false;
-      if (isFormValid) {
-        final inventoryData = _inventoryFormKey.currentState?.formData;
-        debugPrint('Dados do InventoryModel: $inventoryData');
-      }
-    } else if (tabType == TabType.domains) {
-      isFormValid = _domainFormKey.currentState?.submitForm() ?? false;
-      if (isFormValid) {
-        final domainData = _domainFormKey.currentState?.formData;
-        debugPrint('Dados do DomainModel: $domainData');
-      }
+    switch (tabType) {
+      case TabType.inventories:
+        isFormValid = _inventoryFormKey.currentState?.submitForm() ?? false;
+        formData = _inventoryFormKey.currentState?.inventoryModel;
+        if (isFormValid) {
+          _organizationRepository
+              .appendInventoriesInOrganization([formData], organization.id);
+        }
+        break;
+      case TabType.domains:
+        isFormValid = _domainFormKey.currentState?.submitForm() ?? false;
+        formData = _domainFormKey.currentState?.domainModel;
+        if (isFormValid) {
+          _organizationRepository
+              .appendDomainsInOrganization([formData], organization.id);
+        }
+        break;
+      case TabType.tags:
+        isFormValid = _tagFormKey.currentState?.submitForm() ?? false;
+        formData = _tagFormKey.currentState?.tagModel;
+        if (isFormValid) {
+          _organizationRepository
+              .appendTagsInOrganization([formData], organization.id);
+        }
+        break;
+      case TabType.readers:
+        isFormValid = _readerFormKey.currentState?.submitForm() ?? false;
+        formData = _readerFormKey.currentState?.readerModel;
+        if (isFormValid) {
+          _organizationRepository
+              .appendReadersInOrganization([formData], organization.id);
+        }
+        break;
+      case TabType.members:
+        isFormValid = _memberFormKey.currentState?.submitForm() ?? false;
+        formData = _memberFormKey.currentState?.memberModel;
+        if (isFormValid) {
+          _organizationRepository
+              .appendMembersInOrganization([formData], organization.id);
+        }
+        break;
+      case TabType.entities:
+        isFormValid = _entityFormKey.currentState?.submitForm() ?? false;
+        formData = _entityFormKey.currentState?.entityModel;
+        if (isFormValid) {
+          _organizationRepository
+              .appendEntitiesInOrganization([formData], organization.id);
+        }
+        break;
+      default:
+        debugPrint('Tipo de formulário não reconhecido.');
+        break;
     }
 
     if (isFormValid) {
+      _panelController.updateItems(organization);
+      _panelController.update();
       debugPrint('Formulário submetido com sucesso!');
+      Get.back();
     } else {
       debugPrint('Erro na validação do formulário.');
     }
@@ -93,7 +156,7 @@ class _FormPageState extends State<FormPage> {
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   child: Text(
-                    organizationName,
+                    organization.title,
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -104,6 +167,11 @@ class _FormPageState extends State<FormPage> {
                 if (tabType == TabType.inventories)
                   InventoryForm(key: _inventoryFormKey),
                 if (tabType == TabType.domains) DomainForm(key: _domainFormKey),
+                if (tabType == TabType.tags) TagForm(key: _tagFormKey),
+                if (tabType == TabType.readers) ReaderForm(key: _readerFormKey),
+                if (tabType == TabType.members) MemberForm(key: _memberFormKey),
+                if (tabType == TabType.entities)
+                  EntityForm(key: _entityFormKey),
                 Align(
                   alignment: Alignment.centerRight,
                   child: Padding(

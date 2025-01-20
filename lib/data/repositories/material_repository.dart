@@ -1,4 +1,5 @@
 import 'package:inventory_platform/data/models/material_model.dart';
+import 'package:uuid/uuid.dart';
 
 class MaterialRepository {
   final List<Material> _materials = [];
@@ -25,5 +26,14 @@ class MaterialRepository {
 
   void deleteMaterial(String id) {
     _materials.removeWhere((material) => material.id == id);
+  }
+
+  String generateUniqueId() {
+    var uuid = const Uuid();
+    String id;
+    do {
+      id = uuid.v4();
+    } while (_materials.any((material) => material.id == id));
+    return id;
   }
 }

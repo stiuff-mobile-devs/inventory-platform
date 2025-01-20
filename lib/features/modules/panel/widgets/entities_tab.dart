@@ -132,14 +132,15 @@ class _EntitiesTabState extends State<EntitiesTab> {
               ),
               const SizedBox(width: 8.0),
               TextButton.icon(
-                onPressed: () {
-                  Get.toNamed(
+                onPressed: () async {
+                  await Get.toNamed(
                     AppRoutes.form,
                     arguments: [
                       TabType.entities,
-                      organizationName,
+                      organization,
                     ],
                   );
+                  _onRefresh();
                 },
                 label: const Text('Adicionar Entidade'),
                 icon: const Icon(Icons.add),

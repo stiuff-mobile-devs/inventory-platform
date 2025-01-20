@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/enums/tab_type_enum.dart';
-import 'package:inventory_platform/data/models/domain_model.dart';
-import 'package:inventory_platform/data/models/generic_list_item_model.dart';
-import 'package:inventory_platform/data/models/inventory_model.dart';
-import 'package:inventory_platform/data/models/member_model.dart';
 import 'package:inventory_platform/data/models/organization_model.dart';
-import 'package:inventory_platform/data/models/reader_model.dart';
-import 'package:inventory_platform/data/models/tag_model.dart';
-import 'package:inventory_platform/data/repositories/organization_repository.dart';
+import 'package:inventory_platform/features/modules/panel/panel_controller.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/admin_tab.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/dashboard_tab.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/entities_tab.dart';
@@ -27,8 +21,7 @@ class _PanelPageState extends State<PanelPage> {
   int _selectedTabIndex = 0;
   late final OrganizationModel organization;
 
-  final OrganizationRepository _organizationRepository =
-      Get.find<OrganizationRepository>();
+  final PanelController _panelController = Get.find<PanelController>();
 
   List<Widget> _tabs = [
     const DashboardTab(),
@@ -40,59 +33,42 @@ class _PanelPageState extends State<PanelPage> {
 
     organization = Get.arguments;
 
-    List<GenericListItemModel> inventories =
-        InventoryModel.turnAllIntoGenericListItemModel(_organizationRepository
-            .getInventoriesForOrganization(organization.id));
-
-    List<GenericListItemModel> domains =
-        DomainModel.turnAllIntoGenericListItemModel(
-            _organizationRepository.getDomainsForOrganization(organization.id));
-
-    List<GenericListItemModel> tags = TagModel.turnIntoGenericListItemModel(
-        _organizationRepository.getTagsForOrganization(organization.id));
-
-    List<GenericListItemModel> readers =
-        ReaderModel.turnAllIntoGenericListItemModel(
-            _organizationRepository.getReadersForOrganization(organization.id));
-
-    List<GenericListItemModel> members =
-        MemberModel.turnAllIntoGenericListItemModel(
-            _organizationRepository.getMembersForOrganization(organization.id));
+    _panelController.updateItems(organization);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _tabs = [
         const DashboardTab(),
         GenericListTab(
           tabType: TabType.inventories,
-          items: inventories,
+          items: _panelController.inventories,
           searchParameters: 'Título ou Id',
           firstDetailFieldName: 'Criado em',
           secondDetailFieldName: 'Última atualização em',
         ),
         GenericListTab(
           tabType: TabType.domains,
-          items: domains,
+          items: _panelController.domains,
           searchParameters: 'Título ou Id',
           firstDetailFieldName: 'Criado em',
           secondDetailFieldName: 'Última atualização em',
         ),
         GenericListTab(
           tabType: TabType.tags,
-          items: tags,
+          items: _panelController.tags,
           searchParameters: 'Serial ou Id',
           firstDetailFieldName: 'Criado em',
           secondDetailFieldName: 'Visto pela última vez em',
         ),
         GenericListTab(
           tabType: TabType.readers,
-          items: readers,
+          items: _panelController.readers,
           searchParameters: 'Nome ou MAC',
           firstDetailFieldName: 'Criado em',
           secondDetailFieldName: 'Visto pela última vez em',
         ),
         GenericListTab(
           tabType: TabType.members,
-          items: members,
+          items: _panelController.members,
           searchParameters: 'Nome ou Email',
           firstDetailFieldName: 'Criado em',
           secondDetailFieldName: 'Visto pela última vez em',
@@ -105,25 +81,30 @@ class _PanelPageState extends State<PanelPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseScaffold(
-      hideTitle: true,
-      showBackButton: true,
-      body: Stack(
-        children: [
-          _tabs[_selectedTabIndex],
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: ScrollableBottomNavigationBar(
-              onTabSelected: (index) {
-                setState(() {
-                  _selectedTabIndex = index;
-                });
-              },
-              selectedTabIndex: _selectedTabIndex,
-            ),
+    return GetBuilder<PanelController>(
+      builder: (_) {
+        _panelController.updateItems(organization);
+        return BaseScaffold(
+          hideTitle: true,
+          showBackButton: true,
+          body: Stack(
+            children: [
+              _tabs[_selectedTabIndex],
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: ScrollableBottomNavigationBar(
+                  onTabSelected: (index) {
+                    setState(() {
+                      _selectedTabIndex = index;
+                    });
+                  },
+                  selectedTabIndex: _selectedTabIndex,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

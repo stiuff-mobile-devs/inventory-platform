@@ -1,3 +1,4 @@
+import 'package:uuid/uuid.dart';
 import 'package:inventory_platform/data/models/domain_model.dart';
 
 class DomainRepository {
@@ -25,5 +26,14 @@ class DomainRepository {
 
   void deleteDomain(String id) {
     _domains.removeWhere((domain) => domain.id == id);
+  }
+
+  String generateUniqueId() {
+    var uuid = const Uuid();
+    String id;
+    do {
+      id = uuid.v4();
+    } while (_domains.any((domain) => domain.id == id));
+    return id;
   }
 }

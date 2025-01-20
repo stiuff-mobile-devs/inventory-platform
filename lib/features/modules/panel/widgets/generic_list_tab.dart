@@ -13,7 +13,7 @@ import 'package:inventory_platform/features/common/widgets/temporary_message_dis
 import 'package:skeletonizer/skeletonizer.dart';
 
 class GenericListTab extends StatefulWidget {
-  final List<GenericListItemModel> items;
+  final RxList<GenericListItemModel> items;
   final TabType tabType;
   final String? searchParameters;
   final String? firstDetailFieldName;
@@ -67,8 +67,6 @@ class _GenericListTabState extends State<GenericListTab> {
 
   @override
   Widget build(BuildContext context) {
-    if (mounted) _pagingController.refresh();
-
     return RefreshIndicator(
       backgroundColor: Colors.white,
       onRefresh: _onRefresh,
@@ -76,9 +74,10 @@ class _GenericListTabState extends State<GenericListTab> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GenericListHeader(
+            onFormSubmit: _onFormSubmitUpdateScreenAndPaging,
             tabType: widget.tabType,
             itemCount: _allItemsList.length,
-            organizationName: _organization.title,
+            organization: _organization,
           ),
           SearchBarWidget(
             searchController: _searchController,
@@ -135,6 +134,15 @@ class _GenericListTabState extends State<GenericListTab> {
 
   Future<void> _onRefresh() async {
     if (mounted) _pagingController.refresh();
+  }
+
+  void _onFormSubmitUpdateScreenAndPaging() {
+    setState(() {
+      _allItemsList = widget.items
+        ..sort((a, b) => b.initialDate!.compareTo(a.initialDate!));
+      _filteredItemsList = List.from(_allItemsList);
+    });
+    _pagingController.refresh();
   }
 
   Widget _buildList() {

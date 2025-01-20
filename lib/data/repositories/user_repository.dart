@@ -1,4 +1,5 @@
 import 'package:inventory_platform/data/models/user_model.dart';
+import 'package:uuid/uuid.dart';
 
 class UserRepository {
   final List<UserModel> _users = [];
@@ -24,5 +25,14 @@ class UserRepository {
 
   void deleteUser(String id) {
     _users.removeWhere((user) => user.id == id);
+  }
+
+  String generateUniqueId() {
+    var uuid = const Uuid();
+    String id;
+    do {
+      id = uuid.v4();
+    } while (_users.any((tag) => tag.id == id));
+    return id;
   }
 }

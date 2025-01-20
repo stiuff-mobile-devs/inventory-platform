@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:inventory_platform/data/models/inventory_model.dart';
+import 'package:inventory_platform/data/repositories/inventory_repository.dart';
 import 'package:inventory_platform/features/common/widgets/custom_text_field.dart';
 
 class InventoryForm extends StatefulWidget {
@@ -14,14 +16,17 @@ class InventoryFormState extends State<InventoryForm> {
   final _descriptionController = TextEditingController();
   final _revisionController = TextEditingController();
 
-  Map<String, dynamic> get formData => {
-        'title': _titleController.text,
-        'description': _descriptionController.text,
-        'revisionNumber': _revisionController.text,
-        'isActive': 1,
-        'createdAt': DateTime.now(),
-        'lastUpdatedAt': DateTime.now(),
-      };
+  final InventoryRepository _inventoryRepository = InventoryRepository();
+
+  InventoryModel get inventoryModel => InventoryModel(
+        id: _inventoryRepository.generateUniqueId(),
+        title: _titleController.text,
+        description: _descriptionController.text,
+        revisionNumber: _revisionController.text,
+        isActive: 1,
+        createdAt: DateTime.now(),
+        lastUpdatedAt: DateTime.now(),
+      );
 
   @override
   void dispose() {

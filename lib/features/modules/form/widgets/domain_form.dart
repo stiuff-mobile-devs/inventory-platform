@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:inventory_platform/data/models/domain_model.dart';
+import 'package:inventory_platform/data/repositories/domain_repository.dart';
 import 'package:inventory_platform/features/common/widgets/custom_text_field.dart';
 
 class DomainForm extends StatefulWidget {
@@ -15,15 +17,18 @@ class DomainFormState extends State<DomainForm> {
   final _locationController = TextEditingController();
   final _capacityController = TextEditingController();
 
-  Map<String, dynamic> get formData => {
-        'title': _titleController.text,
-        'description': _descriptionController.text,
-        'location': _locationController.text,
-        'capacity': int.tryParse(_capacityController.text),
-        'isActive': 1,
-        'createdAt': DateTime.now(),
-        'lastUpdatedAt': DateTime.now(),
-      };
+  final DomainRepository _domainRepository = DomainRepository();
+
+  DomainModel get domainModel => DomainModel(
+        id: _domainRepository.generateUniqueId(),
+        title: _titleController.text,
+        description: _descriptionController.text,
+        location: _locationController.text,
+        capacity: int.tryParse(_capacityController.text),
+        isActive: 1,
+        createdAt: DateTime.now(),
+        lastUpdatedAt: DateTime.now(),
+      );
 
   @override
   void dispose() {

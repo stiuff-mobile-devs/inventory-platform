@@ -2,19 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/enums/tab_type_enum.dart';
 import 'package:inventory_platform/core/services/utils_service.dart';
+import 'package:inventory_platform/data/models/organization_model.dart';
 import 'package:inventory_platform/routes/routes.dart';
 
 class GenericListHeader extends StatelessWidget {
   final TabType tabType;
   final int itemCount;
-  final String organizationName;
+  final OrganizationModel organization;
   final UtilsService _utilsService;
+  final void Function() onFormSubmit;
 
   GenericListHeader({
     super.key,
     required this.tabType,
     required this.itemCount,
-    required this.organizationName,
+    required this.organization,
+    required this.onFormSubmit,
   }) : _utilsService = UtilsService();
 
   @override
@@ -70,7 +73,7 @@ class GenericListHeader extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5.0),
                 ),
                 child: Text(
-                  organizationName,
+                  organization.title,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -79,14 +82,15 @@ class GenericListHeader extends StatelessWidget {
               ),
               const SizedBox(width: 8.0),
               TextButton.icon(
-                onPressed: () {
-                  Get.toNamed(
+                onPressed: () async {
+                  await Get.toNamed(
                     AppRoutes.form,
                     arguments: [
                       tabType,
-                      organizationName,
+                      organization,
                     ],
                   );
+                  onFormSubmit();
                 },
                 label: Text(
                     'Adicionar ${_utilsService.tabNameToSingular(tabType)}'),

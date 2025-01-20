@@ -1,3 +1,4 @@
+import 'package:uuid/uuid.dart';
 import 'package:inventory_platform/data/models/entity_model.dart';
 
 class EntityRepository {
@@ -25,5 +26,14 @@ class EntityRepository {
 
   void deleteEntity(String id) {
     _entities.removeWhere((entity) => entity.id == id);
+  }
+
+  String generateUniqueId() {
+    var uuid = const Uuid();
+    String id;
+    do {
+      id = uuid.v4();
+    } while (_entities.any((entity) => entity.id == id));
+    return id;
   }
 }
