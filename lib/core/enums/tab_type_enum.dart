@@ -4,4 +4,5 @@ enum TabType {
   tags,
   readers,
   members,
+  entities,
 }

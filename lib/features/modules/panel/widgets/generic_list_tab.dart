@@ -44,11 +44,25 @@ class _GenericListTabState extends State<GenericListTab> {
 
   @override
   void initState() {
+    super.initState();
     _pagingController.addPageRequestListener((pageKey) => _fetchPage(pageKey));
-    _searchController.addListener(_filterItems);
+    _searchController.addListener(() => _filterItems(_searchController.text));
     _allItemsList = widget.items
       ..sort((a, b) => b.initialDate!.compareTo(a.initialDate!));
-    super.initState();
+    _filteredItemsList = List.from(_allItemsList);
+  }
+
+  @override
+  void didUpdateWidget(covariant GenericListTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.items != widget.items) {
+      setState(() {
+        _allItemsList = widget.items
+          ..sort((a, b) => b.initialDate!.compareTo(a.initialDate!));
+        _filteredItemsList = List.from(_allItemsList);
+      });
+      _pagingController.refresh();
+    }
   }
 
   @override
@@ -69,6 +83,7 @@ class _GenericListTabState extends State<GenericListTab> {
           SearchBarWidget(
             searchController: _searchController,
             hintText: 'Pesquisar por ${widget.searchParameters ?? '...'}',
+            onSearchTextChanged: _filterItems,
           ),
           _buildList(),
         ],
@@ -78,11 +93,25 @@ class _GenericListTabState extends State<GenericListTab> {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      _allItemsList = widget.items
-        ..sort((a, b) => b.initialDate!.compareTo(a.initialDate!));
+      final startIndex = pageKey * pageSize;
+      final endIndex = startIndex + pageSize;
 
-      _filteredItemsList = List.from(_allItemsList);
-      _updatePagingController(pageKey);
+      var paginatedItems = _filteredItemsList.sublist(
+        startIndex,
+        endIndex > _filteredItemsList.length
+            ? _filteredItemsList.length
+            : endIndex,
+      );
+
+      final isLastPage = endIndex >= _filteredItemsList.length;
+
+      if (mounted) {
+        if (isLastPage) {
+          _pagingController.appendLastPage(paginatedItems);
+        } else {
+          _pagingController.appendPage(paginatedItems, pageKey + 1);
+        }
+      }
     } catch (error, stackTrace) {
       debugPrint('Error fetching page: $error');
       debugPrint('Stack trace: $stackTrace');
@@ -92,38 +121,16 @@ class _GenericListTabState extends State<GenericListTab> {
     }
   }
 
-  void _updatePagingController(int pageKey) {
-    final startIndex = pageKey * pageSize;
-    final endIndex = startIndex + pageSize;
-
-    final paginatedItems = _filteredItemsList.sublist(
-      startIndex,
-      endIndex > _filteredItemsList.length
-          ? _filteredItemsList.length
-          : endIndex,
-    );
-
-    final isLastPage = endIndex >= _filteredItemsList.length;
-
-    if (mounted) {
-      if (isLastPage) {
-        _pagingController.appendLastPage(paginatedItems);
-      } else {
-        _pagingController.appendPage(paginatedItems, pageKey + 1);
-      }
-    }
-  }
-
-  void _filterItems() {
-    final query = _searchController.text.toLowerCase();
+  void _filterItems(String query) {
+    final lowerCaseQuery = query.toLowerCase();
     setState(() {
       _filteredItemsList = _allItemsList.where((item) {
-        return item.upperHeaderField.toLowerCase().contains(query) ||
-            (item.id ?? ' ').toLowerCase().contains(query);
+        return item.upperHeaderField.toLowerCase().contains(lowerCaseQuery) ||
+            (item.id ?? ' ').toLowerCase().contains(lowerCaseQuery);
       }).toList();
     });
-    _pagingController.itemList?.clear();
-    _updatePagingController(0);
+
+    _pagingController.refresh();
   }
 
   Future<void> _onRefresh() async {

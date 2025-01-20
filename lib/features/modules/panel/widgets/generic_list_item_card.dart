@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:inventory_platform/core/services/utils_service.dart';
 import 'package:inventory_platform/data/models/generic_list_item_model.dart';
 
 class GenericListItemCard extends StatelessWidget {
   final GenericListItemModel item;
   final String? firstDetailFieldName;
   final String? secondDetailFieldName;
+  final UtilsService _utilsService = UtilsService();
 
-  const GenericListItemCard({
+  GenericListItemCard({
     super.key,
     required this.item,
     this.firstDetailFieldName,
     this.secondDetailFieldName,
   });
-
-  String _formatDate(DateTime? date) {
-    return date != null
-        ? DateFormat.yMMMMd().format(date)
-        : "Data Indisponível";
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +38,10 @@ class GenericListItemCard extends StatelessWidget {
                   style: TextStyle(color: Colors.grey.shade700)),
             const SizedBox(height: 4),
             Text(
-                '${firstDetailFieldName ?? ''}: ${_formatDate(item.initialDate)}',
+                '${firstDetailFieldName ?? ''}: ${_utilsService.formatDate(item.initialDate)}',
                 style: TextStyle(color: Colors.grey.shade600, fontSize: 12.0)),
             Text(
-                '${secondDetailFieldName ?? ''}: ${_formatDate(item.lastUpdatedAt)}',
+                '${secondDetailFieldName ?? ''}: ${_utilsService.formatDate(item.lastUpdatedAt)}',
                 style: TextStyle(color: Colors.grey.shade600, fontSize: 12.0))
           ],
         ),

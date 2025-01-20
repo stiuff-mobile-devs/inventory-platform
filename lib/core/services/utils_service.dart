@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:inventory_platform/core/enums/tab_type_enum.dart';
 
 class UtilsService {
@@ -20,6 +21,12 @@ class UtilsService {
     }
   }
 
+  String formatDate(DateTime? date) {
+    return date != null
+        ? DateFormat.yMMMMd().format(date)
+        : "Data Indisponível";
+  }
+
   String tabName(TabType tab) {
     switch (tab) {
       case TabType.inventories:
@@ -32,6 +39,8 @@ class UtilsService {
         return 'Leitores';
       case TabType.members:
         return 'Membros';
+      case TabType.entities:
+        return 'Entidades';
       default:
         return tab.toString();
     }
@@ -49,6 +58,8 @@ class UtilsService {
         return 'Leitor';
       case TabType.members:
         return 'Membro';
+      case TabType.entities:
+        return 'Entidade';
       default:
         return tab.toString();
     }

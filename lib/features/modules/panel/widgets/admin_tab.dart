@@ -62,7 +62,7 @@ class _AdminTabState extends State<AdminTab> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 4.0),
+            padding: const EdgeInsets.only(top: 10.0),
             child: Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: 8.0,

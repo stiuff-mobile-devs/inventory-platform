@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class SearchBarWidget extends StatelessWidget {
   final TextEditingController searchController;
   final String hintText;
+  final Function(String) onSearchTextChanged;
 
   const SearchBarWidget({
     super.key,
     required this.searchController,
     required this.hintText,
+    required this.onSearchTextChanged,
   });
 
   @override
@@ -30,6 +32,7 @@ class SearchBarWidget extends StatelessWidget {
           controller: searchController,
           style: const TextStyle(fontSize: 16.0),
           cursorColor: Colors.black87,
+          onChanged: onSearchTextChanged,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
             hintText: hintText,

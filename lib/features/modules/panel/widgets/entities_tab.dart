@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:inventory_platform/core/enums/tab_type_enum.dart';
 import 'package:inventory_platform/data/models/entity_model.dart';
 import 'package:inventory_platform/data/models/organization_model.dart';
 import 'package:inventory_platform/data/repositories/organization_repository.dart';
 import 'package:inventory_platform/features/common/widgets/temporary_message_display.dart';
 import 'package:inventory_platform/features/common/widgets/custom_progress_indicator.dart';
 import 'package:inventory_platform/features/common/widgets/list_item_skeleton.dart';
+import 'package:inventory_platform/routes/routes.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class EntitiesTab extends StatefulWidget {
@@ -107,25 +109,45 @@ class _EntitiesTabState extends State<EntitiesTab> {
               color: Colors.black87,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 4.0),
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
-                vertical: 4.0,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.greenAccent.shade700,
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              child: Text(
-                organizationName,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                  vertical: 4.0,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.greenAccent.shade700,
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                child: Text(
+                  organizationName,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
+              const SizedBox(width: 8.0),
+              TextButton.icon(
+                onPressed: () {
+                  Get.toNamed(
+                    AppRoutes.form,
+                    arguments: [
+                      TabType.entities,
+                      organizationName,
+                    ],
+                  );
+                },
+                label: const Text('Adicionar Entidade'),
+                icon: const Icon(Icons.add),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.blue,
+                ),
+              ),
+            ],
           ),
         ],
       ),
