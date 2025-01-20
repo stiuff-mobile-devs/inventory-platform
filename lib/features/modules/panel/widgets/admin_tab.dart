@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inventory_platform/core/services/mock_service.dart';
-import 'package:inventory_platform/features/data/models/member_model.dart';
-import 'package:inventory_platform/features/data/models/organization_model.dart';
+import 'package:inventory_platform/data/models/member_model.dart';
+import 'package:inventory_platform/data/models/organization_model.dart';
+import 'package:inventory_platform/data/repositories/organization_repository.dart';
 
 class AdminTab extends StatefulWidget {
   const AdminTab({super.key});
@@ -13,15 +13,18 @@ class AdminTab extends StatefulWidget {
 
 class _AdminTabState extends State<AdminTab> {
   final OrganizationModel organization = Get.arguments;
-  late final MockService mockService;
   List<MemberModel> _allMembers = [];
+
+  final OrganizationRepository _organizationRepository =
+      Get.find<OrganizationRepository>();
 
   @override
   void initState() {
     super.initState();
-    mockService = Get.find<MockService>();
-    _allMembers = mockService.getMembersForOrganization(organization.id)
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    _allMembers = _organizationRepository
+        .getMembersForOrganization(organization.id)
+      ..sort((a, b) => (b.createdAt ?? DateTime.now())
+          .compareTo(a.createdAt ?? DateTime.now()));
   }
 
   @override
@@ -59,7 +62,7 @@ class _AdminTabState extends State<AdminTab> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 4.0),
+            padding: const EdgeInsets.only(top: 10.0),
             child: Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: 8.0,
@@ -107,11 +110,12 @@ class _AdminTabState extends State<AdminTab> {
               labelText: "Nome da Organização",
             ),
             const SizedBox(height: 16.0),
-            _buildCustomTextField(
-              initialValue: organization.description,
-              labelText: "Descrição",
-              maxLines: 3,
-            ),
+            if (organization.description != null)
+              _buildCustomTextField(
+                initialValue: organization.description!,
+                labelText: "Descrição",
+                maxLines: 3,
+              ),
             const SizedBox(height: 16.0),
             Row(
               children: [
@@ -175,11 +179,11 @@ class _AdminTabState extends State<AdminTab> {
                   leading: CircleAvatar(
                     backgroundColor: Colors.grey,
                     child: Text(
-                      member.name.substring(0, 1).toUpperCase(),
+                      member.user.name.substring(0, 1).toUpperCase(),
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),
-                  title: Text(member.name),
+                  title: Text(member.user.name),
                   subtitle: Text(member.role),
                   trailing: IconButton(
                     icon: const Icon(Icons.remove_circle, color: Colors.red),

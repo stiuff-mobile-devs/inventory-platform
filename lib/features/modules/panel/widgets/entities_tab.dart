@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:inventory_platform/core/services/mock_service.dart';
-import 'package:inventory_platform/features/data/models/entity_model.dart';
-import 'package:inventory_platform/features/data/models/organization_model.dart';
-import 'package:inventory_platform/features/widgets/temporary_message_display.dart';
-import 'package:inventory_platform/features/widgets/custom_progress_indicator.dart';
-import 'package:inventory_platform/features/widgets/list_item_skeleton.dart';
+import 'package:inventory_platform/core/enums/tab_type_enum.dart';
+import 'package:inventory_platform/data/models/entity_model.dart';
+import 'package:inventory_platform/data/models/organization_model.dart';
+import 'package:inventory_platform/data/repositories/organization_repository.dart';
+import 'package:inventory_platform/features/common/widgets/temporary_message_display.dart';
+import 'package:inventory_platform/features/common/widgets/custom_progress_indicator.dart';
+import 'package:inventory_platform/features/common/widgets/list_item_skeleton.dart';
+import 'package:inventory_platform/routes/routes.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class EntitiesTab extends StatefulWidget {
@@ -23,7 +25,9 @@ class _EntitiesTabState extends State<EntitiesTab> {
   List<EntityModel> _allEntities = [];
   List<EntityModel> _filteredEntities = [];
   final OrganizationModel organization = Get.arguments;
-  late final MockService mockService;
+
+  final OrganizationRepository _organizationRepository =
+      Get.find<OrganizationRepository>();
 
   final Map<String, bool> _groupExpansionState = {};
 
@@ -31,14 +35,15 @@ class _EntitiesTabState extends State<EntitiesTab> {
   void initState() {
     super.initState();
     _pagingController.addPageRequestListener((pageKey) => _fetchPage(pageKey));
-    mockService = Get.find<MockService>();
-    _allEntities = mockService.getEntitiesForOrganization(organization.id)
+    _allEntities = _organizationRepository
+        .getEntitiesForOrganization(organization.id)
       ..sort((a, b) => a.type.compareTo(b.type));
   }
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      _allEntities = mockService.getEntitiesForOrganization(organization.id)
+      _allEntities = _organizationRepository
+          .getEntitiesForOrganization(organization.id)
         ..sort((a, b) => a.type.compareTo(b.type));
 
       _filteredEntities = List.from(_allEntities);
@@ -104,25 +109,46 @@ class _EntitiesTabState extends State<EntitiesTab> {
               color: Colors.black87,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 4.0),
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
-                vertical: 4.0,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.greenAccent.shade700,
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              child: Text(
-                organizationName,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                  vertical: 4.0,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.greenAccent.shade700,
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                child: Text(
+                  organizationName,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
+              const SizedBox(width: 8.0),
+              TextButton.icon(
+                onPressed: () async {
+                  await Get.toNamed(
+                    AppRoutes.form,
+                    arguments: [
+                      TabType.entities,
+                      organization,
+                    ],
+                  );
+                  _onRefresh();
+                },
+                label: const Text('Adicionar Entidade'),
+                icon: const Icon(Icons.add),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.blue,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -219,7 +245,7 @@ class _EntitiesTabState extends State<EntitiesTab> {
         duration: const Duration(milliseconds: 0),
         opacity: _groupExpansionState[groupType] == true ? 1.0 : 0.0,
         child: ListTile(
-          title: Text(entity.name),
+          title: Text(entity.title),
         ),
       ),
       crossFadeState: _groupExpansionState[groupType] == true

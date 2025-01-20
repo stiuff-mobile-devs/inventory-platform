@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inventory_platform/core/services/mock_service.dart';
-import 'package:inventory_platform/features/widgets/base_scaffold.dart';
-import 'package:inventory_platform/features/widgets/carousel_section.dart' as w;
-import 'package:inventory_platform/features/widgets/controllers/carousel_section_controller.dart';
+import 'package:inventory_platform/data/repositories/organization_repository.dart';
+import 'package:inventory_platform/features/common/widgets/base_scaffold.dart';
+import 'package:inventory_platform/features/common/widgets/carousel_section.dart'
+    as w;
+import 'package:inventory_platform/features/common/controllers/carousel_section_controller.dart';
 import 'package:inventory_platform/routes/routes.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final carouselController = Get.find<CarouselSectionController>();
+  final _organizationRepository = Get.find<OrganizationRepository>();
+
+  HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final carouselController = Get.find<CarouselSectionController>();
-    final mockService = Get.find<MockService>();
-
     return BaseScaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
@@ -29,7 +30,7 @@ class HomePage extends StatelessWidget {
             w.CarouselSection(
               isExpanded: true,
               controller: carouselController,
-              items: mockService.organizationsList,
+              items: _organizationRepository.getAllOrganizations(),
               route: AppRoutes.panel,
             ),
           ],
@@ -121,7 +122,7 @@ class HomePage extends StatelessWidget {
             ),
             _buildQuickActionButton(
               icon: Icons.supervised_user_circle,
-              label: 'Participar de Organização',
+              label: 'Participar de uma Organização',
               color: Colors.green,
               onPressed: () {},
             ),

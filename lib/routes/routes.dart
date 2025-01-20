@@ -4,4 +4,5 @@ abstract class AppRoutes {
   static const String help = '/help';
   static const String login = '/login';
   static const String panel = '/panel';
+  static const String form = '/form';
 }

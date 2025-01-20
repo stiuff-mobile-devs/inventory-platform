@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:intl/intl.dart';
-import 'package:inventory_platform/features/data/models/generic_list_item_model.dart';
-import 'package:inventory_platform/features/data/models/organization_model.dart';
-import 'package:inventory_platform/features/widgets/custom_progress_indicator.dart';
-import 'package:inventory_platform/features/widgets/list_item_skeleton.dart';
-import 'package:inventory_platform/features/widgets/temporary_message_display.dart';
+import 'package:inventory_platform/core/enums/tab_type_enum.dart';
+import 'package:inventory_platform/data/models/generic_list_item_model.dart';
+import 'package:inventory_platform/data/models/organization_model.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/generic_list_header.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/generic_list_item_card.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/search_bar_widget.dart';
+import 'package:inventory_platform/features/common/widgets/custom_progress_indicator.dart';
+import 'package:inventory_platform/features/common/widgets/list_item_skeleton.dart';
+import 'package:inventory_platform/features/common/widgets/temporary_message_display.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class GenericListTab extends StatefulWidget {
-  final List<GenericListItemModel> items;
-  final String tabName;
+  final RxList<GenericListItemModel> items;
+  final TabType tabType;
   final String? searchParameters;
+  final String? firstDetailFieldName;
+  final String? secondDetailFieldName;
 
   const GenericListTab({
     super.key,
     this.searchParameters,
-    required this.tabName,
+    this.firstDetailFieldName,
+    this.secondDetailFieldName,
+    required this.tabType,
     required this.items,
   });
 
@@ -26,7 +33,7 @@ class GenericListTab extends StatefulWidget {
 }
 
 class _GenericListTabState extends State<GenericListTab> {
-  final OrganizationModel organization = Get.arguments;
+  final OrganizationModel _organization = Get.arguments;
   final TextEditingController _searchController = TextEditingController();
   final PagingController<int, GenericListItemModel> _pagingController =
       PagingController(firstPageKey: 0);
@@ -37,26 +44,47 @@ class _GenericListTabState extends State<GenericListTab> {
 
   @override
   void initState() {
+    super.initState();
     _pagingController.addPageRequestListener((pageKey) => _fetchPage(pageKey));
-    _searchController.addListener(_filterInventories);
+    _searchController.addListener(() => _filterItems(_searchController.text));
     _allItemsList = widget.items
       ..sort((a, b) => b.initialDate!.compareTo(a.initialDate!));
-    super.initState();
+    _filteredItemsList = List.from(_allItemsList);
+  }
+
+  @override
+  void didUpdateWidget(covariant GenericListTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.items != widget.items) {
+      setState(() {
+        _allItemsList = widget.items
+          ..sort((a, b) => b.initialDate!.compareTo(a.initialDate!));
+        _filteredItemsList = List.from(_allItemsList);
+      });
+      _pagingController.refresh();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (mounted) _pagingController.refresh();
-
     return RefreshIndicator(
       backgroundColor: Colors.white,
       onRefresh: _onRefresh,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(organization.title),
-          _buildSearchBar(),
-          _buildInventoryList(),
+          GenericListHeader(
+            onFormSubmit: _onFormSubmitUpdateScreenAndPaging,
+            tabType: widget.tabType,
+            itemCount: _allItemsList.length,
+            organization: _organization,
+          ),
+          SearchBarWidget(
+            searchController: _searchController,
+            hintText: 'Pesquisar por ${widget.searchParameters ?? '...'}',
+            onSearchTextChanged: _filterItems,
+          ),
+          _buildList(),
         ],
       ),
     );
@@ -64,11 +92,25 @@ class _GenericListTabState extends State<GenericListTab> {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      _allItemsList = widget.items
-        ..sort((a, b) => b.initialDate!.compareTo(a.initialDate!));
+      final startIndex = pageKey * pageSize;
+      final endIndex = startIndex + pageSize;
 
-      _filteredItemsList = List.from(_allItemsList);
-      _updatePagingController(pageKey);
+      var paginatedItems = _filteredItemsList.sublist(
+        startIndex,
+        endIndex > _filteredItemsList.length
+            ? _filteredItemsList.length
+            : endIndex,
+      );
+
+      final isLastPage = endIndex >= _filteredItemsList.length;
+
+      if (mounted) {
+        if (isLastPage) {
+          _pagingController.appendLastPage(paginatedItems);
+        } else {
+          _pagingController.appendPage(paginatedItems, pageKey + 1);
+        }
+      }
     } catch (error, stackTrace) {
       debugPrint('Error fetching page: $error');
       debugPrint('Stack trace: $stackTrace');
@@ -78,225 +120,45 @@ class _GenericListTabState extends State<GenericListTab> {
     }
   }
 
-  void _updatePagingController(int pageKey) {
-    final startIndex = pageKey * pageSize;
-    final endIndex = startIndex + pageSize;
-
-    final paginatedInventories = _filteredItemsList.sublist(
-      startIndex,
-      endIndex > _filteredItemsList.length
-          ? _filteredItemsList.length
-          : endIndex,
-    );
-
-    final isLastPage = endIndex >= _filteredItemsList.length;
-
-    if (mounted) {
-      if (isLastPage) {
-        _pagingController.appendLastPage(paginatedInventories);
-      } else {
-        _pagingController.appendPage(paginatedInventories, pageKey + 1);
-      }
-    }
-  }
-
-  void _filterInventories() {
-    final query = _searchController.text.toLowerCase();
+  void _filterItems(String query) {
+    final lowerCaseQuery = query.toLowerCase();
     setState(() {
-      _filteredItemsList = _allItemsList.where((inventory) {
-        return inventory.upperHeaderField.toLowerCase().contains(query) ||
-            (inventory.id ?? ' ').toLowerCase().contains(query);
+      _filteredItemsList = _allItemsList.where((item) {
+        return item.upperHeaderField.toLowerCase().contains(lowerCaseQuery) ||
+            (item.id ?? ' ').toLowerCase().contains(lowerCaseQuery);
       }).toList();
     });
-    _pagingController.itemList?.clear();
-    _updatePagingController(0);
+
+    _pagingController.refresh();
   }
 
   Future<void> _onRefresh() async {
     if (mounted) _pagingController.refresh();
   }
 
-  Widget _buildHeader(String organizationName) {
-    return Padding(
-      padding: const EdgeInsets.only(
-          left: 16.0, right: 16.0, top: 20.0, bottom: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                widget.tabName,
-                style: const TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(121, 158, 158, 158),
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  ),
-                  child: Text(
-                    '${_allItemsList.length}',
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 4.0),
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
-                vertical: 4.0,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.greenAccent.shade700,
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              child: Text(
-                organizationName,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+  void _onFormSubmitUpdateScreenAndPaging() {
+    setState(() {
+      _allItemsList = widget.items
+        ..sort((a, b) => b.initialDate!.compareTo(a.initialDate!));
+      _filteredItemsList = List.from(_allItemsList);
+    });
+    _pagingController.refresh();
   }
 
-  Widget _buildSearchBar() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.grey.shade300,
-          borderRadius: BorderRadius.circular(12.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10.0,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: TextField(
-          controller: _searchController,
-          style: const TextStyle(fontSize: 16.0),
-          cursorColor: Colors.black87,
-          decoration: InputDecoration(
-            contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
-            hintText: 'Pesquisar por ${widget.searchParameters ?? '...'}',
-            hintStyle: TextStyle(
-              color: Colors.grey.shade700,
-              fontSize: 16.0,
-            ),
-            prefixIcon: const Icon(
-              Icons.search,
-              color: Colors.black54,
-            ),
-            filled: true,
-            fillColor: Colors.transparent,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.0),
-              borderSide: BorderSide.none,
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.0),
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.0),
-              borderSide: BorderSide(
-                color: Colors.black.withOpacity(0.2),
-                width: 1.5,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInventoryCard(GenericListItemModel item) {
-    final formattedOpenedAt = formatDate(item.initialDate);
-    final formattedLastUpdatedAt = formatDate(item.lastUpdatedAt);
-
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-      elevation: 4.0,
-      color: Colors.white,
-      child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-        title: Text(item.upperHeaderField,
-            style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16.0,
-                color: Colors.black87)),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(item.lowerHeaderField,
-                style: TextStyle(color: Colors.grey.shade700)),
-            const SizedBox(height: 4),
-            Text('Aberto em: $formattedOpenedAt',
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 12.0)),
-            Text('Atualizado em: $formattedLastUpdatedAt',
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 12.0))
-          ],
-        ),
-        trailing: Stack(
-          alignment: Alignment.center,
-          children: [
-            Icon(
-              item.status == "open"
-                  ? Icons.circle_outlined
-                  : Icons.circle_outlined,
-              color: item.status == "open" ? Colors.green : Colors.red,
-              size: 20.0,
-            ),
-            Icon(
-              item.status == "open" ? Icons.circle : Icons.circle,
-              color: item.status == "open" ? Colors.green : Colors.red,
-              size: 12.0,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  String formatDate(DateTime? date) {
-    return date != null
-        ? DateFormat.yMMMMd().format(date)
-        : "Data Indisponível";
-  }
-
-  Widget _buildInventoryList() {
+  Widget _buildList() {
     return Expanded(
       child: PagedListView<int, GenericListItemModel>(
         padding: const EdgeInsets.only(
             left: 16.0, right: 16.0, top: 16.0, bottom: 32.0),
         pagingController: _pagingController,
         builderDelegate: PagedChildBuilderDelegate<GenericListItemModel>(
-          itemBuilder: (context, inventory, index) {
-            return _buildInventoryCard(inventory);
+          itemBuilder: (context, item, index) {
+            return GenericListItemCard(
+              item: item,
+              firstDetailFieldName: widget.firstDetailFieldName ?? '',
+              secondDetailFieldName: widget.secondDetailFieldName ?? '',
+              key: ValueKey(item.id),
+            );
           },
           firstPageProgressIndicatorBuilder: (_) =>
               const CustomProgressIndicator(),
