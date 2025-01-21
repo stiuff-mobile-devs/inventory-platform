@@ -96,3 +96,4 @@ pubspec.lock
 .firebase/
 .github/
 public/
+macos/Flutter/GeneratedPluginRegistrant.swift
