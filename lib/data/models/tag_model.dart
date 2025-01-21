@@ -37,17 +37,17 @@ class TagModel {
   set createdAt(DateTime? createdAt) => _createdAt = createdAt;
   set lastSeen(DateTime? lastSeen) => _lastSeen = lastSeen;
 
-  factory TagModel.fromJson(Map<String, dynamic> json) {
+  factory TagModel.fromMap(Map<String, dynamic> map) {
     return TagModel(
-      id: json['id'],
-      serial: json['serial'],
-      isActive: json['isActive'],
-      lastSeen: DateTime.parse(json['lastSeen']),
-      createdAt: DateTime.parse(json['createdAt']),
+      id: map['id'],
+      serial: map['serial'],
+      isActive: map['isActive'],
+      lastSeen: DateTime.parse(map['lastSeen']),
+      createdAt: DateTime.parse(map['createdAt']),
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'id': _id,
         'serial': _serial,
         'isActive': _isActive,
@@ -55,7 +55,7 @@ class TagModel {
         'createdAt': _createdAt?.toIso8601String(),
       };
 
-  static List<GenericListItemModel> turnIntoGenericListItemModel(
+  static List<GenericListItemModel> turnAllIntoGenericListItemModel(
       List<TagModel> inList) {
     return inList.map((originalItem) {
       final thirtyDaysAgo = DateTime.now().subtract(const Duration(days: 30));

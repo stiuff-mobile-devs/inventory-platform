@@ -31,17 +31,17 @@ class ReaderModel {
   set createdAt(DateTime? createdAt) => _createdAt = createdAt;
   set lastSeen(DateTime? lastSeen) => _lastSeen = lastSeen;
 
-  factory ReaderModel.fromJson(Map<String, dynamic> json) {
+  factory ReaderModel.fromMap(Map<String, dynamic> map) {
     return ReaderModel(
-      name: json['name'],
-      mac: json['mac'],
-      isActive: json['isActive'],
-      createdAt: DateTime.parse(json['createdAt']),
-      lastSeen: DateTime.parse(json['lastSeen']),
+      name: map['name'],
+      mac: map['mac'],
+      isActive: map['isActive'],
+      createdAt: DateTime.parse(map['createdAt']),
+      lastSeen: DateTime.parse(map['lastSeen']),
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'name': _name,
         'mac': _mac,
         'isActive': _isActive,

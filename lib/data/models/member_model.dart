@@ -37,21 +37,21 @@ class MemberModel {
   set createdAt(DateTime? createdAt) => _createdAt = createdAt;
   set lastSeen(DateTime? lastSeen) => _lastSeen = lastSeen;
 
-  factory MemberModel.fromJson(Map<String, dynamic> json) {
+  factory MemberModel.fromMap(Map<String, dynamic> map) {
     return MemberModel(
-      id: json['id'],
-      user: UserModel.fromJson(json['user']),
-      role: json['role'],
-      isActive: json['isActive'],
-      createdAt: DateTime.parse(json['createdAt']),
+      id: map['id'],
+      user: UserModel.fromMap(map['user']),
+      role: map['role'],
+      isActive: map['isActive'],
+      createdAt: DateTime.parse(map['createdAt']),
       lastSeen:
-          json['lastSeen'] != null ? DateTime.parse(json['lastSeen']) : null,
+          map['lastSeen'] != null ? DateTime.parse(map['lastSeen']) : null,
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'id': _id,
-        'user': _user.toJson(),
+        'user': _user.toMap(),
         'role': _role,
         'isActive': _isActive,
         'createdAt': _createdAt?.toIso8601String(),

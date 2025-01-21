@@ -25,31 +25,37 @@ class FormPage extends StatefulWidget {
 class _FormPageState extends State<FormPage> {
   late final UtilsService _utilsService;
   late final TabType tabType;
-  late final OrganizationModel organization;
+  late final OrganizationModel _currentOrganization;
 
-  final OrganizationRepository _organizationRepository =
-      Get.find<OrganizationRepository>();
+  late final PanelController _panelController;
 
-  final GlobalKey<InventoryFormState> _inventoryFormKey =
-      GlobalKey<InventoryFormState>();
-  final GlobalKey<DomainFormState> _domainFormKey =
-      GlobalKey<DomainFormState>();
-  final GlobalKey<TagFormState> _tagFormKey = GlobalKey<TagFormState>();
-  final GlobalKey<ReaderFormState> _readerFormKey =
-      GlobalKey<ReaderFormState>();
-  final GlobalKey<MemberFormState> _memberFormKey =
-      GlobalKey<MemberFormState>();
-  final GlobalKey<EntityFormState> _entityFormKey =
-      GlobalKey<EntityFormState>();
+  late OrganizationRepository _organizationRepository;
 
-  final PanelController _panelController = Get.find<PanelController>();
+  late final GlobalKey<InventoryFormState> _inventoryFormKey;
+  late final GlobalKey<DomainFormState> _domainFormKey;
+  late final GlobalKey<TagFormState> _tagFormKey;
+  late final GlobalKey<ReaderFormState> _readerFormKey;
+  late final GlobalKey<MemberFormState> _memberFormKey;
+  late final GlobalKey<EntityFormState> _entityFormKey;
 
   @override
   void initState() {
     super.initState();
+    _panelController = Get.find<PanelController>();
+    _organizationRepository = Get.find<OrganizationRepository>();
+
     _utilsService = UtilsService();
+
     tabType = Get.arguments[0];
-    organization = Get.arguments[1];
+
+    _currentOrganization = _panelController.getCurrentOrganization();
+
+    _inventoryFormKey = GlobalKey<InventoryFormState>();
+    _domainFormKey = GlobalKey<DomainFormState>();
+    _tagFormKey = GlobalKey<TagFormState>();
+    _readerFormKey = GlobalKey<ReaderFormState>();
+    _memberFormKey = GlobalKey<MemberFormState>();
+    _entityFormKey = GlobalKey<EntityFormState>();
   }
 
   void _submitForm() {
@@ -61,8 +67,8 @@ class _FormPageState extends State<FormPage> {
         isFormValid = _inventoryFormKey.currentState?.submitForm() ?? false;
         formData = _inventoryFormKey.currentState?.inventoryModel;
         if (isFormValid) {
-          _organizationRepository
-              .appendInventoriesInOrganization([formData], organization.id);
+          _organizationRepository.appendInventoriesInOrganization(
+              [formData], _currentOrganization.id);
         }
         break;
       case TabType.domains:
@@ -70,7 +76,7 @@ class _FormPageState extends State<FormPage> {
         formData = _domainFormKey.currentState?.domainModel;
         if (isFormValid) {
           _organizationRepository
-              .appendDomainsInOrganization([formData], organization.id);
+              .appendDomainsInOrganization([formData], _currentOrganization.id);
         }
         break;
       case TabType.tags:
@@ -78,7 +84,7 @@ class _FormPageState extends State<FormPage> {
         formData = _tagFormKey.currentState?.tagModel;
         if (isFormValid) {
           _organizationRepository
-              .appendTagsInOrganization([formData], organization.id);
+              .appendTagsInOrganization([formData], _currentOrganization.id);
         }
         break;
       case TabType.readers:
@@ -86,7 +92,7 @@ class _FormPageState extends State<FormPage> {
         formData = _readerFormKey.currentState?.readerModel;
         if (isFormValid) {
           _organizationRepository
-              .appendReadersInOrganization([formData], organization.id);
+              .appendReadersInOrganization([formData], _currentOrganization.id);
         }
         break;
       case TabType.members:
@@ -94,15 +100,15 @@ class _FormPageState extends State<FormPage> {
         formData = _memberFormKey.currentState?.memberModel;
         if (isFormValid) {
           _organizationRepository
-              .appendMembersInOrganization([formData], organization.id);
+              .appendMembersInOrganization([formData], _currentOrganization.id);
         }
         break;
       case TabType.entities:
         isFormValid = _entityFormKey.currentState?.submitForm() ?? false;
         formData = _entityFormKey.currentState?.entityModel;
         if (isFormValid) {
-          _organizationRepository
-              .appendEntitiesInOrganization([formData], organization.id);
+          _organizationRepository.appendEntitiesInOrganization(
+              [formData], _currentOrganization.id);
         }
         break;
       default:
@@ -111,8 +117,8 @@ class _FormPageState extends State<FormPage> {
     }
 
     if (isFormValid) {
-      _panelController.updateItems(organization);
-      _panelController.update();
+      _panelController.refreshItemsAndPaging();
+
       debugPrint('Formulário submetido com sucesso!');
       Get.back();
     } else {
@@ -156,7 +162,7 @@ class _FormPageState extends State<FormPage> {
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   child: Text(
-                    organization.title,
+                    _currentOrganization.title,
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

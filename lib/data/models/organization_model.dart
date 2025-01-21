@@ -51,21 +51,21 @@ class OrganizationModel {
   set inventories(List<String>? inventories) => _inventoryIds = inventories;
   set domains(List<String>? domains) => _domainIds = domains;
 
-  Map<String, dynamic> toJson() {
+  factory OrganizationModel.fromMap(Map<String, dynamic> map) {
+    return OrganizationModel(
+      id: map['id'] as String,
+      title: map['title'] as String,
+      description: map['description'] as String,
+      imagePath: map['imagePath'] as String,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
     return {
       'id': _id,
       'title': _title,
       'description': _description,
       'imagePath': _imagePath,
     };
-  }
-
-  factory OrganizationModel.fromJson(Map<String, dynamic> json) {
-    return OrganizationModel(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      description: json['description'] as String,
-      imagePath: json['imagePath'] as String,
-    );
   }
 }

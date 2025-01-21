@@ -51,23 +51,23 @@ class DomainModel {
   set lastUpdatedAt(DateTime? lastUpdatedAt) => _lastUpdatedAt = lastUpdatedAt;
   set attributes(Map<String, dynamic>? attributes) => _attributes = attributes;
 
-  factory DomainModel.fromJson(Map<String, dynamic> json) {
+  factory DomainModel.fromMap(Map<String, dynamic> map) {
     return DomainModel(
-        id: json['id'],
-        title: json['title'],
-        isActive: json['isActive'],
-        description: json['description'],
-        location: json['location'],
-        capacity: json['capacity'],
-        createdAt: DateTime.parse(json['createdAt']),
-        lastUpdatedAt: DateTime.parse(json['lastUpdatedAt']),
-        attributes: Map<String, dynamic>.from(json['attributes']));
+        id: map['id'],
+        title: map['title'],
+        isActive: map['isActive'],
+        description: map['description'],
+        location: map['location'],
+        capacity: map['capacity'],
+        createdAt: DateTime.parse(map['createdAt']),
+        lastUpdatedAt: DateTime.parse(map['lastUpdatedAt']),
+        attributes: Map<String, dynamic>.from(map['attributes']));
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'id': _id,
         'title': _title,
-        'status': _isActive,
+        'isActive': _isActive,
         'description': _description,
         'location': _location,
         'capacity': _capacity,

@@ -41,19 +41,19 @@ class InventoryModel {
   set createdAt(DateTime? createdAt) => _createdAt = createdAt;
   set lastUpdatedAt(DateTime? lastUpdatedAt) => _lastUpdatedAt = lastUpdatedAt;
 
-  factory InventoryModel.fromJson(Map<String, dynamic> json) {
+  factory InventoryModel.fromMap(Map<String, dynamic> map) {
     return InventoryModel(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
-      revisionNumber: json['revisionNumber'],
-      isActive: json['isActive'],
-      createdAt: DateTime.parse(json['openedAt']),
-      lastUpdatedAt: DateTime.parse(json['lastUpdatedAt']),
+      id: map['id'],
+      title: map['title'],
+      description: map['description'],
+      revisionNumber: map['revisionNumber'],
+      isActive: map['isActive'],
+      createdAt: DateTime.parse(map['openedAt']),
+      lastUpdatedAt: DateTime.parse(map['lastUpdatedAt']),
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'id': id,
         'title': title,
         'isActive': isActive,

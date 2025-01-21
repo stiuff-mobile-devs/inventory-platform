@@ -64,24 +64,24 @@ class Material {
   set createdAt(DateTime? createdAt) => _createdAt = createdAt;
   set lastUpdatedAt(DateTime? lastUpdatedAt) => _lastUpdatedAt = lastUpdatedAt;
 
-  factory Material.fromJson(Map<String, dynamic> json) {
+  factory Material.fromMap(Map<String, dynamic> map) {
     return Material(
-      id: json['id'],
-      title: json['title'],
-      tag: json['tag'],
-      isActive: json['isActive'],
-      images: List<String>.from(json['images']),
-      location: json['location'],
-      quantity: json['quantity'],
-      unit: json['unit'],
-      createdAt: DateTime.parse(json['createdAt']),
-      lastUpdatedAt: DateTime.parse(json['lastUpdatedAt']),
-      notes: json['notes'],
-      attributes: Map<String, dynamic>.from(json['attributes']),
+      id: map['id'],
+      title: map['title'],
+      tag: map['tag'],
+      isActive: map['isActive'],
+      images: List<String>.from(map['images']),
+      location: map['location'],
+      quantity: map['quantity'],
+      unit: map['unit'],
+      createdAt: DateTime.parse(map['createdAt']),
+      lastUpdatedAt: DateTime.parse(map['lastUpdatedAt']),
+      notes: map['notes'],
+      attributes: Map<String, dynamic>.from(map['attributes']),
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'id': id,
         'title': title,
         'tag': tag,
