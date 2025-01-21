@@ -113,5 +113,8 @@ class PanelController extends GetxController {
       default:
         allTabItemsGeneralized.value = [];
     }
+
+    allTabItemsGeneralized.sort((a, b) => (b.initialDate ?? DateTime.now())
+        .compareTo(a.initialDate ?? DateTime.now()));
   }
 }

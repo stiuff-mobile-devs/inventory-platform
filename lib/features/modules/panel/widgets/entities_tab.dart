@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:inventory_platform/core/enums/tab_type_enum.dart';
 import 'package:inventory_platform/data/models/entity_model.dart';
 import 'package:inventory_platform/data/models/organization_model.dart';
 import 'package:inventory_platform/data/repositories/organization_repository.dart';
-import 'package:inventory_platform/features/common/widgets/temporary_message_display.dart';
-import 'package:inventory_platform/features/common/widgets/custom_progress_indicator.dart';
-import 'package:inventory_platform/features/common/widgets/list_item_skeleton.dart';
 import 'package:inventory_platform/routes/routes.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 class EntitiesTab extends StatefulWidget {
   const EntitiesTab({super.key});
@@ -19,11 +14,7 @@ class EntitiesTab extends StatefulWidget {
 }
 
 class _EntitiesTabState extends State<EntitiesTab> {
-  static const int pageSize = 4;
-  final PagingController<int, EntityModel> _pagingController =
-      PagingController(firstPageKey: 0);
   List<EntityModel> _allEntities = [];
-  List<EntityModel> _filteredEntities = [];
   final OrganizationModel organization = Get.arguments;
 
   final OrganizationRepository _organizationRepository =
@@ -34,49 +25,17 @@ class _EntitiesTabState extends State<EntitiesTab> {
   @override
   void initState() {
     super.initState();
-    _pagingController.addPageRequestListener((pageKey) => _fetchPage(pageKey));
     _allEntities = _organizationRepository
         .getEntitiesForOrganization(organization.id)
       ..sort((a, b) => a.type.compareTo(b.type));
   }
 
-  Future<void> _fetchPage(int pageKey) async {
-    try {
+  Future<void> _onRefresh() async {
+    setState(() {
       _allEntities = _organizationRepository
           .getEntitiesForOrganization(organization.id)
         ..sort((a, b) => a.type.compareTo(b.type));
-
-      _filteredEntities = List.from(_allEntities);
-      _updatePagingController(pageKey);
-    } catch (error) {
-      if (mounted) {
-        _pagingController.error = error;
-      }
-    }
-  }
-
-  void _updatePagingController(int pageKey) {
-    final startIndex = pageKey * pageSize;
-    final endIndex = startIndex + pageSize;
-
-    final paginatedEntities = _filteredEntities.sublist(
-      startIndex,
-      endIndex > _filteredEntities.length ? _filteredEntities.length : endIndex,
-    );
-
-    final isLastPage = endIndex >= _filteredEntities.length;
-
-    if (mounted) {
-      if (isLastPage) {
-        _pagingController.appendLastPage(paginatedEntities);
-      } else {
-        _pagingController.appendPage(paginatedEntities, pageKey + 1);
-      }
-    }
-  }
-
-  Future<void> _onRefresh() async {
-    if (mounted) _pagingController.refresh();
+    });
   }
 
   @override
@@ -157,22 +116,15 @@ class _EntitiesTabState extends State<EntitiesTab> {
 
   Widget _buildEntityList() {
     return Expanded(
-      child: PagedListView<int, EntityModel>(
+      child: ListView.builder(
         padding: const EdgeInsets.only(
             left: 16.0, right: 16.0, top: 16.0, bottom: 32.0),
-        pagingController: _pagingController,
-        builderDelegate: PagedChildBuilderDelegate<EntityModel>(
-          itemBuilder: (context, entity, index) {
-            final groupType = entity.type;
-            return _buildEntityGroup(entity, groupType, index);
-          },
-          firstPageProgressIndicatorBuilder: (_) =>
-              const CustomProgressIndicator(),
-          newPageProgressIndicatorBuilder: (_) =>
-              const Skeletonizer(child: ListItemSkeleton()),
-          noItemsFoundIndicatorBuilder: (_) =>
-              const TemporaryMessageDisplay(message: "Nenhum item encontrado."),
-        ),
+        itemCount: _allEntities.length,
+        itemBuilder: (context, index) {
+          final entity = _allEntities[index];
+          final groupType = entity.type;
+          return _buildEntityGroup(entity, groupType, index);
+        },
       ),
     );
   }
@@ -192,13 +144,12 @@ class _EntitiesTabState extends State<EntitiesTab> {
   }
 
   bool _isFirstItemInGroup(int index, String groupType) {
-    return index == 0 ||
-        _pagingController.itemList![index - 1].type != groupType;
+    return index == 0 || _allEntities[index - 1].type != groupType;
   }
 
   bool _isLastItemInGroup(int index, String groupType) {
-    return index == _pagingController.itemList!.length - 1 ||
-        _pagingController.itemList![index + 1].type != groupType;
+    return index == _allEntities.length - 1 ||
+        _allEntities[index + 1].type != groupType;
   }
 
   Widget _buildGroupButton(String groupType) {
@@ -252,11 +203,5 @@ class _EntitiesTabState extends State<EntitiesTab> {
           ? CrossFadeState.showSecond
           : CrossFadeState.showFirst,
     );
-  }
-
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
   }
 }

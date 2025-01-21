@@ -58,8 +58,7 @@ class _GenericListTabState extends State<GenericListTab> {
     return Obx(
       () => RefreshIndicator(
         backgroundColor: Colors.white,
-        onRefresh: () async =>
-            _panelController.pagingController.value.refresh(),
+        onRefresh: () async => _panelController.refreshItemsAndPaging(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -42,12 +42,8 @@ class _FormPageState extends State<FormPage> {
   void initState() {
     super.initState();
     _panelController = Get.find<PanelController>();
-    _organizationRepository = Get.find<OrganizationRepository>();
-
     _utilsService = UtilsService();
-
     tabType = Get.arguments[0];
-
     _currentOrganization = _panelController.getCurrentOrganization();
 
     _inventoryFormKey = GlobalKey<InventoryFormState>();

@@ -17,7 +17,7 @@ class PanelPage extends StatefulWidget {
 }
 
 class _PanelPageState extends State<PanelPage> {
-  final PanelController _panelController = Get.find<PanelController>();
+  late final PanelController _panelController;
 
   List<Widget> _tabs = [
     const DashboardTab(),
@@ -26,6 +26,8 @@ class _PanelPageState extends State<PanelPage> {
   @override
   void initState() {
     super.initState();
+
+    _panelController = Get.find<PanelController>();
 
     _panelController.setCurrentOrganization(Get.arguments);
 
