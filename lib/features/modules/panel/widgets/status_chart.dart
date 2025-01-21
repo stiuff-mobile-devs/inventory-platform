@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:inventory_platform/features/data/models/inventory_model.dart';
+import 'package:inventory_platform/data/models/inventory_model.dart';
 
 class StatusChart extends StatelessWidget {
   final List<InventoryModel> inventories;
@@ -16,11 +16,20 @@ class StatusChart extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Card(
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0)),
-            elevation: 3,
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.75,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.0),
+              boxShadow: const [
+                BoxShadow(
+                  blurRadius: 1.0,
+                  color: Colors.black38,
+                  offset: Offset(1.0, 1.0),
+                  spreadRadius: 0.5,
+                ),
+              ],
+            ),
             child: const Padding(
               padding: EdgeInsets.all(16.0),
               child: Column(
@@ -38,7 +47,7 @@ class StatusChart extends StatelessWidget {
         Container(
           margin: const EdgeInsets.only(top: 48.0),
           padding: const EdgeInsets.only(
-              left: 8.0, top: 16.0, bottom: 16.0, right: 34.0),
+              left: 10.0, top: 16.0, bottom: 16.0, right: 38.0),
           child: Center(child: _buildBarChart(openedCount, closedCount)),
         ),
       ],
@@ -50,8 +59,8 @@ class StatusChart extends StatelessWidget {
     final thirtyDaysAgo = now.subtract(const Duration(days: 30));
 
     return inventories.where((inventory) {
-      return inventory.openedAt != null &&
-          inventory.openedAt!.isAfter(thirtyDaysAgo);
+      return inventory.createdAt != null &&
+          inventory.createdAt!.isAfter(thirtyDaysAgo);
     }).length;
   }
 
@@ -60,8 +69,8 @@ class StatusChart extends StatelessWidget {
     final thirtyDaysAgo = now.subtract(const Duration(days: 30));
 
     return inventories.where((inventory) {
-      return inventory.closedAt != null &&
-          inventory.closedAt!.isAfter(thirtyDaysAgo);
+      return inventory.lastUpdatedAt != null &&
+          inventory.lastUpdatedAt!.isAfter(thirtyDaysAgo);
     }).length;
   }
 

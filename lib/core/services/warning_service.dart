@@ -1,4 +1,5 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/utils/auth/auth_warning.dart';
@@ -7,7 +8,11 @@ class WarningService {
   void handleWarning(Exception e) {
     String? warningMessage;
 
-    if (e is UserCancelledWarning) {
+    if (e is SignInInterruptionWarning) {
+      warningMessage = e.message;
+    }
+
+    if (e is FirebaseAuthException) {
       warningMessage = e.message;
     }
 

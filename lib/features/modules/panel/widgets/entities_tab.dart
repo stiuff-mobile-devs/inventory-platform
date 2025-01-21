@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:inventory_platform/core/services/mock_service.dart';
-import 'package:inventory_platform/features/data/models/entity_model.dart';
-import 'package:inventory_platform/features/data/models/organization_model.dart';
-import 'package:inventory_platform/features/modules/panel/widgets/custom_error_message.dart';
-import 'package:inventory_platform/features/modules/panel/widgets/custom_progress_indicator.dart';
-import 'package:inventory_platform/features/modules/panel/widgets/list_item_skeleton.dart';
+import 'package:inventory_platform/core/enums/tab_type_enum.dart';
+import 'package:inventory_platform/data/models/entity_model.dart';
+import 'package:inventory_platform/data/models/organization_model.dart';
+import 'package:inventory_platform/data/repositories/organization_repository.dart';
+import 'package:inventory_platform/features/common/widgets/temporary_message_display.dart';
+import 'package:inventory_platform/features/common/widgets/custom_progress_indicator.dart';
+import 'package:inventory_platform/features/common/widgets/list_item_skeleton.dart';
+import 'package:inventory_platform/routes/routes.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class EntitiesTab extends StatefulWidget {
@@ -20,11 +22,12 @@ class _EntitiesTabState extends State<EntitiesTab> {
   static const int pageSize = 4;
   final PagingController<int, EntityModel> _pagingController =
       PagingController(firstPageKey: 0);
-  // final TextEditingController _searchController = TextEditingController();
   List<EntityModel> _allEntities = [];
   List<EntityModel> _filteredEntities = [];
   final OrganizationModel organization = Get.arguments;
-  late final MockService mockService;
+
+  final OrganizationRepository _organizationRepository =
+      Get.find<OrganizationRepository>();
 
   final Map<String, bool> _groupExpansionState = {};
 
@@ -32,15 +35,15 @@ class _EntitiesTabState extends State<EntitiesTab> {
   void initState() {
     super.initState();
     _pagingController.addPageRequestListener((pageKey) => _fetchPage(pageKey));
-    // _searchController.addListener(_filterEntities);
-    mockService = Get.find<MockService>();
-    _allEntities = mockService.getEntitiesForOrganization(organization.id)
+    _allEntities = _organizationRepository
+        .getEntitiesForOrganization(organization.id)
       ..sort((a, b) => a.type.compareTo(b.type));
   }
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      _allEntities = mockService.getEntitiesForOrganization(organization.id)
+      _allEntities = _organizationRepository
+          .getEntitiesForOrganization(organization.id)
         ..sort((a, b) => a.type.compareTo(b.type));
 
       _filteredEntities = List.from(_allEntities);
@@ -72,18 +75,6 @@ class _EntitiesTabState extends State<EntitiesTab> {
     }
   }
 
-  // void _filterEntities() {
-  //   final query = _searchController.text.toLowerCase();
-  //   setState(() {
-  //     _filteredEntities = _allEntities.where((entity) {
-  //       return entity.name.toLowerCase().contains(query) ||
-  //           entity.id.toLowerCase().contains(query);
-  //     }).toList();
-  //   });
-  //   _pagingController.itemList?.clear();
-  //   _updatePagingController(0);
-  // }
-
   Future<void> _onRefresh() async {
     if (mounted) _pagingController.refresh();
   }
@@ -97,65 +88,11 @@ class _EntitiesTabState extends State<EntitiesTab> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeader(organization.title),
-          // _buildSearchBar(),
           _buildEntityList(),
         ],
       ),
     );
   }
-
-  // Widget _buildSearchBar() {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-  //     child: Container(
-  //       decoration: BoxDecoration(
-  //         color: Colors.grey.shade300,
-  //         borderRadius: BorderRadius.circular(12.0),
-  //         boxShadow: [
-  //           BoxShadow(
-  //             color: Colors.black.withOpacity(0.05),
-  //             blurRadius: 10.0,
-  //             offset: const Offset(0, 4),
-  //           ),
-  //         ],
-  //       ),
-  //       child: TextField(
-  //         controller: _searchController,
-  //         style: const TextStyle(fontSize: 16.0),
-  //         cursorColor: Colors.black87,
-  //         decoration: InputDecoration(
-  //           contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
-  //           hintText: 'Pesquisar por Nome ou Id',
-  //           hintStyle: TextStyle(
-  //             color: Colors.grey.shade700,
-  //             fontSize: 16.0,
-  //           ),
-  //           prefixIcon: const Icon(
-  //             Icons.search,
-  //             color: Colors.black54,
-  //           ),
-  //           filled: true,
-  //           fillColor: Colors.transparent,
-  //           border: OutlineInputBorder(
-  //             borderRadius: BorderRadius.circular(12.0),
-  //             borderSide: BorderSide.none,
-  //           ),
-  //           enabledBorder: OutlineInputBorder(
-  //             borderRadius: BorderRadius.circular(12.0),
-  //             borderSide: BorderSide.none,
-  //           ),
-  //           focusedBorder: OutlineInputBorder(
-  //             borderRadius: BorderRadius.circular(12.0),
-  //             borderSide: BorderSide(
-  //               color: Colors.black.withOpacity(0.2),
-  //               width: 1.5,
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget _buildHeader(String organizationName) {
     return Padding(
@@ -172,25 +109,46 @@ class _EntitiesTabState extends State<EntitiesTab> {
               color: Colors.black87,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 4.0),
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
-                vertical: 4.0,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.greenAccent.shade700,
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              child: Text(
-                organizationName,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                  vertical: 4.0,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.greenAccent.shade700,
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                child: Text(
+                  organizationName,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
+              const SizedBox(width: 8.0),
+              TextButton.icon(
+                onPressed: () async {
+                  await Get.toNamed(
+                    AppRoutes.form,
+                    arguments: [
+                      TabType.entities,
+                      organization,
+                    ],
+                  );
+                  _onRefresh();
+                },
+                label: const Text('Adicionar Entidade'),
+                icon: const Icon(Icons.add),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.blue,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -213,7 +171,7 @@ class _EntitiesTabState extends State<EntitiesTab> {
           newPageProgressIndicatorBuilder: (_) =>
               const Skeletonizer(child: ListItemSkeleton()),
           noItemsFoundIndicatorBuilder: (_) =>
-              const CustomErrorMessage(message: "Nenhum item encontrado."),
+              const TemporaryMessageDisplay(message: "Nenhum item encontrado."),
         ),
       ),
     );
@@ -287,7 +245,7 @@ class _EntitiesTabState extends State<EntitiesTab> {
         duration: const Duration(milliseconds: 0),
         opacity: _groupExpansionState[groupType] == true ? 1.0 : 0.0,
         child: ListTile(
-          title: Text(entity.name),
+          title: Text(entity.title),
         ),
       ),
       crossFadeState: _groupExpansionState[groupType] == true
@@ -299,7 +257,6 @@ class _EntitiesTabState extends State<EntitiesTab> {
   @override
   void dispose() {
     _pagingController.dispose();
-    // _searchController.dispose();
     super.dispose();
   }
 }

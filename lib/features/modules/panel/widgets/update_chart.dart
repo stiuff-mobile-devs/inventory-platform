@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:inventory_platform/features/data/models/inventory_model.dart';
+import 'package:inventory_platform/data/models/inventory_model.dart';
 
 class UpdateChart extends StatefulWidget {
   final List<InventoryModel> inventories;
@@ -29,11 +29,20 @@ class UpdateChartState extends State<UpdateChart> {
       children: [
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Card(
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0)),
-            elevation: 3,
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.75,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.0),
+              boxShadow: const [
+                BoxShadow(
+                  blurRadius: 1.0,
+                  color: Colors.black38,
+                  offset: Offset(1.0, 1.0),
+                  spreadRadius: 0.5,
+                ),
+              ],
+            ),
             child: const Padding(
               padding: EdgeInsets.all(16.0),
               child: Column(
@@ -51,7 +60,7 @@ class UpdateChartState extends State<UpdateChart> {
         Container(
           margin: const EdgeInsets.only(top: 72.0),
           padding: const EdgeInsets.only(
-              left: 8.0, top: 16.0, bottom: 16.0, right: 34.0),
+              left: 8.0, top: 16.0, bottom: 16.0, right: 38.0),
           child: Center(
             child: SizedBox(
               height: 200.0,
@@ -125,30 +134,6 @@ class UpdateChartState extends State<UpdateChart> {
             ),
           ),
         ),
-        // if (selectedDate != null &&
-        //     selectedUpdates != null &&
-        //     touchPosition != null)
-        //   Positioned(
-        //     left: touchPosition!.dx - 20,
-        //     top: touchPosition!.dy + 40,
-        //     child: Card(
-        //       elevation: 4.0,
-        //       shape: RoundedRectangleBorder(
-        //         borderRadius: BorderRadius.circular(8.0),
-        //       ),
-        //       child: Padding(
-        //         padding:
-        //             const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        //         child: Text(
-        //           'Data: $selectedDate\nAtualizações: $selectedUpdates',
-        //           style: const TextStyle(
-        //             fontSize: 14.0,
-        //             fontWeight: FontWeight.bold,
-        //           ),
-        //         ),
-        //       ),
-        //     ),
-        //   ),
       ],
     );
   }

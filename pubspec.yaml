@@ -2,7 +2,7 @@ name: inventory_platform
 description: "A new Flutter project using GetX architecture."
 publish_to: 'none'
 
-version: 1.1.0+2
+version: 2.1.0+4
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -29,6 +29,8 @@ dependencies:
   intl: ^0.19.0
   loading_indicator: ^3.1.1
   fl_chart: ^0.69.2
+  cached_network_image: ^3.4.1
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_test:
