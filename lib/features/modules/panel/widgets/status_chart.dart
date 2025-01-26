@@ -70,7 +70,8 @@ class StatusChart extends StatelessWidget {
 
     return inventories.where((inventory) {
       return inventory.lastUpdatedAt != null &&
-          inventory.lastUpdatedAt!.isAfter(thirtyDaysAgo);
+          inventory.lastUpdatedAt!.isAfter(thirtyDaysAgo) &&
+          inventory.isActive == 0;
     }).length;
   }
 

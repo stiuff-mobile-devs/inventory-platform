@@ -19,7 +19,6 @@ class FormController extends GetxController {
   late final OrganizationRepository organizationRepository;
   late final PanelController panelController;
 
-  // Keys dos formulários
   final inventoryFormKey = GlobalKey<InventoryFormState>();
   final domainFormKey = GlobalKey<DomainFormState>();
   final tagFormKey = GlobalKey<TagFormState>();

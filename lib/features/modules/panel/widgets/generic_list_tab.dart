@@ -53,8 +53,6 @@ class _GenericListTabState extends State<GenericListTab> {
 
   @override
   Widget build(BuildContext context) {
-    _panelController.refreshItemsAndPaging();
-
     return Obx(
       () => RefreshIndicator(
         backgroundColor: Colors.white,

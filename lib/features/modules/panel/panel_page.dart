@@ -68,6 +68,10 @@ class _PanelPageState extends State<PanelPage> {
         const AdminTab(),
       ];
     });
+
+    _panelController.refreshItemsAndPaging().then((_) {
+      _panelController.update();
+    });
   }
 
   @override

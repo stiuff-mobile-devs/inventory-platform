@@ -20,7 +20,7 @@ class MockService extends GetxController {
   void onInit() {
     super.onInit();
     addSampleOrganizations();
-    loadOrganizationData('1');
+    // loadOrganizationData('1');
   }
 
   void addSampleOrganizations() {

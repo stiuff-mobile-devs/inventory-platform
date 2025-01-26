@@ -48,8 +48,11 @@ class InventoryModel {
       description: map['description'],
       revisionNumber: map['revisionNumber'],
       isActive: map['isActive'],
-      createdAt: DateTime.parse(map['openedAt']),
-      lastUpdatedAt: DateTime.parse(map['lastUpdatedAt']),
+      createdAt:
+          map['openedAt'] != null ? DateTime.parse(map['openedAt']) : null,
+      lastUpdatedAt: map['lastUpdatedAt'] != null
+          ? DateTime.parse(map['lastUpdatedAt'])
+          : null,
     );
   }
 

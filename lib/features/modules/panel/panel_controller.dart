@@ -35,7 +35,6 @@ class PanelController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
     allTabItemsGeneralized = <GenericListItemModel>[].obs;
     filteredItems = <GenericListItemModel>[].obs;
 
@@ -46,10 +45,12 @@ class PanelController extends GetxController {
     inventories = <InventoryModel>[].obs;
     members = <MemberModel>[].obs;
     readers = <ReaderModel>[].obs;
+
+    ever(selectedTabIndex, (_) => refreshItemsAndPaging());
   }
 
-  void refreshItemsAndPaging() {
-    refreshItems();
+  Future<void> refreshItemsAndPaging() async {
+    await refreshItems();
     pagingController.value.refresh();
   }
 
@@ -69,8 +70,8 @@ class PanelController extends GetxController {
     }).toList();
   }
 
-  void refreshItems() {
-    inventories.value = _organizationRepository
+  Future<void> refreshItems() async {
+    inventories.value = await _organizationRepository
         .getInventoriesForOrganization(_currentOrganization.id);
 
     domains.value = _organizationRepository
