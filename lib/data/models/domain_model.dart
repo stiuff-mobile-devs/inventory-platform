@@ -53,17 +53,18 @@ class DomainModel {
 
   factory DomainModel.fromMap(Map<String, dynamic> map) {
     return DomainModel(
-        id: map['id'],
-        title: map['title'],
-        isActive: map['isActive'],
-        description: map['description'],
-        location: map['location'],
-        capacity: map['capacity'],
-        createdAt: DateTime.parse(map['createdAt']),
-        lastUpdatedAt: DateTime.parse(map['lastUpdatedAt']),
-        attributes: map['attributes'] != null
-            ? Map<String, dynamic>.from(map['attributes'])
-            : null);
+      id: map['id'],
+      title: map['title'],
+      isActive: map['isActive'],
+      description: map['description'],
+      location: map['location'],
+      capacity: map['capacity'],
+      createdAt: DateTime.parse(map['createdAt']),
+      lastUpdatedAt: DateTime.parse(map['lastUpdatedAt']),
+      attributes: map['attributes'] != null
+          ? Map<String, dynamic>.from(map['attributes'])
+          : null,
+    );
   }
 
   Map<String, dynamic> toMap() => {

@@ -25,17 +25,19 @@ class _EntitiesTabState extends State<EntitiesTab> {
   @override
   void initState() {
     super.initState();
-    _allEntities = _organizationRepository
-        .getEntitiesForOrganization(organization.id)
-      ..sort((a, b) => a.type.compareTo(b.type));
+    _loadEntities();
+  }
+
+  Future<void> _loadEntities() async {
+    final entities = await _organizationRepository
+        .getEntitiesForOrganization(organization.id);
+    setState(() {
+      _allEntities = entities..sort((a, b) => a.type.compareTo(b.type));
+    });
   }
 
   Future<void> _onRefresh() async {
-    setState(() {
-      _allEntities = _organizationRepository
-          .getEntitiesForOrganization(organization.id)
-        ..sort((a, b) => a.type.compareTo(b.type));
-    });
+    await _loadEntities();
   }
 
   @override

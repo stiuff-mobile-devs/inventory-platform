@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/data/models/domain_model.dart';
 import 'package:inventory_platform/data/models/entity_model.dart';
@@ -70,8 +69,6 @@ class OrganizationRepository {
 
     return allInventories;
 
-    // Preciso implementar persistência em Organization antes
-
     // return allInventories
     //     .where((inventory) =>
     //         organization.inventories?.contains(inventory.id) ?? false)
@@ -136,14 +133,20 @@ class OrganizationRepository {
     );
   }
 
-  List<EntityModel> getEntitiesForOrganization(String orgId) {
-    return _getDataForOrganization(
-      orgId,
-      (org) => _entityRepository
-          .getAllEntities()
-          .where((entity) => org.entities?.contains(entity.id) ?? false)
-          .toList(),
-    );
+  Future<List<EntityModel>> getEntitiesForOrganization(String orgId) async {
+    OrganizationModel? organization =
+        _organizations.firstWhere((organization) => organization.id == orgId);
+    List<EntityModel> allEntities = await _entityRepository.getAllEntities();
+
+    return allEntities;
+
+    // return _getDataForOrganization(
+    //   orgId,
+    //   (org) => _entityRepository
+    //       .getAllEntities()
+    //       .where((entity) => org.entities?.contains(entity.id) ?? false)
+    //       .toList(),
+    // );
   }
 
   void _loadDataInOrganization(
@@ -264,11 +267,14 @@ class OrganizationRepository {
         (org, ids) => org.members = ids);
   }
 
-  void setEntitiesInOrganization(List<EntityModel> items, String orgId) {
+  Future<void> setEntitiesInOrganization(
+      List<EntityModel> items, String orgId) async {
+    List<EntityModel> allEntities = await _entityRepository.getAllEntities();
+
     _setItemsInOrganization(
         items,
         orgId,
-        _entityRepository.getAllEntities,
+        () => allEntities,
         _entityRepository.addEntity,
         _entityRepository.deleteEntity,
         (org) => org.entities,

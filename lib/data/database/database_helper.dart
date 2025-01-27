@@ -64,8 +64,9 @@ class DatabaseHelper {
       CREATE TABLE entities (
         id TEXT PRIMARY KEY,
         name TEXT,
-        domainId TEXT,
-        FOREIGN KEY (domainId) REFERENCES domain_model (id)
+        type TEXT,
+        createdAt TEXT,
+        attributes TEXT
       )
     ''');
 

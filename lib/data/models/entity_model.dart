@@ -34,8 +34,11 @@ class EntityModel {
       id: map['id'],
       title: map['name'],
       type: map['type'],
-      attributes: Map<String, dynamic>.from(map['attributes']),
-      createdAt: DateTime.parse(map['createdAt']),
+      attributes: map['attributes'] != null
+          ? Map<String, dynamic>.from(map['attributes'])
+          : null,
+      createdAt:
+          map['createdAt'] != null ? DateTime.parse(map['createdAt']) : null,
     );
   }
 
