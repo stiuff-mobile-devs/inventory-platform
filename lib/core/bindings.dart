@@ -24,6 +24,8 @@ class CoreBindings extends Bindings {
     Get.put<ErrorService>(ErrorService());
     Get.put<WarningService>(WarningService());
 
+    Get.put<DatabaseHelper>(DatabaseHelper());
+
     Get.put<MemberRepository>(MemberRepository());
     Get.put<DomainRepository>(DomainRepository());
     Get.put<EntityRepository>(EntityRepository());
@@ -45,7 +47,5 @@ class CoreBindings extends Bindings {
         organizationRepository: Get.find<OrganizationRepository>(),
       ),
     );
-
-    Get.put<DatabaseHelper>(DatabaseHelper());
   }
 }

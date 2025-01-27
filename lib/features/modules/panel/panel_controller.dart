@@ -74,7 +74,7 @@ class PanelController extends GetxController {
     inventories.value = await _organizationRepository
         .getInventoriesForOrganization(_currentOrganization.id);
 
-    domains.value = _organizationRepository
+    domains.value = await _organizationRepository
         .getDomainsForOrganization(_currentOrganization.id);
 
     tags.value =

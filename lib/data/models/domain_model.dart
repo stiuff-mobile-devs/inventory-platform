@@ -61,7 +61,9 @@ class DomainModel {
         capacity: map['capacity'],
         createdAt: DateTime.parse(map['createdAt']),
         lastUpdatedAt: DateTime.parse(map['lastUpdatedAt']),
-        attributes: Map<String, dynamic>.from(map['attributes']));
+        attributes: map['attributes'] != null
+            ? Map<String, dynamic>.from(map['attributes'])
+            : null);
   }
 
   Map<String, dynamic> toMap() => {

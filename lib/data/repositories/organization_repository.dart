@@ -78,14 +78,20 @@ class OrganizationRepository {
     //     .toList();
   }
 
-  List<DomainModel> getDomainsForOrganization(String orgId) {
-    return _getDataForOrganization(
-      orgId,
-      (org) => _domainRepository
-          .getAllDomains()
-          .where((domain) => org.domains?.contains(domain.id) ?? false)
-          .toList(),
-    );
+  Future<List<DomainModel>> getDomainsForOrganization(String orgId) async {
+    OrganizationModel? organization =
+        _organizations.firstWhere((organization) => organization.id == orgId);
+    List<DomainModel> allDomains = await _domainRepository.getAllDomains();
+
+    return allDomains;
+
+    // return _getDataForOrganization(
+    //   orgId,
+    //   (org) => _domainRepository
+    //       .getAllDomains()
+    //       .where((domain) => org.domains?.contains(domain.id) ?? false)
+    //       .toList(),
+    // );
   }
 
   List<TagModel> getTagsForOrganization(String orgId) {
@@ -183,7 +189,6 @@ class OrganizationRepository {
       List<InventoryModel> items, String orgId) async {
     List<InventoryModel> allInventories =
         await _inventoryRepository.getAllInventories();
-    debugPrint("SET");
 
     _setItemsInOrganization(
         items,
@@ -195,11 +200,14 @@ class OrganizationRepository {
         (org, ids) => org.inventories = ids);
   }
 
-  void setDomainsInOrganization(List<DomainModel> items, String orgId) {
+  Future<void> setDomainsInOrganization(
+      List<DomainModel> items, String orgId) async {
+    List<DomainModel> allDomains = await _domainRepository.getAllDomains();
+
     _setItemsInOrganization(
         items,
         orgId,
-        _domainRepository.getAllDomains,
+        () => allDomains,
         _domainRepository.addDomain,
         _domainRepository.deleteDomain,
         (org) => org.domains,

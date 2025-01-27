@@ -1,11 +1,12 @@
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:inventory_platform/data/database/database_helper.dart';
 import 'package:inventory_platform/data/models/inventory_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 
 class InventoryRepository {
-  final DatabaseHelper _dbHelper = DatabaseHelper();
+  final DatabaseHelper _dbHelper = Get.find<DatabaseHelper>();
 
   Future<List<InventoryModel>> getAllInventories() async {
     try {
