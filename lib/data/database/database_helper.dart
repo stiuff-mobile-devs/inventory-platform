@@ -38,9 +38,8 @@ class DatabaseHelper {
       debugPrint('Creating tables in the database');
       await db.execute('''
       CREATE TABLE readers (
-        id TEXT PRIMARY KEY,
+        mac TEXT PRIMARY KEY,
         name TEXT,
-        mac TEXT,
         isActive INTEGER,
         createdAt TEXT,
         lastSeen TEXT

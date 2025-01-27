@@ -80,7 +80,7 @@ class PanelController extends GetxController {
     tags.value = await _organizationRepository
         .getTagsForOrganization(_currentOrganization.id);
 
-    readers.value = _organizationRepository
+    readers.value = await _organizationRepository
         .getReadersForOrganization(_currentOrganization.id);
 
     members.value = _organizationRepository

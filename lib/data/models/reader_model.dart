@@ -36,8 +36,10 @@ class ReaderModel {
       name: map['name'],
       mac: map['mac'],
       isActive: map['isActive'],
-      createdAt: DateTime.parse(map['createdAt']),
-      lastSeen: DateTime.parse(map['lastSeen']),
+      createdAt:
+          map['createdAt'] != null ? DateTime.parse(map['createdAt']) : null,
+      lastSeen:
+          map['lastSeen'] != null ? DateTime.parse(map['lastSeen']) : null,
     );
   }
 

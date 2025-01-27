@@ -110,14 +110,20 @@ class OrganizationRepository {
     // );
   }
 
-  List<ReaderModel> getReadersForOrganization(String orgId) {
-    return _getDataForOrganization(
-      orgId,
-      (org) => _readerRepository
-          .getAllReaders()
-          .where((reader) => org.readers?.contains(reader.mac) ?? false)
-          .toList(),
-    );
+  Future<List<ReaderModel>> getReadersForOrganization(String orgId) async {
+    OrganizationModel? organization =
+        _organizations.firstWhere((organization) => organization.id == orgId);
+    List<ReaderModel> allReaders = await _readerRepository.getAllReaders();
+
+    return allReaders;
+
+    // return _getDataForOrganization(
+    //   orgId,
+    //   (org) => _readerRepository
+    //       .getAllReaders()
+    //       .where((reader) => org.readers?.contains(reader.mac) ?? false)
+    //       .toList(),
+    // );
   }
 
   List<MemberModel> getMembersForOrganization(String orgId) {
@@ -233,11 +239,14 @@ class OrganizationRepository {
         (org, ids) => org.tags = ids);
   }
 
-  void setReadersInOrganization(List<ReaderModel> items, String orgId) {
+  Future<void> setReadersInOrganization(
+      List<ReaderModel> items, String orgId) async {
+    List<ReaderModel> allReaders = await _readerRepository.getAllReaders();
+
     _setItemsInOrganization(
         items,
         orgId,
-        _readerRepository.getAllReaders,
+        () => allReaders,
         _readerRepository.addReader,
         _readerRepository.deleteReader,
         (org) => org.readers,
