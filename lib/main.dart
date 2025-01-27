@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:inventory_platform/core/bindings.dart';
 import 'package:inventory_platform/core/theme/app_theme.dart';
 import 'package:inventory_platform/core/services/auth_service.dart';
+import 'package:inventory_platform/data/database/database_helper.dart';
 import 'package:inventory_platform/firebase_options.dart';
 import 'package:inventory_platform/routes/pages.dart';
 import 'package:inventory_platform/routes/routes.dart';
@@ -24,6 +25,9 @@ void main() async {
   final AuthService authService = Get.find();
   final initialRoute =
       authService.isUserLoggedIn ? AppRoutes.home : AppRoutes.login;
+
+  final dbHelper = Get.find<DatabaseHelper>();
+  await dbHelper.database;
 
   runApp(MyApp(initialRoute: initialRoute));
 }

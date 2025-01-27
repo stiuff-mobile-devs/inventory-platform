@@ -3,6 +3,7 @@ import 'package:inventory_platform/core/services/auth_service.dart';
 import 'package:inventory_platform/core/services/connection_service.dart';
 import 'package:inventory_platform/core/services/error_service.dart';
 import 'package:inventory_platform/core/services/warning_service.dart';
+import 'package:inventory_platform/data/database/database_helper.dart';
 import 'package:inventory_platform/data/repositories/domain_repository.dart';
 import 'package:inventory_platform/data/repositories/entity_repository.dart';
 import 'package:inventory_platform/data/repositories/inventory_repository.dart';
@@ -22,6 +23,8 @@ class CoreBindings extends Bindings {
     Get.put<ConnectionService>(ConnectionService());
     Get.put<ErrorService>(ErrorService());
     Get.put<WarningService>(WarningService());
+
+    Get.put<DatabaseHelper>(DatabaseHelper());
 
     Get.put<MemberRepository>(MemberRepository());
     Get.put<DomainRepository>(DomainRepository());

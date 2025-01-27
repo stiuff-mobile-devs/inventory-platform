@@ -29,17 +29,20 @@ class EntityModel {
   set attributes(Map<String, dynamic>? attributes) => _attributes = attributes;
   set createdAt(DateTime? createdAt) => _createdAt = createdAt;
 
-  factory EntityModel.fromJson(Map<String, dynamic> json) {
+  factory EntityModel.fromMap(Map<String, dynamic> map) {
     return EntityModel(
-      id: json['id'],
-      title: json['name'],
-      type: json['type'],
-      attributes: Map<String, dynamic>.from(json['attributes']),
-      createdAt: DateTime.parse(json['createdAt']),
+      id: map['id'],
+      title: map['name'],
+      type: map['type'],
+      attributes: map['attributes'] != null
+          ? Map<String, dynamic>.from(map['attributes'])
+          : null,
+      createdAt:
+          map['createdAt'] != null ? DateTime.parse(map['createdAt']) : null,
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'id': id,
         'name': title,
         'type': type,

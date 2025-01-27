@@ -17,9 +17,6 @@ class TagFormState extends State<TagForm> {
 
   TagModel get tagModel => TagModel(
         id: _idController.text,
-        serial: _idController.text.length >= 6
-            ? _idController.text.substring(_idController.text.length - 6)
-            : _idController.text,
         isActive: 1,
         createdAt: DateTime.now(),
         lastSeen: DateTime.now(),

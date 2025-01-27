@@ -25,16 +25,16 @@ class UserModel {
   set profileImageUrl(String? profileImageUrl) =>
       _profileImageUrl = profileImageUrl;
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
+  factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-      profileImageUrl: json['profileImageUrl'],
+      id: map['id'],
+      name: map['name'],
+      email: map['email'],
+      profileImageUrl: map['profileImageUrl'],
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
       'id': _id,
       'name': _name,

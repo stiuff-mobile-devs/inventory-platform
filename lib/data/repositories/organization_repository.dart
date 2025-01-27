@@ -60,45 +60,67 @@ class OrganizationRepository {
     return getter(organization);
   }
 
-  List<InventoryModel> getInventoriesForOrganization(String orgId) {
-    return _getDataForOrganization(
-      orgId,
-      (org) => _inventoryRepository
-          .getAllInventories()
-          .where(
-              (inventory) => org.inventories?.contains(inventory.id) ?? false)
-          .toList(),
-    );
+  Future<List<InventoryModel>> getInventoriesForOrganization(
+      String orgId) async {
+    OrganizationModel? organization =
+        _organizations.firstWhere((organization) => organization.id == orgId);
+    List<InventoryModel> allInventories =
+        await _inventoryRepository.getAllInventories();
+
+    return allInventories;
+
+    // return allInventories
+    //     .where((inventory) =>
+    //         organization.inventories?.contains(inventory.id) ?? false)
+    //     .toList();
   }
 
-  List<DomainModel> getDomainsForOrganization(String orgId) {
-    return _getDataForOrganization(
-      orgId,
-      (org) => _domainRepository
-          .getAllDomains()
-          .where((domain) => org.domains?.contains(domain.id) ?? false)
-          .toList(),
-    );
+  Future<List<DomainModel>> getDomainsForOrganization(String orgId) async {
+    OrganizationModel? organization =
+        _organizations.firstWhere((organization) => organization.id == orgId);
+    List<DomainModel> allDomains = await _domainRepository.getAllDomains();
+
+    return allDomains;
+
+    // return _getDataForOrganization(
+    //   orgId,
+    //   (org) => _domainRepository
+    //       .getAllDomains()
+    //       .where((domain) => org.domains?.contains(domain.id) ?? false)
+    //       .toList(),
+    // );
   }
 
-  List<TagModel> getTagsForOrganization(String orgId) {
-    return _getDataForOrganization(
-      orgId,
-      (org) => _tagRepository
-          .getAllTags()
-          .where((tag) => org.tags?.contains(tag.id) ?? false)
-          .toList(),
-    );
+  Future<List<TagModel>> getTagsForOrganization(String orgId) async {
+    OrganizationModel? organization =
+        _organizations.firstWhere((organization) => organization.id == orgId);
+    List<TagModel> allTags = await _tagRepository.getAllTags();
+
+    return allTags;
+
+    // return _getDataForOrganization(
+    //   orgId,
+    //   (org) => _tagRepository
+    //       .getAllTags()
+    //       .where((tag) => org.tags?.contains(tag.id) ?? false)
+    //       .toList(),
+    // );
   }
 
-  List<ReaderModel> getReadersForOrganization(String orgId) {
-    return _getDataForOrganization(
-      orgId,
-      (org) => _readerRepository
-          .getAllReaders()
-          .where((reader) => org.readers?.contains(reader.mac) ?? false)
-          .toList(),
-    );
+  Future<List<ReaderModel>> getReadersForOrganization(String orgId) async {
+    OrganizationModel? organization =
+        _organizations.firstWhere((organization) => organization.id == orgId);
+    List<ReaderModel> allReaders = await _readerRepository.getAllReaders();
+
+    return allReaders;
+
+    // return _getDataForOrganization(
+    //   orgId,
+    //   (org) => _readerRepository
+    //       .getAllReaders()
+    //       .where((reader) => org.readers?.contains(reader.mac) ?? false)
+    //       .toList(),
+    // );
   }
 
   List<MemberModel> getMembersForOrganization(String orgId) {
@@ -111,14 +133,20 @@ class OrganizationRepository {
     );
   }
 
-  List<EntityModel> getEntitiesForOrganization(String orgId) {
-    return _getDataForOrganization(
-      orgId,
-      (org) => _entityRepository
-          .getAllEntities()
-          .where((entity) => org.entities?.contains(entity.id) ?? false)
-          .toList(),
-    );
+  Future<List<EntityModel>> getEntitiesForOrganization(String orgId) async {
+    OrganizationModel? organization =
+        _organizations.firstWhere((organization) => organization.id == orgId);
+    List<EntityModel> allEntities = await _entityRepository.getAllEntities();
+
+    return allEntities;
+
+    // return _getDataForOrganization(
+    //   orgId,
+    //   (org) => _entityRepository
+    //       .getAllEntities()
+    //       .where((entity) => org.entities?.contains(entity.id) ?? false)
+    //       .toList(),
+    // );
   }
 
   void _loadDataInOrganization(
@@ -172,44 +200,56 @@ class OrganizationRepository {
     });
   }
 
-  void setInventoriesInOrganization(List<InventoryModel> items, String orgId) {
+  Future<void> setInventoriesInOrganization(
+      List<InventoryModel> items, String orgId) async {
+    List<InventoryModel> allInventories =
+        await _inventoryRepository.getAllInventories();
+
     _setItemsInOrganization(
         items,
         orgId,
-        _inventoryRepository.getAllInventories,
+        () => allInventories,
         _inventoryRepository.addInventory,
         _inventoryRepository.deleteInventory,
         (org) => org.inventories,
         (org, ids) => org.inventories = ids);
   }
 
-  void setDomainsInOrganization(List<DomainModel> items, String orgId) {
+  Future<void> setDomainsInOrganization(
+      List<DomainModel> items, String orgId) async {
+    List<DomainModel> allDomains = await _domainRepository.getAllDomains();
+
     _setItemsInOrganization(
         items,
         orgId,
-        _domainRepository.getAllDomains,
+        () => allDomains,
         _domainRepository.addDomain,
         _domainRepository.deleteDomain,
         (org) => org.domains,
         (org, ids) => org.domains = ids);
   }
 
-  void setTagsInOrganization(List<TagModel> items, String orgId) {
+  void setTagsInOrganization(List<TagModel> items, String orgId) async {
+    List<TagModel> allTags = await _tagRepository.getAllTags();
+
     _setItemsInOrganization(
         items,
         orgId,
-        _tagRepository.getAllTags,
+        () => allTags,
         _tagRepository.addTag,
         _tagRepository.deleteTag,
         (org) => org.tags,
         (org, ids) => org.tags = ids);
   }
 
-  void setReadersInOrganization(List<ReaderModel> items, String orgId) {
+  Future<void> setReadersInOrganization(
+      List<ReaderModel> items, String orgId) async {
+    List<ReaderModel> allReaders = await _readerRepository.getAllReaders();
+
     _setItemsInOrganization(
         items,
         orgId,
-        _readerRepository.getAllReaders,
+        () => allReaders,
         _readerRepository.addReader,
         _readerRepository.deleteReader,
         (org) => org.readers,
@@ -227,11 +267,14 @@ class OrganizationRepository {
         (org, ids) => org.members = ids);
   }
 
-  void setEntitiesInOrganization(List<EntityModel> items, String orgId) {
+  Future<void> setEntitiesInOrganization(
+      List<EntityModel> items, String orgId) async {
+    List<EntityModel> allEntities = await _entityRepository.getAllEntities();
+
     _setItemsInOrganization(
         items,
         orgId,
-        _entityRepository.getAllEntities,
+        () => allEntities,
         _entityRepository.addEntity,
         _entityRepository.deleteEntity,
         (org) => org.entities,
