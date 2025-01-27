@@ -94,14 +94,20 @@ class OrganizationRepository {
     // );
   }
 
-  List<TagModel> getTagsForOrganization(String orgId) {
-    return _getDataForOrganization(
-      orgId,
-      (org) => _tagRepository
-          .getAllTags()
-          .where((tag) => org.tags?.contains(tag.id) ?? false)
-          .toList(),
-    );
+  Future<List<TagModel>> getTagsForOrganization(String orgId) async {
+    OrganizationModel? organization =
+        _organizations.firstWhere((organization) => organization.id == orgId);
+    List<TagModel> allTags = await _tagRepository.getAllTags();
+
+    return allTags;
+
+    // return _getDataForOrganization(
+    //   orgId,
+    //   (org) => _tagRepository
+    //       .getAllTags()
+    //       .where((tag) => org.tags?.contains(tag.id) ?? false)
+    //       .toList(),
+    // );
   }
 
   List<ReaderModel> getReadersForOrganization(String orgId) {
@@ -214,11 +220,13 @@ class OrganizationRepository {
         (org, ids) => org.domains = ids);
   }
 
-  void setTagsInOrganization(List<TagModel> items, String orgId) {
+  void setTagsInOrganization(List<TagModel> items, String orgId) async {
+    List<TagModel> allTags = await _tagRepository.getAllTags();
+
     _setItemsInOrganization(
         items,
         orgId,
-        _tagRepository.getAllTags,
+        () => allTags,
         _tagRepository.addTag,
         _tagRepository.deleteTag,
         (org) => org.tags,

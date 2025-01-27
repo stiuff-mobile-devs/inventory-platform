@@ -101,7 +101,6 @@ class MockService extends GetxController {
     return [
       TagModel(
         id: '30E94591236D2925D9B04F80',
-        serial: 'B04F80',
         isActive: 1,
         lastSeen: DateTime.now().subtract(const Duration(hours: 5)),
         createdAt: DateTime.now().subtract(const Duration(days: 15)),

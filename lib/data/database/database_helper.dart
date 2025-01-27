@@ -110,9 +110,9 @@ class DatabaseHelper {
       await db.execute('''
       CREATE TABLE tags (
         id TEXT PRIMARY KEY,
-        name TEXT,
-        materialId TEXT,
-        FOREIGN KEY (materialId) REFERENCES material_model (id)
+        isActive INTEGER,
+        lastSeen TEXT,
+        createdAt TEXT
       )
     ''');
 
