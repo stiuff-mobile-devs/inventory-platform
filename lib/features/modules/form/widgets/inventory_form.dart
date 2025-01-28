@@ -4,7 +4,16 @@ import 'package:inventory_platform/data/repositories/inventory_repository.dart';
 import 'package:inventory_platform/features/common/widgets/custom_text_field.dart';
 
 class InventoryForm extends StatefulWidget {
-  const InventoryForm({super.key});
+  final bool? enabled;
+  final dynamic initialData;
+  final Color? labelColor;
+
+  const InventoryForm({
+    super.key,
+    this.enabled,
+    this.initialData,
+    this.labelColor,
+  });
 
   @override
   InventoryFormState createState() => InventoryFormState();

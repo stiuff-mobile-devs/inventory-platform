@@ -3,7 +3,16 @@ import 'package:inventory_platform/data/models/reader_model.dart';
 import 'package:inventory_platform/features/common/widgets/custom_text_field.dart';
 
 class ReaderForm extends StatefulWidget {
-  const ReaderForm({super.key});
+  final bool? enabled;
+  final dynamic initialData;
+  final Color? labelColor;
+
+  const ReaderForm({
+    super.key,
+    this.enabled,
+    this.initialData,
+    this.labelColor,
+  });
 
   @override
   ReaderFormState createState() => ReaderFormState();

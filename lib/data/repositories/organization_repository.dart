@@ -12,7 +12,6 @@ import 'package:inventory_platform/data/repositories/inventory_repository.dart';
 import 'package:inventory_platform/data/repositories/member_repository.dart';
 import 'package:inventory_platform/data/repositories/reader_repository.dart';
 import 'package:inventory_platform/data/repositories/tag_repository.dart';
-import 'package:uuid/uuid.dart';
 
 class OrganizationRepository {
   final List<OrganizationModel> _organizations = [];
@@ -62,22 +61,13 @@ class OrganizationRepository {
 
   Future<List<InventoryModel>> getInventoriesForOrganization(
       String orgId) async {
-    OrganizationModel? organization =
-        _organizations.firstWhere((organization) => organization.id == orgId);
     List<InventoryModel> allInventories =
         await _inventoryRepository.getAllInventories();
 
     return allInventories;
-
-    // return allInventories
-    //     .where((inventory) =>
-    //         organization.inventories?.contains(inventory.id) ?? false)
-    //     .toList();
   }
 
   Future<List<DomainModel>> getDomainsForOrganization(String orgId) async {
-    OrganizationModel? organization =
-        _organizations.firstWhere((organization) => organization.id == orgId);
     List<DomainModel> allDomains = await _domainRepository.getAllDomains();
 
     return allDomains;
@@ -92,35 +82,15 @@ class OrganizationRepository {
   }
 
   Future<List<TagModel>> getTagsForOrganization(String orgId) async {
-    OrganizationModel? organization =
-        _organizations.firstWhere((organization) => organization.id == orgId);
     List<TagModel> allTags = await _tagRepository.getAllTags();
 
     return allTags;
-
-    // return _getDataForOrganization(
-    //   orgId,
-    //   (org) => _tagRepository
-    //       .getAllTags()
-    //       .where((tag) => org.tags?.contains(tag.id) ?? false)
-    //       .toList(),
-    // );
   }
 
   Future<List<ReaderModel>> getReadersForOrganization(String orgId) async {
-    OrganizationModel? organization =
-        _organizations.firstWhere((organization) => organization.id == orgId);
     List<ReaderModel> allReaders = await _readerRepository.getAllReaders();
 
     return allReaders;
-
-    // return _getDataForOrganization(
-    //   orgId,
-    //   (org) => _readerRepository
-    //       .getAllReaders()
-    //       .where((reader) => org.readers?.contains(reader.mac) ?? false)
-    //       .toList(),
-    // );
   }
 
   List<MemberModel> getMembersForOrganization(String orgId) {
@@ -134,19 +104,9 @@ class OrganizationRepository {
   }
 
   Future<List<EntityModel>> getEntitiesForOrganization(String orgId) async {
-    OrganizationModel? organization =
-        _organizations.firstWhere((organization) => organization.id == orgId);
     List<EntityModel> allEntities = await _entityRepository.getAllEntities();
 
     return allEntities;
-
-    // return _getDataForOrganization(
-    //   orgId,
-    //   (org) => _entityRepository
-    //       .getAllEntities()
-    //       .where((entity) => org.entities?.contains(entity.id) ?? false)
-    //       .toList(),
-    // );
   }
 
   void _loadDataInOrganization(
@@ -325,12 +285,126 @@ class OrganizationRepository {
         items, orgId, _entityRepository.addEntity, (org) => org.entities);
   }
 
-  String generateUniqueId() {
-    var uuid = const Uuid();
-    String id;
-    do {
-      id = uuid.v4();
-    } while (_organizations.any((organization) => organization.id == id));
-    return id;
+  void deleteInventoryFromOrganization(String orgId, String inventoryId) {
+    _loadDataInOrganization(orgId, (org) {
+      org.inventories?.remove(inventoryId);
+      _inventoryRepository.deleteInventory(inventoryId);
+    });
+  }
+
+  void updateInventoryInOrganization(
+      String orgId, InventoryModel updatedInventory) {
+    _loadDataInOrganization(orgId, (org) {
+      if (org.inventories?.contains(updatedInventory.id) ?? false) {
+        _inventoryRepository.updateInventory(updatedInventory);
+      }
+    });
+  }
+
+  void deleteDomainFromOrganization(String orgId, String domainId) {
+    _loadDataInOrganization(orgId, (org) {
+      org.domains?.remove(domainId);
+      _domainRepository.deleteDomain(domainId);
+    });
+  }
+
+  void updateDomainInOrganization(String orgId, DomainModel updatedDomain) {
+    _loadDataInOrganization(orgId, (org) {
+      // if (org.domains?.contains(updatedDomain.id) ?? false) {
+      _domainRepository.updateDomain(updatedDomain);
+      // }
+    });
+  }
+
+  void deleteTagFromOrganization(String orgId, String tagId) {
+    _loadDataInOrganization(orgId, (org) {
+      org.tags?.remove(tagId);
+      _tagRepository.deleteTag(tagId);
+    });
+  }
+
+  void updateTagInOrganization(String orgId, TagModel updatedTag) {
+    _loadDataInOrganization(orgId, (org) {
+      if (org.tags?.contains(updatedTag.id) ?? false) {
+        _tagRepository.updateTag(updatedTag);
+      }
+    });
+  }
+
+  void deleteReaderFromOrganization(String orgId, String readerMac) {
+    _loadDataInOrganization(orgId, (org) {
+      org.readers?.remove(readerMac);
+      _readerRepository.deleteReader(readerMac);
+    });
+  }
+
+  void updateReaderInOrganization(String orgId, ReaderModel updatedReader) {
+    _loadDataInOrganization(orgId, (org) {
+      if (org.readers?.contains(updatedReader.mac) ?? false) {
+        _readerRepository.updateReader(updatedReader);
+      }
+    });
+  }
+
+  void deleteMemberFromOrganization(String orgId, String memberId) {
+    _loadDataInOrganization(orgId, (org) {
+      org.members?.remove(memberId);
+      _memberRepository.deleteMember(memberId);
+    });
+  }
+
+  void updateMemberInOrganization(String orgId, MemberModel updatedMember) {
+    _loadDataInOrganization(orgId, (org) {
+      if (org.members?.contains(updatedMember.id) ?? false) {
+        _memberRepository.updateMember(updatedMember);
+      }
+    });
+  }
+
+  void deleteEntityFromOrganization(String orgId, String entityId) {
+    _loadDataInOrganization(orgId, (org) {
+      org.entities?.remove(entityId);
+      _entityRepository.deleteEntity(entityId);
+    });
+  }
+
+  void updateEntityInOrganization(String orgId, EntityModel updatedEntity) {
+    _loadDataInOrganization(orgId, (org) {
+      if (org.entities?.contains(updatedEntity.id) ?? false) {
+        _entityRepository.updateEntity(updatedEntity);
+      }
+    });
+  }
+
+  Future<InventoryModel?> getInventoryById(
+      String orgId, String inventoryId) async {
+    List<InventoryModel> inventories =
+        await getInventoriesForOrganization(orgId);
+    return inventories.firstWhere((inventory) => inventory.id == inventoryId);
+  }
+
+  Future<DomainModel?> getDomainById(String orgId, String domainId) async {
+    List<DomainModel> domains = await getDomainsForOrganization(orgId);
+    return domains.firstWhereOrNull((domain) => domain.id == domainId);
+  }
+
+  Future<TagModel?> getTagById(String orgId, String tagId) async {
+    List<TagModel> tags = await getTagsForOrganization(orgId);
+    return tags.firstWhere((tag) => tag.id == tagId);
+  }
+
+  Future<ReaderModel?> getReaderById(String orgId, String readerMac) async {
+    List<ReaderModel> readers = await getReadersForOrganization(orgId);
+    return readers.firstWhere((reader) => reader.mac == readerMac);
+  }
+
+  MemberModel? getMemberById(String orgId, String memberId) {
+    List<MemberModel> members = getMembersForOrganization(orgId);
+    return members.firstWhere((member) => member.id == memberId);
+  }
+
+  Future<EntityModel?> getEntityById(String orgId, String entityId) async {
+    List<EntityModel> entities = await getEntitiesForOrganization(orgId);
+    return entities.firstWhere((entity) => entity.id == entityId);
   }
 }

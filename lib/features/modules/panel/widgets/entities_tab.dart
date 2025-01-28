@@ -98,7 +98,6 @@ class _EntitiesTabState extends State<EntitiesTab> {
                     AppRoutes.form,
                     arguments: [
                       TabType.entities,
-                      organization,
                     ],
                   );
                   _onRefresh();

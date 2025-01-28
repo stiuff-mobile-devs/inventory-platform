@@ -3,7 +3,16 @@ import 'package:inventory_platform/data/models/tag_model.dart';
 import 'package:inventory_platform/features/common/widgets/custom_text_field.dart';
 
 class TagForm extends StatefulWidget {
-  const TagForm({super.key});
+  final bool? enabled;
+  final dynamic initialData;
+  final Color? labelColor;
+
+  const TagForm({
+    super.key,
+    this.enabled,
+    this.initialData,
+    this.labelColor,
+  });
 
   @override
   TagFormState createState() => TagFormState();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:inventory_platform/core/services/utils_service.dart';
 import 'package:inventory_platform/features/modules/panel/panel_controller.dart';
 
 class AdminTab extends StatefulWidget {
@@ -11,11 +12,13 @@ class AdminTab extends StatefulWidget {
 
 class _AdminTabState extends State<AdminTab> {
   late final PanelController _panelController;
+  late final UtilsService _utilsService;
 
   @override
   void initState() {
     super.initState();
     _panelController = Get.find<PanelController>();
+    _utilsService = UtilsService();
   }
 
   @override
@@ -120,7 +123,9 @@ class _AdminTabState extends State<AdminTab> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      _utilsService.showUnderDevelopmentNotice(context);
+                    },
                     style: ButtonStyle(
                       iconColor: WidgetStateProperty.all(Colors.white),
                       backgroundColor:
@@ -195,7 +200,9 @@ class _AdminTabState extends State<AdminTab> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  _utilsService.showUnderDevelopmentNotice(context);
+                },
                 style: ButtonStyle(
                   iconColor: WidgetStateProperty.all(Colors.white),
                   backgroundColor: WidgetStateProperty.all(Colors.blueAccent),

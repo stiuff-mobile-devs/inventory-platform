@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:inventory_platform/core/services/utils_service.dart';
 import 'package:inventory_platform/data/models/organization_model.dart';
 import 'package:inventory_platform/data/repositories/organization_repository.dart';
 import 'package:inventory_platform/features/common/controllers/carousel_section_controller.dart';
 
 class HomeController extends GetxController {
-  final CarouselSectionController carouselController = Get.find();
-  final OrganizationRepository organizationRepository = Get.find();
+  final CarouselSectionController carouselController =
+      Get.find<CarouselSectionController>();
+  final UtilsService _utilsService = UtilsService();
+  final OrganizationRepository organizationRepository =
+      Get.find<OrganizationRepository>();
 
   final RxList<OrganizationModel> organizations = <OrganizationModel>[].obs;
 
@@ -20,11 +24,13 @@ class HomeController extends GetxController {
     organizations.assignAll(organizationRepository.getAllOrganizations());
   }
 
-  void createOrganization() {
+  void createOrganization(BuildContext context) {
     debugPrint("Criar uma nova organização");
+    _utilsService.showUnderDevelopmentNotice(context);
   }
 
-  void joinOrganization() {
+  void joinOrganization(BuildContext context) {
     debugPrint("Participar de uma organização");
+    _utilsService.showUnderDevelopmentNotice(context);
   }
 }
