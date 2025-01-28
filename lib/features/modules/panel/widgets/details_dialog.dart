@@ -68,7 +68,10 @@ class DetailsDialog extends StatelessWidget {
                     children: [
                       _panelController.selectedTabIndex.value == 1
                           ? ElevatedButton.icon(
-                              onPressed: () => {},
+                              onPressed: () => {
+                                _utilsService
+                                    .showUnderDevelopmentNotice(context),
+                              },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.blue,
                                 foregroundColor: Colors.white,
@@ -95,6 +98,7 @@ class DetailsDialog extends StatelessWidget {
                                 switch (_utilsService.tabIndexToEnum(
                                     _panelController.selectedTabIndex.value)) {
                                   case TabType.inventories:
+                                    debugPrint("HERE I AM!");
                                     return _panelController.inventories
                                         .firstWhere(
                                             (item) => item.id == this.item.id);

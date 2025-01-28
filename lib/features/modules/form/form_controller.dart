@@ -10,12 +10,6 @@ import 'package:inventory_platform/data/models/organization_model.dart';
 import 'package:inventory_platform/data/models/reader_model.dart';
 import 'package:inventory_platform/data/models/tag_model.dart';
 import 'package:inventory_platform/data/repositories/organization_repository.dart';
-import 'package:inventory_platform/features/modules/form/widgets/domain_form.dart';
-import 'package:inventory_platform/features/modules/form/widgets/entity_form.dart';
-import 'package:inventory_platform/features/modules/form/widgets/inventory_form.dart';
-import 'package:inventory_platform/features/modules/form/widgets/member_form.dart';
-import 'package:inventory_platform/features/modules/form/widgets/reader_form.dart';
-import 'package:inventory_platform/features/modules/form/widgets/tag_form.dart';
 import 'package:inventory_platform/features/modules/panel/panel_controller.dart';
 
 class FormController extends GetxController {
@@ -33,13 +27,6 @@ class FormController extends GetxController {
   RxInt activeMode = 0.obs;
   dynamic initialData;
 
-  final inventoryFormKey = GlobalKey<InventoryFormState>();
-  final domainFormKey = GlobalKey<DomainFormState>();
-  final tagFormKey = GlobalKey<TagFormState>();
-  final readerFormKey = GlobalKey<ReaderFormState>();
-  final memberFormKey = GlobalKey<MemberFormState>();
-  final entityFormKey = GlobalKey<EntityFormState>();
-
   @override
   void onInit() {
     super.onInit();
@@ -51,51 +38,55 @@ class FormController extends GetxController {
     currentOrganization = panelController.getCurrentOrganization();
   }
 
-  void submitForm(GlobalKey<DomainFormState> formKey) {
+  Future<void> submitForm(dynamic formKey) async {
     bool isFormValid = false;
     dynamic formData;
+    dynamic newFormData;
 
     switch (tabType) {
       case TabType.inventories:
-        isFormValid = inventoryFormKey.currentState?.submitForm() ?? false;
-        formData = inventoryFormKey.currentState?.inventoryModel;
+        isFormValid = formKey.currentState?.submitForm() ?? false;
+        formData = formKey.currentState?.inventoryModel;
         if (isFormValid) {
-          _handleInventorySubmission(formData);
+          await _handleInventorySubmission(formData);
         }
         break;
       case TabType.domains:
         isFormValid = (formKey.currentState)?.submitForm() ?? false;
         formData = (formKey.currentState)?.domainModel;
         if (isFormValid) {
-          _handleDomainSubmission(formData);
+          await _handleDomainSubmission(formData);
         }
         break;
       case TabType.tags:
-        isFormValid = tagFormKey.currentState?.submitForm() ?? false;
-        formData = tagFormKey.currentState?.tagModel;
+        isFormValid = formKey.currentState?.submitForm() ?? false;
+        formData = formKey.currentState?.prevTagModel;
+        newFormData = formKey.currentState?.tagModel;
+
         if (isFormValid) {
-          _handleTagSubmission(formData);
+          await _handleTagSubmission(formData, newFormData);
         }
         break;
       case TabType.readers:
-        isFormValid = readerFormKey.currentState?.submitForm() ?? false;
-        formData = readerFormKey.currentState?.readerModel;
+        isFormValid = formKey.currentState?.submitForm() ?? false;
+        formData = formKey.currentState?.prevReaderModel;
+        newFormData = formKey.currentState?.readerModel;
         if (isFormValid) {
-          _handleReaderSubmission(formData);
+          await _handleReaderSubmission(formData, newFormData);
         }
         break;
       case TabType.members:
-        isFormValid = memberFormKey.currentState?.submitForm() ?? false;
-        formData = memberFormKey.currentState?.memberModel;
+        isFormValid = formKey.currentState?.submitForm() ?? false;
+        formData = formKey.currentState?.memberModel;
         if (isFormValid) {
           _handleMemberSubmission(formData);
         }
         break;
       case TabType.entities:
-        isFormValid = entityFormKey.currentState?.submitForm() ?? false;
-        formData = entityFormKey.currentState?.entityModel;
+        isFormValid = formKey.currentState?.submitForm() ?? false;
+        formData = formKey.currentState?.entityModel;
         if (isFormValid) {
-          _handleEntitySubmission(formData);
+          await _handleEntitySubmission(formData);
         }
         break;
       default:
@@ -180,7 +171,7 @@ class FormController extends GetxController {
         currentOrganization.id, id);
   }
 
-  void _handleInventorySubmission(InventoryModel formData) async {
+  Future<void> _handleInventorySubmission(InventoryModel formData) async {
     InventoryModel? existingInventory = await organizationRepository
         .getInventoryById(currentOrganization.id, formData.id);
     if (existingInventory != null) {
@@ -192,7 +183,7 @@ class FormController extends GetxController {
     }
   }
 
-  void _handleDomainSubmission(DomainModel formData) async {
+  Future<void> _handleDomainSubmission(DomainModel formData) async {
     DomainModel? existingDomain = await organizationRepository.getDomainById(
         currentOrganization.id, formData.id);
     if (existingDomain != null) {
@@ -204,24 +195,30 @@ class FormController extends GetxController {
     }
   }
 
-  void _handleTagSubmission(TagModel formData) async {
+  Future<void> _handleTagSubmission(
+      TagModel formData, TagModel? newFormData) async {
     TagModel? existingTag = await organizationRepository.getTagById(
         currentOrganization.id, formData.id);
-    if (existingTag != null) {
-      organizationRepository.updateTagInOrganization(
-          currentOrganization.id, formData);
+    if (existingTag != null && newFormData != null) {
+      organizationRepository.deleteTagFromOrganization(
+          currentOrganization.id, formData.id);
+      organizationRepository
+          .appendTagsInOrganization([newFormData], currentOrganization.id);
     } else {
       organizationRepository
           .appendTagsInOrganization([formData], currentOrganization.id);
     }
   }
 
-  void _handleReaderSubmission(ReaderModel formData) async {
+  Future<void> _handleReaderSubmission(
+      ReaderModel formData, ReaderModel? newFormData) async {
     ReaderModel? existingReader = await organizationRepository.getReaderById(
         currentOrganization.id, formData.mac);
-    if (existingReader != null) {
-      organizationRepository.updateReaderInOrganization(
-          currentOrganization.id, formData);
+    if (existingReader != null && newFormData != null) {
+      organizationRepository.deleteReaderFromOrganization(
+          currentOrganization.id, formData.mac);
+      organizationRepository
+          .appendReadersInOrganization([newFormData], currentOrganization.id);
     } else {
       organizationRepository
           .appendReadersInOrganization([formData], currentOrganization.id);
@@ -240,7 +237,7 @@ class FormController extends GetxController {
     }
   }
 
-  void _handleEntitySubmission(EntityModel formData) async {
+  Future<void> _handleEntitySubmission(EntityModel formData) async {
     EntityModel? existingEntity = await organizationRepository.getEntityById(
         currentOrganization.id, formData.id);
     if (existingEntity != null) {

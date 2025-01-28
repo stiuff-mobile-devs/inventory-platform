@@ -295,9 +295,9 @@ class OrganizationRepository {
   void updateInventoryInOrganization(
       String orgId, InventoryModel updatedInventory) {
     _loadDataInOrganization(orgId, (org) {
-      if (org.inventories?.contains(updatedInventory.id) ?? false) {
-        _inventoryRepository.updateInventory(updatedInventory);
-      }
+      // if (org.inventories?.contains(updatedInventory.id) ?? false) {
+      _inventoryRepository.updateInventory(updatedInventory);
+      // }
     });
   }
 
@@ -325,9 +325,9 @@ class OrganizationRepository {
 
   void updateTagInOrganization(String orgId, TagModel updatedTag) {
     _loadDataInOrganization(orgId, (org) {
-      if (org.tags?.contains(updatedTag.id) ?? false) {
-        _tagRepository.updateTag(updatedTag);
-      }
+      // if (org.tags?.contains(updatedTag.id) ?? false) {
+      _tagRepository.updateTag(updatedTag);
+      // }
     });
   }
 
@@ -340,9 +340,9 @@ class OrganizationRepository {
 
   void updateReaderInOrganization(String orgId, ReaderModel updatedReader) {
     _loadDataInOrganization(orgId, (org) {
-      if (org.readers?.contains(updatedReader.mac) ?? false) {
-        _readerRepository.updateReader(updatedReader);
-      }
+      // if (org.readers?.contains(updatedReader.mac) ?? false) {
+      _readerRepository.updateReader(updatedReader);
+      // }
     });
   }
 
@@ -355,9 +355,9 @@ class OrganizationRepository {
 
   void updateMemberInOrganization(String orgId, MemberModel updatedMember) {
     _loadDataInOrganization(orgId, (org) {
-      if (org.members?.contains(updatedMember.id) ?? false) {
-        _memberRepository.updateMember(updatedMember);
-      }
+      // if (org.members?.contains(updatedMember.id) ?? false) {
+      _memberRepository.updateMember(updatedMember);
+      // }
     });
   }
 
@@ -370,9 +370,9 @@ class OrganizationRepository {
 
   void updateEntityInOrganization(String orgId, EntityModel updatedEntity) {
     _loadDataInOrganization(orgId, (org) {
-      if (org.entities?.contains(updatedEntity.id) ?? false) {
-        _entityRepository.updateEntity(updatedEntity);
-      }
+      // if (org.entities?.contains(updatedEntity.id) ?? false) {
+      _entityRepository.updateEntity(updatedEntity);
+      // }
     });
   }
 
@@ -380,7 +380,8 @@ class OrganizationRepository {
       String orgId, String inventoryId) async {
     List<InventoryModel> inventories =
         await getInventoriesForOrganization(orgId);
-    return inventories.firstWhere((inventory) => inventory.id == inventoryId);
+    return inventories
+        .firstWhereOrNull((inventory) => inventory.id == inventoryId);
   }
 
   Future<DomainModel?> getDomainById(String orgId, String domainId) async {
@@ -390,21 +391,21 @@ class OrganizationRepository {
 
   Future<TagModel?> getTagById(String orgId, String tagId) async {
     List<TagModel> tags = await getTagsForOrganization(orgId);
-    return tags.firstWhere((tag) => tag.id == tagId);
+    return tags.firstWhereOrNull((tag) => tag.id == tagId);
   }
 
   Future<ReaderModel?> getReaderById(String orgId, String readerMac) async {
     List<ReaderModel> readers = await getReadersForOrganization(orgId);
-    return readers.firstWhere((reader) => reader.mac == readerMac);
+    return readers.firstWhereOrNull((reader) => reader.mac == readerMac);
   }
 
   MemberModel? getMemberById(String orgId, String memberId) {
     List<MemberModel> members = getMembersForOrganization(orgId);
-    return members.firstWhere((member) => member.id == memberId);
+    return members.firstWhereOrNull((member) => member.id == memberId);
   }
 
   Future<EntityModel?> getEntityById(String orgId, String entityId) async {
     List<EntityModel> entities = await getEntitiesForOrganization(orgId);
-    return entities.firstWhere((entity) => entity.id == entityId);
+    return entities.firstWhereOrNull((entity) => entity.id == entityId);
   }
 }

@@ -20,7 +20,13 @@ class FormPage extends StatefulWidget {
 class FormPageState extends State<FormPage> {
   final FormController controller = Get.put(FormController());
 
-  GlobalKey<DomainFormState> formKey = GlobalKey<DomainFormState>();
+  GlobalKey<DomainFormState> domainFormKey = GlobalKey<DomainFormState>();
+  GlobalKey<InventoryFormState> inventoryFormKey =
+      GlobalKey<InventoryFormState>();
+  GlobalKey<TagFormState> tagFormKey = GlobalKey<TagFormState>();
+  GlobalKey<ReaderFormState> readerFormKey = GlobalKey<ReaderFormState>();
+  GlobalKey<MemberFormState> memberFormKey = GlobalKey<MemberFormState>();
+  GlobalKey<EntityFormState> entityFormKey = GlobalKey<EntityFormState>();
 
   String getHeaderPrefix(int activeMode) {
     switch (activeMode) {
@@ -47,7 +53,28 @@ class FormPageState extends State<FormPage> {
   void _cancelForm() {
     setState(() {
       controller.activeMode = 1.obs;
-      formKey = GlobalKey<DomainFormState>();
+      switch (controller.tabType) {
+        case TabType.inventories:
+          inventoryFormKey = GlobalKey<InventoryFormState>();
+          break;
+        case TabType.domains:
+          domainFormKey = GlobalKey<DomainFormState>();
+          break;
+        case TabType.tags:
+          tagFormKey = GlobalKey<TagFormState>();
+          break;
+        case TabType.readers:
+          readerFormKey = GlobalKey<ReaderFormState>();
+          break;
+        case TabType.members:
+          memberFormKey = GlobalKey<MemberFormState>();
+          break;
+        case TabType.entities:
+          entityFormKey = GlobalKey<EntityFormState>();
+          break;
+        default:
+          break;
+      }
     });
   }
 
@@ -97,42 +124,42 @@ class FormPageState extends State<FormPage> {
                   switch (controller.tabType) {
                     case TabType.inventories:
                       return InventoryForm(
-                        key: formKey,
-                        enabled: controller.activeMode.value != 1,
+                        key: inventoryFormKey,
                         initialData: controller.initialData,
+                        isFormReadOnly: controller.activeMode.value == 1,
                       );
                     case TabType.domains:
                       return DomainForm(
-                        key: formKey,
+                        key: domainFormKey,
                         initialData: controller.initialData,
                         isFormReadOnly: controller.activeMode.value == 1,
                       );
                     case TabType.tags:
                       return TagForm(
-                        key: formKey,
-                        enabled: controller.activeMode.value != 1,
+                        key: tagFormKey,
                         initialData: controller.initialData,
+                        isFormReadOnly: controller.activeMode.value == 1,
                       );
                     case TabType.readers:
                       return ReaderForm(
-                        key: formKey,
-                        enabled: controller.activeMode.value != 1,
+                        key: readerFormKey,
                         initialData: controller.initialData,
+                        isFormReadOnly: controller.activeMode.value == 1,
                       );
                     case TabType.members:
                       return MemberForm(
-                        key: formKey,
+                        key: memberFormKey,
                         enabled: controller.activeMode.value != 1,
                         initialData: controller.initialData,
                       );
                     case TabType.entities:
                       return EntityForm(
-                        key: formKey,
+                        key: entityFormKey,
                         enabled: controller.activeMode.value != 1,
                         initialData: controller.initialData,
                       );
                     default:
-                      return Container();
+                      return const SizedBox.shrink();
                   }
                 }),
                 Obx(() => Row(
@@ -153,7 +180,30 @@ class FormPageState extends State<FormPage> {
                                   : const SizedBox.shrink(),
                               const SizedBox(width: 16.0),
                               TextButton(
-                                onPressed: () => controller.submitForm(formKey),
+                                onPressed: () {
+                                  switch (controller.tabType) {
+                                    case TabType.inventories:
+                                      controller.submitForm(inventoryFormKey);
+                                      break;
+                                    case TabType.domains:
+                                      controller.submitForm(domainFormKey);
+                                      break;
+                                    case TabType.tags:
+                                      controller.submitForm(tagFormKey);
+                                      break;
+                                    case TabType.readers:
+                                      controller.submitForm(readerFormKey);
+                                      break;
+                                    case TabType.members:
+                                      controller.submitForm(memberFormKey);
+                                      break;
+                                    case TabType.entities:
+                                      controller.submitForm(entityFormKey);
+                                      break;
+                                    default:
+                                      break;
+                                  }
+                                },
                                 style: ButtonStyle(
                                   padding: WidgetStateProperty.all(
                                     const EdgeInsets.symmetric(

@@ -57,7 +57,7 @@ class TagRepository {
     try {
       final db = await _dbHelper.database;
       await db.update(
-        'tag',
+        'tags',
         updatedTag.toMap(),
         where: 'id = ?',
         whereArgs: [updatedTag.id],

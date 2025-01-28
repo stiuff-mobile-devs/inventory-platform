@@ -4,15 +4,13 @@ import 'package:inventory_platform/data/repositories/inventory_repository.dart';
 import 'package:inventory_platform/features/common/widgets/custom_text_field.dart';
 
 class InventoryForm extends StatefulWidget {
-  final bool? enabled;
   final dynamic initialData;
-  final Color? labelColor;
+  final bool? isFormReadOnly;
 
   const InventoryForm({
     super.key,
-    this.enabled,
     this.initialData,
-    this.labelColor,
+    this.isFormReadOnly,
   });
 
   @override
@@ -21,21 +19,33 @@ class InventoryForm extends StatefulWidget {
 
 class InventoryFormState extends State<InventoryForm> {
   final _formKey = GlobalKey<FormState>();
-  final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
-  final _revisionController = TextEditingController();
+
+  late TextEditingController _titleController;
+  late TextEditingController _descriptionController;
+  late TextEditingController _revisionController;
 
   final InventoryRepository _inventoryRepository = InventoryRepository();
 
   InventoryModel get inventoryModel => InventoryModel(
-        id: _inventoryRepository.generateUniqueId(),
+        id: widget.initialData?.id ?? _inventoryRepository.generateUniqueId(),
         title: _titleController.text,
         description: _descriptionController.text,
         revisionNumber: _revisionController.text,
         isActive: 1,
-        createdAt: DateTime.now(),
+        createdAt: widget.initialData?.createdAt ?? DateTime.now(),
         lastUpdatedAt: DateTime.now(),
       );
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController =
+        TextEditingController(text: widget.initialData?.title ?? '');
+    _descriptionController =
+        TextEditingController(text: widget.initialData?.description ?? '');
+    _revisionController =
+        TextEditingController(text: widget.initialData?.revisionNumber ?? '');
+  }
 
   @override
   void dispose() {
@@ -65,6 +75,7 @@ class InventoryFormState extends State<InventoryForm> {
             hint: 'Ex.: Meu Novo Inventário',
             validator: (value) =>
                 value == null || value.isEmpty ? 'Título é obrigatório' : null,
+            isReadOnly: widget.isFormReadOnly,
           ),
           const SizedBox(height: 10),
           CustomTextField(
@@ -73,6 +84,7 @@ class InventoryFormState extends State<InventoryForm> {
             hint: 'Ex.: Um inventário de sazonalidade',
             maxLines: 3,
             keyboardType: TextInputType.multiline,
+            isReadOnly: widget.isFormReadOnly,
           ),
           const SizedBox(height: 10),
           CustomTextField(
@@ -82,6 +94,7 @@ class InventoryFormState extends State<InventoryForm> {
             validator: (value) => value == null || value.isEmpty
                 ? 'Número de Revisão é obrigatório'
                 : null,
+            isReadOnly: widget.isFormReadOnly,
           ),
           const SizedBox(height: 20),
         ],
