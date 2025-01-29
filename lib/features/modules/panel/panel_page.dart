@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/enums/tab_type_enum.dart';
-import 'package:inventory_platform/data/models/organization_model.dart';
 import 'package:inventory_platform/features/modules/panel/panel_controller.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/admin_tab.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/dashboard_tab.dart';
@@ -18,10 +17,7 @@ class PanelPage extends StatefulWidget {
 }
 
 class _PanelPageState extends State<PanelPage> {
-  int _selectedTabIndex = 0;
-  late final OrganizationModel organization;
-
-  final PanelController _panelController = Get.find<PanelController>();
+  late final PanelController _panelController;
 
   List<Widget> _tabs = [
     const DashboardTab(),
@@ -31,44 +27,39 @@ class _PanelPageState extends State<PanelPage> {
   void initState() {
     super.initState();
 
-    organization = Get.arguments;
+    _panelController = Get.find<PanelController>();
 
-    _panelController.updateItems(organization);
+    _panelController.setCurrentOrganization(Get.arguments);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _tabs = [
         const DashboardTab(),
-        GenericListTab(
+        const GenericListTab(
           tabType: TabType.inventories,
-          items: _panelController.inventories,
           searchParameters: 'Título ou Id',
           firstDetailFieldName: 'Criado em',
-          secondDetailFieldName: 'Última atualização em',
+          secondDetailFieldName: 'Última atualização',
         ),
-        GenericListTab(
+        const GenericListTab(
           tabType: TabType.domains,
-          items: _panelController.domains,
           searchParameters: 'Título ou Id',
           firstDetailFieldName: 'Criado em',
-          secondDetailFieldName: 'Última atualização em',
+          secondDetailFieldName: 'Última atualização',
         ),
-        GenericListTab(
+        const GenericListTab(
           tabType: TabType.tags,
-          items: _panelController.tags,
           searchParameters: 'Serial ou Id',
           firstDetailFieldName: 'Criado em',
           secondDetailFieldName: 'Visto pela última vez em',
         ),
-        GenericListTab(
+        const GenericListTab(
           tabType: TabType.readers,
-          items: _panelController.readers,
           searchParameters: 'Nome ou MAC',
           firstDetailFieldName: 'Criado em',
           secondDetailFieldName: 'Visto pela última vez em',
         ),
-        GenericListTab(
+        const GenericListTab(
           tabType: TabType.members,
-          items: _panelController.members,
           searchParameters: 'Nome ou Email',
           firstDetailFieldName: 'Criado em',
           secondDetailFieldName: 'Visto pela última vez em',
@@ -77,34 +68,43 @@ class _PanelPageState extends State<PanelPage> {
         const AdminTab(),
       ];
     });
+
+    _panelController.refreshItemsAndPaging().then((_) {
+      _panelController.update();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<PanelController>(
-      builder: (_) {
-        _panelController.updateItems(organization);
-        return BaseScaffold(
-          hideTitle: true,
-          showBackButton: true,
-          body: Stack(
-            children: [
-              _tabs[_selectedTabIndex],
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: ScrollableBottomNavigationBar(
-                  onTabSelected: (index) {
-                    setState(() {
-                      _selectedTabIndex = index;
-                    });
-                  },
-                  selectedTabIndex: _selectedTabIndex,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: GetBuilder<PanelController>(
+        builder: (_) {
+          _panelController.refreshItems();
+          return BaseScaffold(
+            hideTitle: true,
+            showBackButton: true,
+            body: Stack(
+              children: [
+                Obx(
+                  () => _tabs[_panelController.selectedTabIndex.value],
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+                Obx(
+                  () => Align(
+                    alignment: Alignment.bottomCenter,
+                    child: ScrollableBottomNavigationBar(
+                      onTabSelected: (index) {
+                        _panelController.selectedTabIndex.value = index;
+                      },
+                      selectedTabIndex: _panelController.selectedTabIndex.value,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

@@ -2,23 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/enums/tab_type_enum.dart';
 import 'package:inventory_platform/core/services/utils_service.dart';
-import 'package:inventory_platform/data/models/organization_model.dart';
+import 'package:inventory_platform/features/modules/panel/panel_controller.dart';
 import 'package:inventory_platform/routes/routes.dart';
 
 class GenericListHeader extends StatelessWidget {
   final TabType tabType;
-  final int itemCount;
-  final OrganizationModel organization;
   final UtilsService _utilsService;
-  final void Function() onFormSubmit;
+  final PanelController _panelController;
 
   GenericListHeader({
     super.key,
     required this.tabType,
-    required this.itemCount,
-    required this.organization,
-    required this.onFormSubmit,
-  }) : _utilsService = UtilsService();
+  })  : _utilsService = UtilsService(),
+        _panelController = Get.find<PanelController>();
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +43,14 @@ class GenericListHeader extends StatelessWidget {
                     color: Color.fromARGB(121, 158, 158, 158),
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   ),
-                  child: Text(
-                    '$itemCount',
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                  child: Obx(
+                    () => Text(
+                      '${_panelController.allTabItemsGeneralized.length}',
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
                     ),
                   ),
                 ),
@@ -73,7 +71,7 @@ class GenericListHeader extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5.0),
                 ),
                 child: Text(
-                  organization.title,
+                  _panelController.getCurrentOrganization().title,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -83,20 +81,23 @@ class GenericListHeader extends StatelessWidget {
               const SizedBox(width: 8.0),
               TextButton.icon(
                 onPressed: () async {
-                  await Get.toNamed(
-                    AppRoutes.form,
-                    arguments: [
-                      tabType,
-                      organization,
-                    ],
-                  );
-                  onFormSubmit();
+                  if (tabType != TabType.members) {
+                    await Get.toNamed(
+                      AppRoutes.form,
+                      arguments: [
+                        tabType,
+                      ],
+                    );
+                  } else {
+                    _utilsService.showUnderDevelopmentNotice(context);
+                  }
                 },
                 label: Text(
                     'Adicionar ${_utilsService.tabNameToSingular(tabType)}'),
                 icon: const Icon(Icons.add),
                 style: TextButton.styleFrom(
-                  foregroundColor: Colors.blue,
+                  foregroundColor:
+                      (tabType != TabType.members) ? Colors.blue : Colors.grey,
                 ),
               ),
             ],

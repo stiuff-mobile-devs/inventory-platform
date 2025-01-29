@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inventory_platform/data/models/member_model.dart';
-import 'package:inventory_platform/data/models/organization_model.dart';
-import 'package:inventory_platform/data/repositories/organization_repository.dart';
+import 'package:inventory_platform/core/services/utils_service.dart';
+import 'package:inventory_platform/features/modules/panel/panel_controller.dart';
 
 class AdminTab extends StatefulWidget {
   const AdminTab({super.key});
@@ -12,8 +11,8 @@ class AdminTab extends StatefulWidget {
 }
 
 class _AdminTabState extends State<AdminTab> {
-  final OrganizationModel organization = Get.arguments;
-  List<MemberModel> _allMembers = [];
+  late final PanelController _panelController;
+  late final UtilsService _utilsService;
 
   final OrganizationRepository _organizationRepository =
       Get.find<OrganizationRepository>();
@@ -21,10 +20,8 @@ class _AdminTabState extends State<AdminTab> {
   @override
   void initState() {
     super.initState();
-    _allMembers = _organizationRepository
-        .getMembersForOrganization(organization.id)
-      ..sort((a, b) => (b.createdAt ?? DateTime.now())
-          .compareTo(a.createdAt ?? DateTime.now()));
+    _panelController = Get.find<PanelController>();
+    _utilsService = UtilsService();
   }
 
   @override
@@ -35,7 +32,7 @@ class _AdminTabState extends State<AdminTab> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(organization.title),
+            _buildHeader(_panelController.getCurrentOrganization().title),
             const SizedBox(height: 8.0),
             _buildOrganizationInfoWidget(),
             const SizedBox(height: 16.0),
@@ -106,16 +103,16 @@ class _AdminTabState extends State<AdminTab> {
             ),
             const SizedBox(height: 16.0),
             _buildCustomTextField(
-              initialValue: organization.title,
+              initialValue: _panelController.getCurrentOrganization().title,
               labelText: "Nome da Organização",
             ),
             const SizedBox(height: 16.0),
-            if (organization.description != null)
-              _buildCustomTextField(
-                initialValue: organization.description!,
-                labelText: "Descrição",
-                maxLines: 3,
-              ),
+            _buildCustomTextField(
+              initialValue:
+                  _panelController.getCurrentOrganization().description!,
+              labelText: "Descrição",
+              maxLines: 3,
+            ),
             const SizedBox(height: 16.0),
             Row(
               children: [
@@ -129,7 +126,9 @@ class _AdminTabState extends State<AdminTab> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      _utilsService.showUnderDevelopmentNotice(context);
+                    },
                     style: ButtonStyle(
                       iconColor: WidgetStateProperty.all(Colors.white),
                       backgroundColor:
@@ -172,9 +171,9 @@ class _AdminTabState extends State<AdminTab> {
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: _allMembers.length,
+              itemCount: _panelController.members.length,
               itemBuilder: (context, index) {
-                final member = _allMembers[index];
+                final member = _panelController.members[index];
                 return ListTile(
                   leading: CircleAvatar(
                     backgroundColor: Colors.grey,
@@ -204,7 +203,9 @@ class _AdminTabState extends State<AdminTab> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  _utilsService.showUnderDevelopmentNotice(context);
+                },
                 style: ButtonStyle(
                   iconColor: WidgetStateProperty.all(Colors.white),
                   backgroundColor: WidgetStateProperty.all(Colors.blueAccent),

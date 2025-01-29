@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inventory_platform/data/models/domain_model.dart';
-import 'package:inventory_platform/data/models/inventory_model.dart';
-import 'package:inventory_platform/data/models/member_model.dart';
 import 'package:inventory_platform/data/models/organization_model.dart';
-import 'package:inventory_platform/data/models/reader_model.dart';
-import 'package:inventory_platform/data/models/tag_model.dart';
-import 'package:inventory_platform/data/repositories/organization_repository.dart';
+import 'package:inventory_platform/features/modules/panel/panel_controller.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/status_chart.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/update_chart.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -19,16 +14,8 @@ class DashboardTab extends StatefulWidget {
 }
 
 class _DashboardTabState extends State<DashboardTab> {
-  List<InventoryModel> _allInventories = [];
-  List<DomainModel> _allDomains = [];
-  List<TagModel> _allTags = [];
-  List<ReaderModel> _allReaders = [];
-  List<MemberModel> _allMembers = [];
-
-  final _organizationRepository = Get.find<OrganizationRepository>();
-
-  final OrganizationModel organization = Get.arguments;
-  int _currentIndex = 0;
+  late final PanelController _panelController;
+  int _currentCarouselIndex = 0;
 
   Widget _buildHeader(OrganizationModel organization) {
     return Container(
@@ -120,15 +107,16 @@ class _DashboardTabState extends State<DashboardTab> {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         children: [
-          _buildCard('Inventários', _allInventories.length,
+          _buildCard('Inventários', _panelController.inventories.length,
               Icons.inventory_rounded, Colors.blueAccent),
-          _buildCard('Domains', _allDomains.length, Icons.data_object,
-              Colors.orangeAccent),
-          _buildCard('Tags', _allTags.length, Icons.tag, Colors.purpleAccent),
-          _buildCard('Readers', _allReaders.length, Icons.device_hub_rounded,
-              Colors.tealAccent),
-          _buildCard('Members', _allMembers.length, Icons.groups_rounded,
-              Colors.redAccent),
+          _buildCard('Domains', _panelController.domains.length,
+              Icons.data_object, Colors.orangeAccent),
+          _buildCard('Tags', _panelController.tags.length, Icons.tag,
+              Colors.purpleAccent),
+          _buildCard('Readers', _panelController.readers.length,
+              Icons.device_hub_rounded, Colors.tealAccent),
+          _buildCard('Members', _panelController.members.length,
+              Icons.groups_rounded, Colors.redAccent),
         ],
       ),
     );
@@ -163,22 +151,18 @@ class _DashboardTabState extends State<DashboardTab> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    _allInventories =
-        _organizationRepository.getInventoriesForOrganization(organization.id);
-    _allDomains =
-        _organizationRepository.getDomainsForOrganization(organization.id);
-    _allTags = _organizationRepository.getTagsForOrganization(organization.id);
-    _allReaders =
-        _organizationRepository.getReadersForOrganization(organization.id);
-    _allMembers =
-        _organizationRepository.getMembersForOrganization(organization.id);
+  void initState() {
+    super.initState();
+    _panelController = Get.find<PanelController>();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
       body: ListView(
         children: [
-          _buildHeader(organization),
+          _buildHeader(_panelController.getCurrentOrganization()),
           Container(
             margin: const EdgeInsets.all(16.0),
             padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -197,8 +181,8 @@ class _DashboardTabState extends State<DashboardTab> {
               children: [
                 CarouselSlider(
                   items: [
-                    StatusChart(inventories: _allInventories),
-                    UpdateChart(inventories: _allInventories),
+                    StatusChart(inventories: _panelController.inventories),
+                    UpdateChart(inventories: _panelController.inventories),
                   ],
                   options: CarouselOptions(
                     height: 350.0,
@@ -207,7 +191,7 @@ class _DashboardTabState extends State<DashboardTab> {
                     enableInfiniteScroll: false,
                     onPageChanged: (index, reason) {
                       setState(() {
-                        _currentIndex = index;
+                        _currentCarouselIndex = index;
                       });
                     },
                   ),
@@ -222,7 +206,7 @@ class _DashboardTabState extends State<DashboardTab> {
                       margin: const EdgeInsets.symmetric(horizontal: 4.0),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: _currentIndex == index
+                        color: _currentCarouselIndex == index
                             ? Colors.blueAccent
                             : Colors.grey,
                       ),

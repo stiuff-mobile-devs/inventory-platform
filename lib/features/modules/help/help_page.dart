@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:inventory_platform/features/common/widgets/base_scaffold.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HelpPage extends StatelessWidget {
   const HelpPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    const String wikiUrl =
+        'https://github.com/stiuff-mobile-devs/inventory-platform/wiki/';
+
+    Future<void> openWiki() async {
+      final Uri uri = Uri.parse(wikiUrl);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        debugPrint('Não foi possível abrir a URL: $wikiUrl');
+      }
+    }
+
     return BaseScaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -47,6 +60,30 @@ class HelpPage extends StatelessWidget {
                 title: Text('Como entro em contato com o suporte?'),
                 subtitle: Text(
                     'Você pode entrar em contato com o suporte enviando um e-mail para suporte@app.com.'),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Links Externos:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              ListTile(
+                trailing: const Icon(Icons.open_in_new),
+                title: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    children: [
+                      Icon(Icons.star, color: Colors.amber),
+                      SizedBox(width: 4.0),
+                      Text(
+                        'Manual do Usuário',
+                      ),
+                    ],
+                  ),
+                ),
+                subtitle: const Text(
+                    'Acesse a nossa Wiki no GitHub e obtenha mais instruções de uso.'),
+                onTap: openWiki,
               ),
             ],
           ),

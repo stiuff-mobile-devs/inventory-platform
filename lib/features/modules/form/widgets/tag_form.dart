@@ -3,7 +3,14 @@ import 'package:inventory_platform/data/models/tag_model.dart';
 import 'package:inventory_platform/features/common/widgets/custom_text_field.dart';
 
 class TagForm extends StatefulWidget {
-  const TagForm({super.key});
+  final dynamic initialData;
+  final bool? isFormReadOnly;
+
+  const TagForm({
+    super.key,
+    this.initialData,
+    this.isFormReadOnly,
+  });
 
   @override
   TagFormState createState() => TagFormState();
@@ -11,25 +18,39 @@ class TagForm extends StatefulWidget {
 
 class TagFormState extends State<TagForm> {
   final _formKey = GlobalKey<FormState>();
-  final _idController = TextEditingController();
-  final _serialController = TextEditingController();
-  final _isActiveController = TextEditingController();
+
+  late TextEditingController _idController;
+  late TextEditingController _serialController;
 
   TagModel get tagModel => TagModel(
         id: _idController.text,
-        serial: _idController.text.length >= 6
-            ? _idController.text.substring(_idController.text.length - 6)
-            : _idController.text,
         isActive: 1,
-        createdAt: DateTime.now(),
+        createdAt: widget.initialData?.createdAt ?? DateTime.now(),
         lastSeen: DateTime.now(),
       );
+
+  TagModel get prevTagModel => TagModel(
+        id: widget.initialData?.id ?? _idController.text,
+        isActive: 1,
+        createdAt: widget.initialData?.createdAt ?? DateTime.now(),
+        lastSeen: DateTime.now(),
+      );
+
+  @override
+  void initState() {
+    super.initState();
+    _idController = TextEditingController(text: widget.initialData?.id ?? '');
+    _serialController = TextEditingController(
+      text: _idController.text.length >= 6
+          ? _idController.text.substring(_idController.text.length - 6)
+          : _idController.text,
+    );
+  }
 
   @override
   void dispose() {
     _idController.dispose();
     _serialController.dispose();
-    _isActiveController.dispose();
     super.dispose();
   }
 
@@ -68,6 +89,7 @@ class TagFormState extends State<TagForm> {
               }
               return null;
             },
+            isReadOnly: widget.isFormReadOnly,
           ),
           const SizedBox(height: 10),
           CustomTextField(

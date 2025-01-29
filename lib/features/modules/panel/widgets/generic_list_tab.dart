@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:inventory_platform/core/enums/tab_type_enum.dart';
+import 'package:inventory_platform/core/services/utils_service.dart';
 import 'package:inventory_platform/data/models/generic_list_item_model.dart';
-import 'package:inventory_platform/data/models/organization_model.dart';
+import 'package:inventory_platform/features/modules/panel/panel_controller.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/generic_list_header.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/generic_list_item_card.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/search_bar_widget.dart';
@@ -13,7 +14,6 @@ import 'package:inventory_platform/features/common/widgets/temporary_message_dis
 import 'package:skeletonizer/skeletonizer.dart';
 
 class GenericListTab extends StatefulWidget {
-  final RxList<GenericListItemModel> items;
   final TabType tabType;
   final String? searchParameters;
   final String? firstDetailFieldName;
@@ -25,7 +25,6 @@ class GenericListTab extends StatefulWidget {
     this.firstDetailFieldName,
     this.secondDetailFieldName,
     required this.tabType,
-    required this.items,
   });
 
   @override
@@ -33,59 +32,48 @@ class GenericListTab extends StatefulWidget {
 }
 
 class _GenericListTabState extends State<GenericListTab> {
-  final OrganizationModel _organization = Get.arguments;
+  final PanelController _panelController = Get.find<PanelController>();
   final TextEditingController _searchController = TextEditingController();
-  final PagingController<int, GenericListItemModel> _pagingController =
-      PagingController(firstPageKey: 0);
-  List<GenericListItemModel> _allItemsList = [];
-  List<GenericListItemModel> _filteredItemsList = [];
 
   int pageSize = 4;
 
   @override
   void initState() {
     super.initState();
-    _pagingController.addPageRequestListener((pageKey) => _fetchPage(pageKey));
+    _panelController.filteredItems.value =
+        _panelController.allTabItemsGeneralized;
+    _panelController.pagingController.value
+        .addPageRequestListener((pageKey) => _fetchPage(pageKey));
     _searchController.addListener(() => _filterItems(_searchController.text));
-    _allItemsList = widget.items
-      ..sort((a, b) => b.initialDate!.compareTo(a.initialDate!));
-    _filteredItemsList = List.from(_allItemsList);
   }
 
-  @override
-  void didUpdateWidget(covariant GenericListTab oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.items != widget.items) {
-      setState(() {
-        _allItemsList = widget.items
-          ..sort((a, b) => b.initialDate!.compareTo(a.initialDate!));
-        _filteredItemsList = List.from(_allItemsList);
-      });
-      _pagingController.refresh();
-    }
+  void _filterItems(String searchText) {
+    _panelController.pagingController.value.refresh();
+    _panelController.filterItems(_searchController.text);
   }
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      backgroundColor: Colors.white,
-      onRefresh: _onRefresh,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GenericListHeader(
-            onFormSubmit: _onFormSubmitUpdateScreenAndPaging,
-            tabType: widget.tabType,
-            itemCount: _allItemsList.length,
-            organization: _organization,
-          ),
-          SearchBarWidget(
-            searchController: _searchController,
-            hintText: 'Pesquisar por ${widget.searchParameters ?? '...'}',
-            onSearchTextChanged: _filterItems,
-          ),
-          _buildList(),
-        ],
+    return Obx(
+      () => RefreshIndicator(
+        backgroundColor: Colors.white,
+        onRefresh: () async => _panelController.refreshItemsAndPaging(
+            tabType: UtilsService()
+                .tabIndexToEnum(_panelController.selectedTabIndex.value)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GenericListHeader(
+              tabType: widget.tabType,
+            ),
+            SearchBarWidget(
+              searchController: _searchController,
+              hintText: 'Pesquisar por ${widget.searchParameters ?? '...'}',
+              onSearchTextChanged: (text) => _filterItems(text),
+            ),
+            _buildList(),
+          ],
+        ),
       ),
     );
   }
@@ -95,54 +83,31 @@ class _GenericListTabState extends State<GenericListTab> {
       final startIndex = pageKey * pageSize;
       final endIndex = startIndex + pageSize;
 
-      var paginatedItems = _filteredItemsList.sublist(
+      var paginatedItems = _panelController.filteredItems.sublist(
         startIndex,
-        endIndex > _filteredItemsList.length
-            ? _filteredItemsList.length
+        endIndex > _panelController.filteredItems.length
+            ? _panelController.filteredItems.length
             : endIndex,
       );
 
-      final isLastPage = endIndex >= _filteredItemsList.length;
+      final isLastPage = endIndex >= _panelController.filteredItems.length;
 
       if (mounted) {
         if (isLastPage) {
-          _pagingController.appendLastPage(paginatedItems);
+          _panelController.pagingController.value
+              .appendLastPage(paginatedItems);
         } else {
-          _pagingController.appendPage(paginatedItems, pageKey + 1);
+          _panelController.pagingController.value
+              .appendPage(paginatedItems, pageKey + 1);
         }
       }
     } catch (error, stackTrace) {
       debugPrint('Error fetching page: $error');
       debugPrint('Stack trace: $stackTrace');
       if (mounted) {
-        _pagingController.error = error;
+        _panelController.pagingController.value.error = error;
       }
     }
-  }
-
-  void _filterItems(String query) {
-    final lowerCaseQuery = query.toLowerCase();
-    setState(() {
-      _filteredItemsList = _allItemsList.where((item) {
-        return item.upperHeaderField.toLowerCase().contains(lowerCaseQuery) ||
-            (item.id ?? ' ').toLowerCase().contains(lowerCaseQuery);
-      }).toList();
-    });
-
-    _pagingController.refresh();
-  }
-
-  Future<void> _onRefresh() async {
-    if (mounted) _pagingController.refresh();
-  }
-
-  void _onFormSubmitUpdateScreenAndPaging() {
-    setState(() {
-      _allItemsList = widget.items
-        ..sort((a, b) => b.initialDate!.compareTo(a.initialDate!));
-      _filteredItemsList = List.from(_allItemsList);
-    });
-    _pagingController.refresh();
   }
 
   Widget _buildList() {
@@ -150,7 +115,7 @@ class _GenericListTabState extends State<GenericListTab> {
       child: PagedListView<int, GenericListItemModel>(
         padding: const EdgeInsets.only(
             left: 16.0, right: 16.0, top: 16.0, bottom: 32.0),
-        pagingController: _pagingController,
+        pagingController: _panelController.pagingController.value,
         builderDelegate: PagedChildBuilderDelegate<GenericListItemModel>(
           itemBuilder: (context, item, index) {
             return GenericListItemCard(

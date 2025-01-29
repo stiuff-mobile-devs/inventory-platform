@@ -56,7 +56,7 @@ abstract class AppPages {
     ),
     GetPage(
       name: AppRoutes.form,
-      page: () => const FormPage(),
+      page: () => FormPage(),
       bindings: [
         FormBinding(),
       ],

@@ -6,7 +6,16 @@ import 'package:inventory_platform/data/repositories/user_repository.dart';
 import 'package:inventory_platform/features/common/widgets/custom_text_field.dart';
 
 class MemberForm extends StatefulWidget {
-  const MemberForm({super.key});
+  final bool? enabled;
+  final dynamic initialData;
+  final Color? labelColor;
+
+  const MemberForm({
+    super.key,
+    this.enabled,
+    this.initialData,
+    this.labelColor,
+  });
 
   @override
   MemberFormState createState() => MemberFormState();

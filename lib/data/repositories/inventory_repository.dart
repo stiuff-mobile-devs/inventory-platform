@@ -1,39 +1,90 @@
+import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
+import 'package:inventory_platform/data/database/database_helper.dart';
 import 'package:inventory_platform/data/models/inventory_model.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 
 class InventoryRepository {
-  final List<InventoryModel> _inventories = [];
+  final DatabaseHelper _dbHelper = Get.find<DatabaseHelper>();
 
-  List<InventoryModel> getAllInventories() {
-    return _inventories;
-  }
-
-  InventoryModel? getInventoryById(String id) {
-    return _inventories.firstWhere((inventory) => inventory.id == id);
-  }
-
-  void addInventory(InventoryModel inventory) {
-    _inventories.add(inventory);
-  }
-
-  void updateInventory(InventoryModel updatedInventory) {
-    final index = _inventories
-        .indexWhere((inventory) => inventory.id == updatedInventory.id);
-    if (index != -1) {
-      _inventories[index] = updatedInventory;
+  Future<List<InventoryModel>> getAllInventories() async {
+    try {
+      final db = await _dbHelper.database;
+      final List<Map<String, dynamic>> result = await db.query('inventories');
+      debugPrint('Fetched all inventories: ${result.length} items');
+      return result.map((data) => InventoryModel.fromMap(data)).toList();
+    } catch (e) {
+      debugPrint('Error fetching all inventories: $e');
+      return [];
     }
   }
 
-  void deleteInventory(String id) {
-    _inventories.removeWhere((inventory) => inventory.id == id);
+  Future<InventoryModel?> getInventoryById(String id) async {
+    try {
+      final db = await _dbHelper.database;
+      final result = await db.query(
+        'inventories',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+      if (result.isNotEmpty) {
+        debugPrint('Fetched inventory with id: $id');
+        return InventoryModel.fromMap(result.first);
+      }
+      debugPrint('No inventory found with id: $id');
+      return null;
+    } catch (e) {
+      debugPrint('Error fetching inventory by id: $e');
+      return null;
+    }
+  }
+
+  Future<void> addInventory(InventoryModel inventory) async {
+    try {
+      final db = await _dbHelper.database;
+      await db.insert(
+        'inventories',
+        inventory.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      debugPrint('Added inventory with id: ${inventory.id}');
+    } catch (e) {
+      debugPrint('Error adding inventory: $e');
+    }
+  }
+
+  Future<void> updateInventory(InventoryModel updatedInventory) async {
+    try {
+      final db = await _dbHelper.database;
+      await db.update(
+        'inventories',
+        updatedInventory.toMap(),
+        where: 'id = ?',
+        whereArgs: [updatedInventory.id],
+      );
+      debugPrint('Updated inventory with id: ${updatedInventory.id}');
+    } catch (e) {
+      debugPrint('Error updating inventory: $e');
+    }
+  }
+
+  Future<void> deleteInventory(String id) async {
+    try {
+      final db = await _dbHelper.database;
+      await db.delete(
+        'inventories',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+      debugPrint('Deleted inventory with id: $id');
+    } catch (e) {
+      debugPrint('Error deleting inventory: $e');
+    }
   }
 
   String generateUniqueId() {
     var uuid = const Uuid();
-    String id;
-    do {
-      id = uuid.v4();
-    } while (_inventories.any((inventory) => inventory.id == id));
-    return id;
+    return uuid.v4();
   }
 }

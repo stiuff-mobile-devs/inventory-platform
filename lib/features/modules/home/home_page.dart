@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inventory_platform/data/repositories/organization_repository.dart';
 import 'package:inventory_platform/features/common/widgets/base_scaffold.dart';
 import 'package:inventory_platform/features/common/widgets/carousel_section.dart'
     as w;
-import 'package:inventory_platform/features/common/controllers/carousel_section_controller.dart';
 import 'package:inventory_platform/routes/routes.dart';
+import 'home_controller.dart';
 
 class HomePage extends StatelessWidget {
-  final carouselController = Get.find<CarouselSectionController>();
-  final _organizationRepository = Get.find<OrganizationRepository>();
+  final HomeController controller = Get.find();
 
   HomePage({super.key});
 
@@ -29,8 +27,8 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 16),
             w.CarouselSection(
               isExpanded: true,
-              controller: carouselController,
-              items: _organizationRepository.getAllOrganizations(),
+              controller: controller.carouselController,
+              items: controller.organizations,
               route: AppRoutes.panel,
             ),
           ],
@@ -118,13 +116,13 @@ class HomePage extends StatelessWidget {
               icon: Icons.add_circle_rounded,
               label: 'Criar uma nova Organização',
               color: Colors.blue,
-              onPressed: () {},
+              onPressed: () => controller.createOrganization(context),
             ),
             _buildQuickActionButton(
               icon: Icons.supervised_user_circle,
               label: 'Participar de uma Organização',
               color: Colors.green,
-              onPressed: () {},
+              onPressed: () => controller.joinOrganization(context),
             ),
           ],
         ),

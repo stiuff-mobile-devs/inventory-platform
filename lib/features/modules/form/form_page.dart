@@ -1,131 +1,87 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/enums/tab_type_enum.dart';
-import 'package:inventory_platform/core/services/utils_service.dart';
-import 'package:inventory_platform/data/models/organization_model.dart';
-import 'package:inventory_platform/data/repositories/organization_repository.dart';
 import 'package:inventory_platform/features/common/widgets/base_scaffold.dart';
+import 'package:inventory_platform/features/modules/form/form_controller.dart';
 import 'package:inventory_platform/features/modules/form/widgets/domain_form.dart';
 import 'package:inventory_platform/features/modules/form/widgets/entity_form.dart';
 import 'package:inventory_platform/features/modules/form/widgets/inventory_form.dart';
 import 'package:inventory_platform/features/modules/form/widgets/member_form.dart';
 import 'package:inventory_platform/features/modules/form/widgets/reader_form.dart';
 import 'package:inventory_platform/features/modules/form/widgets/tag_form.dart';
-import 'package:inventory_platform/features/modules/panel/panel_controller.dart';
 
 class FormPage extends StatefulWidget {
-  const FormPage({
-    super.key,
-  });
+  const FormPage({super.key});
 
   @override
-  State<FormPage> createState() => _FormPageState();
+  FormPageState createState() => FormPageState();
 }
 
-class _FormPageState extends State<FormPage> {
-  late final UtilsService _utilsService;
-  late final TabType tabType;
-  late final OrganizationModel organization;
+class FormPageState extends State<FormPage> {
+  final FormController controller = Get.put(FormController());
 
-  final OrganizationRepository _organizationRepository =
-      Get.find<OrganizationRepository>();
-
-  final GlobalKey<InventoryFormState> _inventoryFormKey =
+  GlobalKey<DomainFormState> domainFormKey = GlobalKey<DomainFormState>();
+  GlobalKey<InventoryFormState> inventoryFormKey =
       GlobalKey<InventoryFormState>();
-  final GlobalKey<DomainFormState> _domainFormKey =
-      GlobalKey<DomainFormState>();
-  final GlobalKey<TagFormState> _tagFormKey = GlobalKey<TagFormState>();
-  final GlobalKey<ReaderFormState> _readerFormKey =
-      GlobalKey<ReaderFormState>();
-  final GlobalKey<MemberFormState> _memberFormKey =
-      GlobalKey<MemberFormState>();
-  final GlobalKey<EntityFormState> _entityFormKey =
-      GlobalKey<EntityFormState>();
+  GlobalKey<TagFormState> tagFormKey = GlobalKey<TagFormState>();
+  GlobalKey<ReaderFormState> readerFormKey = GlobalKey<ReaderFormState>();
+  GlobalKey<MemberFormState> memberFormKey = GlobalKey<MemberFormState>();
+  GlobalKey<EntityFormState> entityFormKey = GlobalKey<EntityFormState>();
 
-  final PanelController _panelController = Get.find<PanelController>();
+  String getHeaderPrefix(int activeMode) {
+    switch (activeMode) {
+      case 0:
+        return 'Adicionando';
+      case 1:
+        return 'Visualizando';
+      case 2:
+        return 'Editando';
+      default:
+        return 'Unavailable';
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _utilsService = UtilsService();
-    tabType = Get.arguments[0];
-    organization = Get.arguments[1];
+    if (Get.arguments.length > 1 && Get.arguments[1] != null) {
+      controller.initialData = Get.arguments[1];
+    }
+    if (controller.initialData != null) controller.activeMode = 1.obs;
   }
 
-  void _submitForm() {
-    bool isFormValid = false;
-    dynamic formData;
-
-    switch (tabType) {
-      case TabType.inventories:
-        isFormValid = _inventoryFormKey.currentState?.submitForm() ?? false;
-        formData = _inventoryFormKey.currentState?.inventoryModel;
-        if (isFormValid) {
-          _organizationRepository
-              .appendInventoriesInOrganization([formData], organization.id);
-        }
-        break;
-      case TabType.domains:
-        isFormValid = _domainFormKey.currentState?.submitForm() ?? false;
-        formData = _domainFormKey.currentState?.domainModel;
-        if (isFormValid) {
-          _organizationRepository
-              .appendDomainsInOrganization([formData], organization.id);
-        }
-        break;
-      case TabType.tags:
-        isFormValid = _tagFormKey.currentState?.submitForm() ?? false;
-        formData = _tagFormKey.currentState?.tagModel;
-        if (isFormValid) {
-          _organizationRepository
-              .appendTagsInOrganization([formData], organization.id);
-        }
-        break;
-      case TabType.readers:
-        isFormValid = _readerFormKey.currentState?.submitForm() ?? false;
-        formData = _readerFormKey.currentState?.readerModel;
-        if (isFormValid) {
-          _organizationRepository
-              .appendReadersInOrganization([formData], organization.id);
-        }
-        break;
-      case TabType.members:
-        isFormValid = _memberFormKey.currentState?.submitForm() ?? false;
-        formData = _memberFormKey.currentState?.memberModel;
-        if (isFormValid) {
-          _organizationRepository
-              .appendMembersInOrganization([formData], organization.id);
-        }
-        break;
-      case TabType.entities:
-        isFormValid = _entityFormKey.currentState?.submitForm() ?? false;
-        formData = _entityFormKey.currentState?.entityModel;
-        if (isFormValid) {
-          _organizationRepository
-              .appendEntitiesInOrganization([formData], organization.id);
-        }
-        break;
-      default:
-        debugPrint('Tipo de formulário não reconhecido.');
-        break;
-    }
-
-    if (isFormValid) {
-      _panelController.updateItems(organization);
-      _panelController.update();
-      debugPrint('Formulário submetido com sucesso!');
-      Get.back();
-    } else {
-      debugPrint('Erro na validação do formulário.');
-    }
+  void _cancelForm() {
+    setState(() {
+      controller.activeMode = 1.obs;
+      switch (controller.tabType) {
+        case TabType.inventories:
+          inventoryFormKey = GlobalKey<InventoryFormState>();
+          break;
+        case TabType.domains:
+          domainFormKey = GlobalKey<DomainFormState>();
+          break;
+        case TabType.tags:
+          tagFormKey = GlobalKey<TagFormState>();
+          break;
+        case TabType.readers:
+          readerFormKey = GlobalKey<ReaderFormState>();
+          break;
+        case TabType.members:
+          memberFormKey = GlobalKey<MemberFormState>();
+          break;
+        case TabType.entities:
+          entityFormKey = GlobalKey<EntityFormState>();
+          break;
+        default:
+          break;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
+      onTap: () => FocusScope.of(context).unfocus(),
       child: BaseScaffold(
         hideTitle: true,
         showBackButton: true,
@@ -135,17 +91,17 @@ class _FormPageState extends State<FormPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    'Adicionar ${_utilsService.tabNameToSingular(tabType)}',
-                    style: const TextStyle(
-                      fontSize: 32.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ),
+                Obx(() => Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text(
+                        '${getHeaderPrefix(controller.activeMode.value)} ${controller.utilsService.tabNameToSingular(controller.tabType)}',
+                        style: const TextStyle(
+                          fontSize: 28.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    )),
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8.0,
@@ -156,7 +112,7 @@ class _FormPageState extends State<FormPage> {
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   child: Text(
-                    organization.title,
+                    controller.currentOrganization.title,
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -164,51 +120,207 @@ class _FormPageState extends State<FormPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                if (tabType == TabType.inventories)
-                  InventoryForm(key: _inventoryFormKey),
-                if (tabType == TabType.domains) DomainForm(key: _domainFormKey),
-                if (tabType == TabType.tags) TagForm(key: _tagFormKey),
-                if (tabType == TabType.readers) ReaderForm(key: _readerFormKey),
-                if (tabType == TabType.members) MemberForm(key: _memberFormKey),
-                if (tabType == TabType.entities)
-                  EntityForm(key: _entityFormKey),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.25,
-                      child: TextButton(
-                        onPressed: _submitForm,
-                        style: ButtonStyle(
-                          padding: WidgetStateProperty.all(
-                            const EdgeInsets.symmetric(
-                              vertical: 16.0,
-                            ),
+                Obx(() {
+                  switch (controller.tabType) {
+                    case TabType.inventories:
+                      return InventoryForm(
+                        key: inventoryFormKey,
+                        initialData: controller.initialData,
+                        isFormReadOnly: controller.activeMode.value == 1,
+                      );
+                    case TabType.domains:
+                      return DomainForm(
+                        key: domainFormKey,
+                        initialData: controller.initialData,
+                        isFormReadOnly: controller.activeMode.value == 1,
+                      );
+                    case TabType.tags:
+                      return TagForm(
+                        key: tagFormKey,
+                        initialData: controller.initialData,
+                        isFormReadOnly: controller.activeMode.value == 1,
+                      );
+                    case TabType.readers:
+                      return ReaderForm(
+                        key: readerFormKey,
+                        initialData: controller.initialData,
+                        isFormReadOnly: controller.activeMode.value == 1,
+                      );
+                    case TabType.members:
+                      return MemberForm(
+                        key: memberFormKey,
+                        enabled: controller.activeMode.value != 1,
+                        initialData: controller.initialData,
+                      );
+                    case TabType.entities:
+                      return EntityForm(
+                        key: entityFormKey,
+                        enabled: controller.activeMode.value != 1,
+                        initialData: controller.initialData,
+                      );
+                    default:
+                      return const SizedBox.shrink();
+                  }
+                }),
+                Obx(() => Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (controller.activeMode.value == 0 ||
+                            controller.activeMode.value == 2)
+                          Row(
+                            children: [
+                              (controller.activeMode.value == 2)
+                                  ? TextButton(
+                                      onPressed: _cancelForm,
+                                      child: const Text(
+                                        'Cancelar',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    )
+                                  : const SizedBox.shrink(),
+                              const SizedBox(width: 16.0),
+                              TextButton(
+                                onPressed: () {
+                                  switch (controller.tabType) {
+                                    case TabType.inventories:
+                                      controller.submitForm(inventoryFormKey);
+                                      break;
+                                    case TabType.domains:
+                                      controller.submitForm(domainFormKey);
+                                      break;
+                                    case TabType.tags:
+                                      controller.submitForm(tagFormKey);
+                                      break;
+                                    case TabType.readers:
+                                      controller.submitForm(readerFormKey);
+                                      break;
+                                    case TabType.members:
+                                      controller.submitForm(memberFormKey);
+                                      break;
+                                    case TabType.entities:
+                                      controller.submitForm(entityFormKey);
+                                      break;
+                                    default:
+                                      break;
+                                  }
+                                },
+                                style: ButtonStyle(
+                                  padding: WidgetStateProperty.all(
+                                    const EdgeInsets.symmetric(
+                                        vertical: 10.0, horizontal: 20.0),
+                                  ),
+                                  foregroundColor:
+                                      WidgetStateProperty.all(Colors.white),
+                                  backgroundColor:
+                                      WidgetStateProperty.all(Colors.blue),
+                                  textStyle: WidgetStateProperty.all(
+                                    const TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  shape: WidgetStateProperty.all(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                  ),
+                                ),
+                                child: const Row(
+                                  children: [
+                                    Icon(Icons.save_rounded),
+                                    SizedBox(width: 8.0),
+                                    Text('Salvar'),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        else
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    controller.activeMode = 2.obs;
+                                  });
+                                },
+                                style: ButtonStyle(
+                                  padding: WidgetStateProperty.all(
+                                    const EdgeInsets.symmetric(
+                                        vertical: 10.0, horizontal: 20.0),
+                                  ),
+                                  foregroundColor: WidgetStateProperty.all(
+                                    Colors.white,
+                                  ),
+                                  backgroundColor: WidgetStateProperty.all(
+                                    Colors.orange.withOpacity(0.8),
+                                  ),
+                                  textStyle: WidgetStateProperty.all(
+                                    const TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  shape: WidgetStateProperty.all(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                  ),
+                                ),
+                                child: const Row(
+                                  children: [
+                                    Icon(Icons.edit),
+                                    SizedBox(width: 8.0),
+                                    Text('Editar'),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 16.0),
+                              TextButton(
+                                onPressed: () {
+                                  controller.deleteItem();
+                                },
+                                style: ButtonStyle(
+                                  padding: WidgetStateProperty.all(
+                                    const EdgeInsets.symmetric(
+                                        vertical: 10.0, horizontal: 20.0),
+                                  ),
+                                  foregroundColor: WidgetStateProperty.all(
+                                    Colors.white,
+                                  ),
+                                  backgroundColor: WidgetStateProperty.all(
+                                    Colors.red,
+                                  ),
+                                  textStyle: WidgetStateProperty.all(
+                                    const TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  shape: WidgetStateProperty.all(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.delete_forever),
+                                    const SizedBox(width: 8.0),
+                                    Text(
+                                      'Deletar ${controller.utilsService.tabNameToSingular(controller.tabType)}',
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                          foregroundColor: WidgetStateProperty.all(
-                            Colors.white,
-                          ),
-                          textStyle: WidgetStateProperty.all(
-                            const TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          backgroundColor: WidgetStateProperty.all(
-                            Colors.blue.withOpacity(0.8),
-                          ),
-                          shape: WidgetStateProperty.all(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                        ),
-                        child: const Text('Salvar'),
-                      ),
-                    ),
-                  ),
-                ),
+                        const SizedBox(width: 6.0),
+                      ],
+                    )),
               ],
             ),
           ),
