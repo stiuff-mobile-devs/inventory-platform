@@ -81,18 +81,23 @@ class GenericListHeader extends StatelessWidget {
               const SizedBox(width: 8.0),
               TextButton.icon(
                 onPressed: () async {
-                  await Get.toNamed(
-                    AppRoutes.form,
-                    arguments: [
-                      tabType,
-                    ],
-                  );
+                  if (tabType != TabType.members) {
+                    await Get.toNamed(
+                      AppRoutes.form,
+                      arguments: [
+                        tabType,
+                      ],
+                    );
+                  } else {
+                    _utilsService.showUnderDevelopmentNotice(context);
+                  }
                 },
                 label: Text(
                     'Adicionar ${_utilsService.tabNameToSingular(tabType)}'),
                 icon: const Icon(Icons.add),
                 style: TextButton.styleFrom(
-                  foregroundColor: Colors.blue,
+                  foregroundColor:
+                      (tabType != TabType.members) ? Colors.blue : Colors.grey,
                 ),
               ),
             ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:inventory_platform/core/enums/tab_type_enum.dart';
+import 'package:inventory_platform/core/services/utils_service.dart';
 import 'package:inventory_platform/data/models/generic_list_item_model.dart';
 import 'package:inventory_platform/features/modules/panel/panel_controller.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/generic_list_header.dart';
@@ -56,7 +57,9 @@ class _GenericListTabState extends State<GenericListTab> {
     return Obx(
       () => RefreshIndicator(
         backgroundColor: Colors.white,
-        onRefresh: () async => _panelController.refreshItemsAndPaging(),
+        onRefresh: () async => _panelController.refreshItemsAndPaging(
+            tabType: UtilsService()
+                .tabIndexToEnum(_panelController.selectedTabIndex.value)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

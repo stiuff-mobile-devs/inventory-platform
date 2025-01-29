@@ -38,13 +38,13 @@ class _PanelPageState extends State<PanelPage> {
           tabType: TabType.inventories,
           searchParameters: 'Título ou Id',
           firstDetailFieldName: 'Criado em',
-          secondDetailFieldName: 'Última atualização em',
+          secondDetailFieldName: 'Última atualização',
         ),
         const GenericListTab(
           tabType: TabType.domains,
           searchParameters: 'Título ou Id',
           firstDetailFieldName: 'Criado em',
-          secondDetailFieldName: 'Última atualização em',
+          secondDetailFieldName: 'Última atualização',
         ),
         const GenericListTab(
           tabType: TabType.tags,
@@ -76,32 +76,35 @@ class _PanelPageState extends State<PanelPage> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<PanelController>(
-      builder: (_) {
-        _panelController.refreshItems();
-        return BaseScaffold(
-          hideTitle: true,
-          showBackButton: true,
-          body: Stack(
-            children: [
-              Obx(
-                () => _tabs[_panelController.selectedTabIndex.value],
-              ),
-              Obx(
-                () => Align(
-                  alignment: Alignment.bottomCenter,
-                  child: ScrollableBottomNavigationBar(
-                    onTabSelected: (index) {
-                      _panelController.selectedTabIndex.value = index;
-                    },
-                    selectedTabIndex: _panelController.selectedTabIndex.value,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: GetBuilder<PanelController>(
+        builder: (_) {
+          _panelController.refreshItems();
+          return BaseScaffold(
+            hideTitle: true,
+            showBackButton: true,
+            body: Stack(
+              children: [
+                Obx(
+                  () => _tabs[_panelController.selectedTabIndex.value],
+                ),
+                Obx(
+                  () => Align(
+                    alignment: Alignment.bottomCenter,
+                    child: ScrollableBottomNavigationBar(
+                      onTabSelected: (index) {
+                        _panelController.selectedTabIndex.value = index;
+                      },
+                      selectedTabIndex: _panelController.selectedTabIndex.value,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

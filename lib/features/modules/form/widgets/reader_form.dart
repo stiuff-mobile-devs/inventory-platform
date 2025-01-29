@@ -3,7 +3,14 @@ import 'package:inventory_platform/data/models/reader_model.dart';
 import 'package:inventory_platform/features/common/widgets/custom_text_field.dart';
 
 class ReaderForm extends StatefulWidget {
-  const ReaderForm({super.key});
+  final dynamic initialData;
+  final bool? isFormReadOnly;
+
+  const ReaderForm({
+    super.key,
+    this.initialData,
+    this.isFormReadOnly,
+  });
 
   @override
   ReaderFormState createState() => ReaderFormState();
@@ -11,16 +18,33 @@ class ReaderForm extends StatefulWidget {
 
 class ReaderFormState extends State<ReaderForm> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _macController = TextEditingController();
+
+  late TextEditingController _nameController;
+  late TextEditingController _macController;
 
   ReaderModel get readerModel => ReaderModel(
         name: _nameController.text,
         mac: _macController.text,
         isActive: 1,
-        createdAt: DateTime.now(),
+        createdAt: widget.initialData?.createdAt ?? DateTime.now(),
         lastSeen: DateTime.now(),
       );
+
+  ReaderModel get prevReaderModel => ReaderModel(
+        name: _nameController.text,
+        mac: widget.initialData?.mac ?? _macController.text,
+        isActive: 1,
+        createdAt: widget.initialData?.createdAt ?? DateTime.now(),
+        lastSeen: DateTime.now(),
+      );
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController =
+        TextEditingController(text: widget.initialData?.name ?? '');
+    _macController = TextEditingController(text: widget.initialData?.mac ?? '');
+  }
 
   @override
   void dispose() {
@@ -49,6 +73,7 @@ class ReaderFormState extends State<ReaderForm> {
             hint: 'Ex.: Leitor Principal',
             validator: (value) =>
                 value == null || value.isEmpty ? 'Nome é obrigatório' : null,
+            isReadOnly: widget.isFormReadOnly,
           ),
           const SizedBox(height: 10),
           CustomTextField(
@@ -65,6 +90,7 @@ class ReaderFormState extends State<ReaderForm> {
               }
               return null;
             },
+            isReadOnly: widget.isFormReadOnly,
           ),
           const SizedBox(height: 20),
         ],

@@ -6,7 +6,16 @@ import 'package:inventory_platform/data/repositories/entity_repository.dart';
 import 'package:inventory_platform/features/common/widgets/custom_text_field.dart';
 
 class EntityForm extends StatefulWidget {
-  const EntityForm({super.key});
+  final bool? enabled;
+  final dynamic initialData;
+  final Color? labelColor;
+
+  const EntityForm({
+    super.key,
+    this.enabled,
+    this.initialData,
+    this.labelColor,
+  });
 
   @override
   EntityFormState createState() => EntityFormState();

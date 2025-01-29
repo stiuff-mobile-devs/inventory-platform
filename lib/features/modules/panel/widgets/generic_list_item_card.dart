@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:inventory_platform/core/services/utils_service.dart';
 import 'package:inventory_platform/data/models/generic_list_item_model.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/details_dialog.dart';
 
 class GenericListItemCard extends StatelessWidget {
   final GenericListItemModel item;
@@ -62,6 +63,9 @@ class GenericListItemCard extends StatelessWidget {
             ),
           ],
         ),
+        onTap: () => {
+          showDetailsDialog(context, item),
+        },
       ),
     );
   }

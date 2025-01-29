@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:inventory_platform/core/services/utils_service.dart';
 import 'package:inventory_platform/features/common/controllers/sidebar_controller.dart';
 import 'package:inventory_platform/routes/routes.dart';
 import 'package:sidebarx/sidebarx.dart';
@@ -9,6 +10,7 @@ class CustomSidebar extends StatelessWidget {
   CustomSidebar({super.key});
 
   final controller = Get.find<SidebarController>();
+  final UtilsService utilsService = UtilsService();
 
   final SidebarXController sidebarController =
       SidebarXController(selectedIndex: 0, extended: true);
@@ -107,7 +109,8 @@ class CustomSidebar extends StatelessWidget {
         SidebarXItem(
           icon: Icons.logout,
           label: 'Logout',
-          onTap: controller.signOut,
+          onTap: () =>
+              utilsService.showLogoutNotice(context, controller.signOut),
         ),
       ],
     );

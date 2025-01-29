@@ -44,9 +44,9 @@ class CustomTextFieldState extends State<CustomTextField> {
           Text(
             widget.label,
             style: TextStyle(
-              color: widget.isReadOnly!
+              color: (widget.isReadOnly!
                   ? Colors.grey
-                  : Colors.blue.withOpacity(0.8),
+                  : Colors.blue.withOpacity(0.8)),
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
               height: 0,
@@ -65,6 +65,7 @@ class CustomTextFieldState extends State<CustomTextField> {
                 maxLength: widget.maxLength,
                 cursorColor: Colors.black,
                 onChanged: widget.onChanged,
+                enabled: !widget.isReadOnly!,
                 decoration: InputDecoration(
                   hintText: widget.hint,
                   hintStyle: const TextStyle(
@@ -84,6 +85,8 @@ class CustomTextFieldState extends State<CustomTextField> {
                   focusedErrorBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.red, width: 2.0),
                   ),
+                  filled: widget.isReadOnly!,
+                  fillColor: Colors.grey.withOpacity(0.2),
                 ),
                 style: const TextStyle(
                   fontSize: 16.0,

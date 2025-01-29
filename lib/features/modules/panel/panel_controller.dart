@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:inventory_platform/core/enums/tab_type_enum.dart';
+import 'package:inventory_platform/core/services/utils_service.dart';
 import 'package:inventory_platform/data/models/domain_model.dart';
 import 'package:inventory_platform/data/models/entity_model.dart';
 import 'package:inventory_platform/data/models/generic_list_item_model.dart';
@@ -12,6 +14,8 @@ import 'package:inventory_platform/data/repositories/organization_repository.dar
 
 class PanelController extends GetxController {
   late final OrganizationModel _currentOrganization;
+
+  final UtilsService _utilsService = UtilsService();
 
   final OrganizationRepository _organizationRepository =
       Get.find<OrganizationRepository>();
@@ -46,11 +50,16 @@ class PanelController extends GetxController {
     members = <MemberModel>[].obs;
     readers = <ReaderModel>[].obs;
 
-    ever(selectedTabIndex, (_) => refreshItemsAndPaging());
+    ever(
+      selectedTabIndex,
+      (_) => refreshItemsAndPaging(
+        tabType: _utilsService.tabIndexToEnum(selectedTabIndex.value),
+      ),
+    );
   }
 
-  Future<void> refreshItemsAndPaging() async {
-    await refreshItems();
+  Future<void> refreshItemsAndPaging({TabType? tabType}) async {
+    await refreshItems(tabType: tabType);
     pagingController.value.refresh();
   }
 
@@ -70,27 +79,59 @@ class PanelController extends GetxController {
     }).toList();
   }
 
-  Future<void> refreshItems() async {
+  Future<void> fetchAllData() async {
     inventories.value = await _organizationRepository
         .getInventoriesForOrganization(_currentOrganization.id);
-
     domains.value = await _organizationRepository
         .getDomainsForOrganization(_currentOrganization.id);
-
     tags.value = await _organizationRepository
         .getTagsForOrganization(_currentOrganization.id);
-
     readers.value = await _organizationRepository
         .getReadersForOrganization(_currentOrganization.id);
-
     members.value = _organizationRepository
         .getMembersForOrganization(_currentOrganization.id);
-
-    updateItemsBasedOnTab();
+    entities.value = await _organizationRepository
+        .getEntitiesForOrganization(_currentOrganization.id);
   }
 
-  void updateItemsBasedOnTab() {
-    switch (selectedTabIndex.value) {
+  Future<void> refreshItems({TabType? tabType}) async {
+    if (tabType != null) {
+      switch (tabType) {
+        case TabType.dashboard:
+          await fetchAllData();
+          break;
+        case TabType.inventories:
+          inventories.value = await _organizationRepository
+              .getInventoriesForOrganization(_currentOrganization.id);
+          break;
+        case TabType.domains:
+          domains.value = await _organizationRepository
+              .getDomainsForOrganization(_currentOrganization.id);
+          break;
+        case TabType.tags:
+          tags.value = await _organizationRepository
+              .getTagsForOrganization(_currentOrganization.id);
+          break;
+        case TabType.readers:
+          readers.value = await _organizationRepository
+              .getReadersForOrganization(_currentOrganization.id);
+          break;
+        case TabType.members:
+          members.value = _organizationRepository
+              .getMembersForOrganization(_currentOrganization.id);
+          break;
+        default:
+          break;
+      }
+    } else {
+      await fetchAllData();
+    }
+
+    updateItemsBasedOnTab(selectedTabIndex.value);
+  }
+
+  void updateItemsBasedOnTab(int tabIndex) {
+    switch (tabIndex) {
       case 1:
         allTabItemsGeneralized.value =
             InventoryModel.turnAllIntoGenericListItemModel(inventories);

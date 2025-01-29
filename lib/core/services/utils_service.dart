@@ -1,5 +1,7 @@
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:inventory_platform/core/enums/tab_type_enum.dart';
+import 'package:inventory_platform/features/common/widgets/warning_message.dart';
 
 class UtilsService {
   Future<void> retryWithExponentialBackoff(
@@ -46,6 +48,29 @@ class UtilsService {
     }
   }
 
+  TabType tabIndexToEnum(int tabIndex) {
+    switch (tabIndex) {
+      case 0:
+        return TabType.dashboard;
+      case 1:
+        return TabType.inventories;
+      case 2:
+        return TabType.domains;
+      case 3:
+        return TabType.tags;
+      case 4:
+        return TabType.readers;
+      case 5:
+        return TabType.members;
+      case 6:
+        return TabType.entities;
+      case 7:
+        return TabType.admin;
+      default:
+        return TabType.unknown;
+    }
+  }
+
   String tabNameToSingular(TabType tab) {
     switch (tab) {
       case TabType.inventories:
@@ -63,5 +88,32 @@ class UtilsService {
       default:
         return tab.toString();
     }
+  }
+
+  void showUnderDevelopmentNotice(BuildContext context) {
+    showWarningDialog(
+      context: context,
+      title: 'Aviso',
+      message: 'Ops! Esta função ainda não está disponível.',
+      onConfirm: () {
+        Navigator.of(context).pop();
+      },
+      onCancel: () {
+        Navigator.of(context).pop();
+      },
+    );
+  }
+
+  void showLogoutNotice(BuildContext context, void Function() action) {
+    showWarningDialog(
+      context: context,
+      title: 'Logout',
+      message: 'Você deseja mesmo sair desta conta?',
+      hasOnConfirm: true,
+      onConfirm: () => action(),
+      onCancel: () {
+        Navigator.of(context).pop();
+      },
+    );
   }
 }
