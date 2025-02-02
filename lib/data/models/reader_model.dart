@@ -1,5 +1,3 @@
-import 'package:inventory_platform/data/models/generic_list_item_model.dart';
-
 class ReaderModel {
   String _name;
   String _mac;
@@ -50,18 +48,4 @@ class ReaderModel {
         'createdAt': _createdAt?.toIso8601String(),
         'lastSeen': _lastSeen?.toIso8601String(),
       };
-
-  static List<GenericListItemModel> turnAllIntoGenericListItemModel(
-      List<ReaderModel> inList) {
-    return inList.map((originalItem) {
-      return GenericListItemModel(
-        id: originalItem.mac,
-        upperHeaderField: originalItem.name,
-        lowerHeaderField: originalItem.mac,
-        isActive: originalItem.isActive,
-        initialDate: originalItem.createdAt,
-        lastUpdatedAt: originalItem.lastSeen,
-      );
-    }).toList();
-  }
 }

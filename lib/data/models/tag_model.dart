@@ -1,5 +1,3 @@
-import 'package:inventory_platform/data/models/generic_list_item_model.dart';
-
 class TagModel {
   String _id;
   int _isActive;
@@ -49,21 +47,4 @@ class TagModel {
         'lastSeen': _lastSeen?.toIso8601String(),
         'createdAt': _createdAt?.toIso8601String(),
       };
-
-  static List<GenericListItemModel> turnAllIntoGenericListItemModel(
-      List<TagModel> inList) {
-    return inList.map((originalItem) {
-      final thirtyDaysAgo = DateTime.now().subtract(const Duration(days: 30));
-      final lastSeen = originalItem.lastSeen ?? DateTime.now();
-      final isActive = lastSeen.isAfter(thirtyDaysAgo) ? 1 : 0;
-      return GenericListItemModel(
-        id: originalItem.id,
-        upperHeaderField: originalItem.id.substring(originalItem.id.length - 6),
-        lowerHeaderField: originalItem.id,
-        isActive: isActive,
-        initialDate: originalItem.createdAt,
-        lastUpdatedAt: originalItem.lastSeen,
-      );
-    }).toList();
-  }
 }
