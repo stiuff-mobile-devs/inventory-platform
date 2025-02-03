@@ -11,6 +11,8 @@ class ErrorService {
       errorMessage = e.message;
     } else if (e is NetworkError) {
       errorMessage = e.message;
+    } else if (e is AuthError) {
+      errorMessage = e.message;
     } else {
       errorMessage = "Ocorreu um erro inesperado.";
     }
