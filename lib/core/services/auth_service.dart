@@ -7,6 +7,7 @@ import 'package:inventory_platform/core/services/error_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:inventory_platform/core/services/warning_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -14,6 +15,7 @@ class AuthService {
   final ErrorService _errorService = ErrorService();
   final WarningService _warningService = WarningService();
   final ConnectionService _connectionService = ConnectionService();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   String? _cachedProfileImageUrl;
 
@@ -77,9 +79,11 @@ class AuthService {
       throw NetworkError();
     }
 
+    UserCredential userCredential;
+
     if (GetPlatform.isWeb) {
       final GoogleAuthProvider googleProvider = GoogleAuthProvider();
-      await _auth.signInWithPopup(googleProvider);
+      userCredential = await _auth.signInWithPopup(googleProvider);
     } else {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
@@ -94,12 +98,38 @@ class AuthService {
         idToken: googleAuth.idToken,
       );
 
-      await _auth.signInWithCredential(credential);
+      userCredential = await _auth.signInWithCredential(credential);
     }
+
+    final User? user = userCredential.user;
+    if (user == null || user.email == null) {
+      throw AuthError("Erro ao obter email do usuário.");
+    }
+
+    bool isAllowed = await _isEmailAllowed(user.email!);
 
     success = true;
 
+    if (!isAllowed) {
+      await _auth.signOut();
+      await _googleSignIn.signOut();
+      success = false;
+      _errorService.handleError(
+        AuthError("Seu email não está autorizado a acessar este sistema."),
+      );
+    }
+
     return success;
+  }
+
+  Future<bool> _isEmailAllowed(String email) async {
+    final querySnapshot = await _firestore.collection("allowed_users").get();
+    for (var doc in querySnapshot.docs) {
+      if (doc.data()['email'] == email) {
+        return true;
+      }
+    }
+    return false;
   }
 
   Future<void> signOut() async {

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/data/models/organization_model.dart';
 import 'package:inventory_platform/features/modules/panel/panel_controller.dart';
-import 'package:inventory_platform/features/modules/panel/widgets/status_chart.dart';
-import 'package:inventory_platform/features/modules/panel/widgets/update_chart.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/chart_status.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/chart_update.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 class DashboardTab extends StatefulWidget {
@@ -162,7 +162,7 @@ class _DashboardTabState extends State<DashboardTab> {
       backgroundColor: Colors.grey.shade200,
       body: ListView(
         children: [
-          _buildHeader(_panelController.getCurrentOrganization()),
+          _buildHeader(_panelController.getCurrentOrganization()!),
           Container(
             margin: const EdgeInsets.all(16.0),
             padding: const EdgeInsets.symmetric(vertical: 16.0),

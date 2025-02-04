@@ -43,6 +43,7 @@ class TemporaryMessageDisplayState extends State<TemporaryMessageDisplay> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
             margin: const EdgeInsets.symmetric(vertical: 8.0),
+            width: MediaQuery.of(context).size.width * 0.925,
             height: MediaQuery.of(context).size.height * 0.10,
             decoration: BoxDecoration(
               color: Colors.blueAccent.withOpacity(0.1),

@@ -1,5 +1,3 @@
-import 'package:inventory_platform/data/models/generic_list_item_model.dart';
-
 class DomainModel {
   String _id;
   String _title;
@@ -78,18 +76,4 @@ class DomainModel {
         'lastUpdatedAt': _lastUpdatedAt?.toIso8601String(),
         'attributes': _attributes,
       };
-
-  static List<GenericListItemModel> turnAllIntoGenericListItemModel(
-      List<DomainModel> inList) {
-    return inList.map((originalItem) {
-      return GenericListItemModel(
-        id: originalItem.id,
-        upperHeaderField: originalItem.title,
-        lowerHeaderField: originalItem.description,
-        isActive: originalItem.isActive,
-        initialDate: originalItem.createdAt,
-        lastUpdatedAt: originalItem.lastUpdatedAt,
-      );
-    }).toList();
-  }
 }

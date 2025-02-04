@@ -1,4 +1,3 @@
-import 'package:inventory_platform/data/models/generic_list_item_model.dart';
 import 'package:inventory_platform/data/models/user_model.dart';
 
 class MemberModel {
@@ -57,18 +56,4 @@ class MemberModel {
         'createdAt': _createdAt?.toIso8601String(),
         'lastSeen': _lastSeen?.toIso8601String(),
       };
-
-  static List<GenericListItemModel> turnAllIntoGenericListItemModel(
-      List<MemberModel> inList) {
-    return inList.map((originalItem) {
-      return GenericListItemModel(
-        id: originalItem.user.email,
-        upperHeaderField: originalItem.user.name,
-        lowerHeaderField: originalItem.user.email,
-        isActive: originalItem.isActive,
-        initialDate: originalItem.createdAt,
-        lastUpdatedAt: originalItem.createdAt,
-      );
-    }).toList();
-  }
 }

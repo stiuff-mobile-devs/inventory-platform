@@ -14,9 +14,6 @@ class _AdminTabState extends State<AdminTab> {
   late final PanelController _panelController;
   late final UtilsService _utilsService;
 
-  final OrganizationRepository _organizationRepository =
-      Get.find<OrganizationRepository>();
-
   @override
   void initState() {
     super.initState();
@@ -32,7 +29,7 @@ class _AdminTabState extends State<AdminTab> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(_panelController.getCurrentOrganization().title),
+            _buildHeader(_panelController.getCurrentOrganization()!.title),
             const SizedBox(height: 8.0),
             _buildOrganizationInfoWidget(),
             const SizedBox(height: 16.0),
@@ -103,13 +100,13 @@ class _AdminTabState extends State<AdminTab> {
             ),
             const SizedBox(height: 16.0),
             _buildCustomTextField(
-              initialValue: _panelController.getCurrentOrganization().title,
+              initialValue: _panelController.getCurrentOrganization()!.title,
               labelText: "Nome da Organização",
             ),
             const SizedBox(height: 16.0),
             _buildCustomTextField(
               initialValue:
-                  _panelController.getCurrentOrganization().description!,
+                  _panelController.getCurrentOrganization()!.description!,
               labelText: "Descrição",
               maxLines: 3,
             ),

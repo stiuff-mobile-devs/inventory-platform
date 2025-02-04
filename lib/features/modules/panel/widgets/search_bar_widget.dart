@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class SearchBarWidget extends StatelessWidget {
   final TextEditingController searchController;
+  final FocusNode? focusNode;
   final String hintText;
   final Function(String) onSearchTextChanged;
 
@@ -10,6 +11,7 @@ class SearchBarWidget extends StatelessWidget {
     required this.searchController,
     required this.hintText,
     required this.onSearchTextChanged,
+    this.focusNode,
   });
 
   @override
@@ -30,6 +32,7 @@ class SearchBarWidget extends StatelessWidget {
         ),
         child: TextField(
           controller: searchController,
+          focusNode: focusNode,
           style: const TextStyle(fontSize: 16.0),
           cursorColor: Colors.black87,
           onChanged: onSearchTextChanged,

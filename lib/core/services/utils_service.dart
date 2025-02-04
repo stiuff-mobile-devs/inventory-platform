@@ -29,7 +29,7 @@ class UtilsService {
         : "Data Indisponível";
   }
 
-  String tabName(TabType tab) {
+  String tabEnumToString(TabType tab) {
     switch (tab) {
       case TabType.inventories:
         return 'Inventários';
@@ -73,6 +73,8 @@ class UtilsService {
 
   String tabNameToSingular(TabType tab) {
     switch (tab) {
+      case TabType.dashboard:
+        return 'Dashboard';
       case TabType.inventories:
         return 'Inventário';
       case TabType.domains:
@@ -85,6 +87,8 @@ class UtilsService {
         return 'Membro';
       case TabType.entities:
         return 'Entidade';
+      case TabType.admin:
+        return 'Painel do Administrador';
       default:
         return tab.toString();
     }
