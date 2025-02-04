@@ -29,16 +29,12 @@ class FormPageState extends State<FormPage> {
   GlobalKey<EntityFormState> entityFormKey = GlobalKey<EntityFormState>();
 
   String getHeaderPrefix(int activeMode) {
-    switch (activeMode) {
-      case 0:
-        return 'Adicionando';
-      case 1:
-        return 'Visualizando';
-      case 2:
-        return 'Editando';
-      default:
-        return 'Unavailable';
-    }
+    const modeLabels = {
+      0: 'Adicionando',
+      1: 'Visualizando',
+      2: 'Editando',
+    };
+    return modeLabels[activeMode] ?? 'Unavailable';
   }
 
   @override
@@ -51,31 +47,19 @@ class FormPageState extends State<FormPage> {
   }
 
   void _cancelForm() {
-    setState(() {
-      controller.activeMode = 1.obs;
-      switch (controller.tabType) {
-        case TabType.inventories:
-          inventoryFormKey = GlobalKey<InventoryFormState>();
-          break;
-        case TabType.domains:
-          domainFormKey = GlobalKey<DomainFormState>();
-          break;
-        case TabType.tags:
-          tagFormKey = GlobalKey<TagFormState>();
-          break;
-        case TabType.readers:
-          readerFormKey = GlobalKey<ReaderFormState>();
-          break;
-        case TabType.members:
-          memberFormKey = GlobalKey<MemberFormState>();
-          break;
-        case TabType.entities:
-          entityFormKey = GlobalKey<EntityFormState>();
-          break;
-        default:
-          break;
-      }
-    });
+    controller.activeMode.value = 1;
+
+    final formKeys = {
+      TabType.inventories: () =>
+          inventoryFormKey = GlobalKey<InventoryFormState>(),
+      TabType.domains: () => domainFormKey = GlobalKey<DomainFormState>(),
+      TabType.tags: () => tagFormKey = GlobalKey<TagFormState>(),
+      TabType.readers: () => readerFormKey = GlobalKey<ReaderFormState>(),
+      TabType.members: () => memberFormKey = GlobalKey<MemberFormState>(),
+      TabType.entities: () => entityFormKey = GlobalKey<EntityFormState>(),
+    };
+
+    formKeys[controller.tabType]?.call();
   }
 
   @override
@@ -91,241 +75,203 @@ class FormPageState extends State<FormPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Obx(() => Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text(
-                        '${getHeaderPrefix(controller.activeMode.value)} ${controller.utilsService.tabNameToSingular(controller.tabType)}',
-                        style: const TextStyle(
-                          fontSize: 28.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    )),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8.0,
-                    vertical: 4.0,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.greenAccent.shade700,
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  child: Text(
-                    controller.currentOrganization.title,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+                _buildHeader(),
+                _buildOrganizationBadge(),
                 const SizedBox(height: 20),
-                Obx(() {
-                  switch (controller.tabType) {
-                    case TabType.inventories:
-                      return InventoryForm(
-                        key: inventoryFormKey,
-                        initialData: controller.initialData,
-                        isFormReadOnly: controller.activeMode.value == 1,
-                      );
-                    case TabType.domains:
-                      return DomainForm(
-                        key: domainFormKey,
-                        initialData: controller.initialData,
-                        isFormReadOnly: controller.activeMode.value == 1,
-                      );
-                    case TabType.tags:
-                      return TagForm(
-                        key: tagFormKey,
-                        initialData: controller.initialData,
-                        isFormReadOnly: controller.activeMode.value == 1,
-                      );
-                    case TabType.readers:
-                      return ReaderForm(
-                        key: readerFormKey,
-                        initialData: controller.initialData,
-                        isFormReadOnly: controller.activeMode.value == 1,
-                      );
-                    case TabType.members:
-                      return MemberForm(
-                        key: memberFormKey,
-                        enabled: controller.activeMode.value != 1,
-                        initialData: controller.initialData,
-                      );
-                    case TabType.entities:
-                      return EntityForm(
-                        key: entityFormKey,
-                        enabled: controller.activeMode.value != 1,
-                        initialData: controller.initialData,
-                      );
-                    default:
-                      return const SizedBox.shrink();
-                  }
-                }),
-                Obx(() => Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        if (controller.activeMode.value == 0 ||
-                            controller.activeMode.value == 2)
-                          Row(
-                            children: [
-                              (controller.activeMode.value == 2)
-                                  ? TextButton(
-                                      onPressed: _cancelForm,
-                                      child: const Text(
-                                        'Cancelar',
-                                        style: TextStyle(color: Colors.red),
-                                      ),
-                                    )
-                                  : const SizedBox.shrink(),
-                              const SizedBox(width: 16.0),
-                              TextButton(
-                                onPressed: () {
-                                  switch (controller.tabType) {
-                                    case TabType.inventories:
-                                      controller.submitForm(inventoryFormKey);
-                                      break;
-                                    case TabType.domains:
-                                      controller.submitForm(domainFormKey);
-                                      break;
-                                    case TabType.tags:
-                                      controller.submitForm(tagFormKey);
-                                      break;
-                                    case TabType.readers:
-                                      controller.submitForm(readerFormKey);
-                                      break;
-                                    case TabType.members:
-                                      controller.submitForm(memberFormKey);
-                                      break;
-                                    case TabType.entities:
-                                      controller.submitForm(entityFormKey);
-                                      break;
-                                    default:
-                                      break;
-                                  }
-                                },
-                                style: ButtonStyle(
-                                  padding: WidgetStateProperty.all(
-                                    const EdgeInsets.symmetric(
-                                        vertical: 10.0, horizontal: 20.0),
-                                  ),
-                                  foregroundColor:
-                                      WidgetStateProperty.all(Colors.white),
-                                  backgroundColor:
-                                      WidgetStateProperty.all(Colors.blue),
-                                  textStyle: WidgetStateProperty.all(
-                                    const TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  shape: WidgetStateProperty.all(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                  ),
-                                ),
-                                child: const Row(
-                                  children: [
-                                    Icon(Icons.save_rounded),
-                                    SizedBox(width: 8.0),
-                                    Text('Salvar'),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          )
-                        else
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    controller.activeMode = 2.obs;
-                                  });
-                                },
-                                style: ButtonStyle(
-                                  padding: WidgetStateProperty.all(
-                                    const EdgeInsets.symmetric(
-                                        vertical: 10.0, horizontal: 20.0),
-                                  ),
-                                  foregroundColor: WidgetStateProperty.all(
-                                    Colors.white,
-                                  ),
-                                  backgroundColor: WidgetStateProperty.all(
-                                    Colors.orange.withOpacity(0.8),
-                                  ),
-                                  textStyle: WidgetStateProperty.all(
-                                    const TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  shape: WidgetStateProperty.all(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                  ),
-                                ),
-                                child: const Row(
-                                  children: [
-                                    Icon(Icons.edit),
-                                    SizedBox(width: 8.0),
-                                    Text('Editar'),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 16.0),
-                              TextButton(
-                                onPressed: () {
-                                  controller.deleteItem();
-                                },
-                                style: ButtonStyle(
-                                  padding: WidgetStateProperty.all(
-                                    const EdgeInsets.symmetric(
-                                        vertical: 10.0, horizontal: 20.0),
-                                  ),
-                                  foregroundColor: WidgetStateProperty.all(
-                                    Colors.white,
-                                  ),
-                                  backgroundColor: WidgetStateProperty.all(
-                                    Colors.red,
-                                  ),
-                                  textStyle: WidgetStateProperty.all(
-                                    const TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  shape: WidgetStateProperty.all(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    const Icon(Icons.delete_forever),
-                                    const SizedBox(width: 8.0),
-                                    Text(
-                                      'Deletar ${controller.utilsService.tabNameToSingular(controller.tabType)}',
-                                      style:
-                                          const TextStyle(color: Colors.white),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        const SizedBox(width: 6.0),
-                      ],
-                    )),
+                Obx(() => _buildForm()),
+                Obx(() => _buildActionButtons()),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildHeader() {
+    return Obx(
+      () => Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: Text(
+          '${getHeaderPrefix(controller.activeMode.value)} '
+          '${controller.utilsService.tabNameToSingular(controller.tabType)}',
+          style: const TextStyle(
+            fontSize: 28.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOrganizationBadge() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      decoration: BoxDecoration(
+        color: Colors.greenAccent.shade700,
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: Text(
+        controller.currentOrganization.title,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildForm() {
+    final formMap = {
+      TabType.inventories: () => InventoryForm(
+            key: inventoryFormKey,
+            initialData: controller.initialData,
+            isFormReadOnly: controller.activeMode.value == 1,
+          ),
+      TabType.domains: () => DomainForm(
+            key: domainFormKey,
+            initialData: controller.initialData,
+            isFormReadOnly: controller.activeMode.value == 1,
+          ),
+      TabType.tags: () => TagForm(
+            key: tagFormKey,
+            initialData: controller.initialData,
+            isFormReadOnly: controller.activeMode.value == 1,
+          ),
+      TabType.readers: () => ReaderForm(
+            key: readerFormKey,
+            initialData: controller.initialData,
+            isFormReadOnly: controller.activeMode.value == 1,
+          ),
+      TabType.members: () => MemberForm(
+            key: memberFormKey,
+            enabled: controller.activeMode.value != 1,
+            initialData: controller.initialData,
+          ),
+      TabType.entities: () => EntityForm(
+            key: entityFormKey,
+            enabled: controller.activeMode.value != 1,
+            initialData: controller.initialData,
+          ),
+    };
+
+    return formMap[controller.tabType]?.call() ?? const SizedBox.shrink();
+  }
+
+  Widget _buildActionButtons() {
+    if (controller.activeMode.value == 0 || controller.activeMode.value == 2) {
+      return _buildEditModeButtons();
+    } else {
+      return _buildViewModeButtons();
+    }
+  }
+
+  Widget _buildEditModeButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        if (controller.activeMode.value == 2)
+          TextButton(
+            onPressed: _cancelForm,
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        const SizedBox(width: 16.0),
+        _buildSaveButton(),
+      ],
+    );
+  }
+
+  Widget _buildSaveButton() {
+    return TextButton(
+      onPressed: () => _submitForm(),
+      style: _buttonStyle(Colors.blue),
+      child: const Row(
+        children: [
+          Icon(Icons.save_rounded),
+          SizedBox(width: 8.0),
+          Text('Salvar'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildViewModeButtons() {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          _buildEditButton(),
+          const SizedBox(height: 16.0),
+          _buildDeleteButton(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEditButton() {
+    return TextButton(
+      onPressed: () => controller.activeMode.value = 2,
+      style: _buttonStyle(Colors.orange.withOpacity(0.8)),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.edit),
+          SizedBox(width: 8.0),
+          Text('Editar'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDeleteButton() {
+    return TextButton(
+      onPressed: () => controller.deleteItem(),
+      style: _buttonStyle(Colors.red),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.delete_forever),
+          const SizedBox(width: 8.0),
+          Text(
+            'Deletar ${controller.utilsService.tabNameToSingular(controller.tabType)}',
+            style: const TextStyle(color: Colors.white),
+          ),
+        ],
+      ),
+    );
+  }
+
+  ButtonStyle _buttonStyle(Color color) {
+    return ButtonStyle(
+      padding: WidgetStateProperty.all(
+        const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+      ),
+      foregroundColor: WidgetStateProperty.all(Colors.white),
+      backgroundColor: WidgetStateProperty.all(color),
+      textStyle: WidgetStateProperty.all(
+        const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+      ),
+      shape: WidgetStateProperty.all(
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      ),
+    );
+  }
+
+  void _submitForm() {
+    final formMap = {
+      TabType.inventories: inventoryFormKey,
+      TabType.domains: domainFormKey,
+      TabType.tags: tagFormKey,
+      TabType.readers: readerFormKey,
+      TabType.members: memberFormKey,
+      TabType.entities: entityFormKey,
+    };
+
+    controller.submitForm(formMap[controller.tabType]);
   }
 }

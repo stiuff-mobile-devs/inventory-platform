@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inventory_platform/core/enums/tab_type_enum.dart';
 import 'package:inventory_platform/features/modules/panel/panel_controller.dart';
-import 'package:inventory_platform/features/modules/panel/widgets/admin_tab.dart';
-import 'package:inventory_platform/features/modules/panel/widgets/dashboard_tab.dart';
-import 'package:inventory_platform/features/modules/panel/widgets/entities_tab.dart';
-import 'package:inventory_platform/features/modules/panel/widgets/generic_list_tab.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/tabs/tab_admin.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/tabs/tab_dashboard.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/tabs/tab_domains.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/tabs/tab_entities.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/tabs/tab_inventories.dart';
 import 'package:inventory_platform/features/common/widgets/base_scaffold.dart';
 import 'package:inventory_platform/features/common/widgets/scrollable_bottom_nav_bar.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/tabs/tab_members.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/tabs/tab_readers.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/tabs/tab_tags.dart';
 
 class PanelPage extends StatefulWidget {
   const PanelPage({super.key});
@@ -34,44 +37,17 @@ class _PanelPageState extends State<PanelPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _tabs = [
         const DashboardTab(),
-        const GenericListTab(
-          tabType: TabType.inventories,
-          searchParameters: 'Título ou Id',
-          firstDetailFieldName: 'Criado em',
-          secondDetailFieldName: 'Última atualização',
-        ),
-        const GenericListTab(
-          tabType: TabType.domains,
-          searchParameters: 'Título ou Id',
-          firstDetailFieldName: 'Criado em',
-          secondDetailFieldName: 'Última atualização',
-        ),
-        const GenericListTab(
-          tabType: TabType.tags,
-          searchParameters: 'Serial ou Id',
-          firstDetailFieldName: 'Criado em',
-          secondDetailFieldName: 'Visto pela última vez em',
-        ),
-        const GenericListTab(
-          tabType: TabType.readers,
-          searchParameters: 'Nome ou MAC',
-          firstDetailFieldName: 'Criado em',
-          secondDetailFieldName: 'Visto pela última vez em',
-        ),
-        const GenericListTab(
-          tabType: TabType.members,
-          searchParameters: 'Nome ou Email',
-          firstDetailFieldName: 'Criado em',
-          secondDetailFieldName: 'Visto pela última vez em',
-        ),
+        const TabInventories(),
+        const TabDomains(),
+        const TabTags(),
+        const TabReaders(),
+        const TabMembers(),
         const EntitiesTab(),
         const AdminTab(),
       ];
     });
 
-    _panelController.refreshItemsAndPaging().then((_) {
-      _panelController.update();
-    });
+    _panelController.refreshItemsForTab();
   }
 
   @override
@@ -80,7 +56,6 @@ class _PanelPageState extends State<PanelPage> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: GetBuilder<PanelController>(
         builder: (_) {
-          _panelController.refreshItems();
           return BaseScaffold(
             hideTitle: true,
             showBackButton: true,

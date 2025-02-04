@@ -35,7 +35,7 @@ class FormController extends GetxController {
     organizationRepository = Get.find<OrganizationRepository>();
 
     tabType = Get.arguments[0];
-    currentOrganization = panelController.getCurrentOrganization();
+    currentOrganization = panelController.getCurrentOrganization()!;
   }
 
   Future<void> submitForm(dynamic formKey) async {
@@ -95,7 +95,7 @@ class FormController extends GetxController {
     }
 
     if (isFormValid) {
-      panelController.refreshItemsAndPaging();
+      panelController.refreshPage();
       debugPrint('Formulário submetido com sucesso!');
       if (activeMode.value == 2) {
         activeMode.value = 1;
@@ -137,7 +137,7 @@ class FormController extends GetxController {
         debugPrint('Tipo de item não reconhecido.');
         break;
     }
-    panelController.refreshItemsAndPaging();
+    panelController.refreshPage();
     Get.back();
   }
 
