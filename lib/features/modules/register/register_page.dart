@@ -4,23 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/data/models/credentials_model.dart';
-import 'package:inventory_platform/features/modules/login/login_controller.dart';
+import 'package:inventory_platform/features/modules/register/register_controller.dart';
 import 'package:inventory_platform/features/common/widgets/loading_dialog.dart';
-import 'package:inventory_platform/features/modules/login/widgets/login_form.dart';
-import 'package:inventory_platform/features/modules/login/widgets/google_login_button.dart';
-import 'package:inventory_platform/features/modules/login/widgets/login_header.dart';
+import 'package:inventory_platform/features/modules/register/widgets/register_form.dart';
+import 'package:inventory_platform/features/modules/register/widgets/register_header.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  LoginPageState createState() => LoginPageState();
+  RegisterPageState createState() => RegisterPageState();
 }
 
-class LoginPageState extends State<LoginPage> {
+class RegisterPageState extends State<RegisterPage> {
   final ScrollController _scrollController = ScrollController();
   bool _showScrollHint = false;
-  final controller = Get.find<LoginController>();
+  final controller = Get.find<RegisterController>();
 
   void updateScrollHint() {
     if (!_scrollController.hasClients) return;
@@ -80,7 +79,7 @@ class LoginPageState extends State<LoginPage> {
 
     return Container(
       width: screenWidth * 0.8,
-      height: screenHeight * 0.8125,
+      height: screenHeight * 0.65,
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.8),
         borderRadius: BorderRadius.circular(12),
@@ -97,10 +96,9 @@ class LoginPageState extends State<LoginPage> {
         children: [
           Column(
             children: [
-              LoginHeader(width: screenWidth * 0.8, height: screenHeight * 0.2),
-              SizedBox(height: screenHeight * 0.075),
-              _buildTitleSection(),
-              _buildLoginDetails(Orientation.portrait, screenWidth * 0.8),
+              RegisterHeader(width: screenWidth * 0.8, height: screenHeight * 0.2),
+              SizedBox(height: screenHeight * 0.050),
+              _buildDetails(Orientation.portrait, screenWidth * 0.8),
             ],
           ),
           Positioned(
@@ -132,7 +130,7 @@ class LoginPageState extends State<LoginPage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8.0, vertical: 16.0),
-                        child: _buildLoginDetails(
+                        child: _buildDetails(
                           Orientation.landscape,
                           availableWidth,
                         ),
@@ -205,89 +203,46 @@ class LoginPageState extends State<LoginPage> {
           ),
           textAlign: TextAlign.center,
         ),
-        Text(
-          'Gerencie seus itens de inventário em um ambiente compartilhado.',
-          style: textStyle.bodyMedium?.copyWith(
-            color: isWhite ? Colors.white : Colors.black,
-          ),
-          textAlign: TextAlign.center,
-        ),
       ],
     );
   }
 
-  Widget _buildLoginDetails(Orientation orientation, double availableWidth) {
+  Widget _buildDetails(Orientation orientation, double availableWidth) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         orientation == Orientation.landscape
             ? Padding(
-                padding: const EdgeInsets.only(left: 16.0, top: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Faça o seu login.',
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                    ),
-                    Divider(
-                      thickness: 5,
-                      color: Colors.black,
-                      endIndent: availableWidth * 0.65,
-                    ),
-                  ],
-                ),
-              )
-            : const SizedBox.shrink(),
-        LoginForm(onPressed: _handleSignIn),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          padding: const EdgeInsets.only(left: 16.0, top: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildDivider(availableWidth),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  'ou',
-                  style: Theme.of(context).textTheme.bodyMedium,
+              Text(
+                'Cadastre-se.',
+                style:
+                Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              _buildDivider(availableWidth),
+              Divider(
+                thickness: 5,
+                color: Colors.black,
+                endIndent: availableWidth * 0.65,
+              ),
             ],
           ),
-        ),
-        GoogleLoginButton(onPressed: _handleGoogleSignIn),
+        )
+            : const SizedBox.shrink(),
+        RegisterForm(onPressed: _handleRegister),
       ],
     );
   }
 
-  Widget _buildDivider(double availableWidth) {
-    return Container(
-      width: availableWidth * 0.175,
-      height: 2.5,
-      color: const Color.fromARGB(90, 87, 87, 87),
-    );
-  }
-
-  Future<void> _handleGoogleSignIn() async {
+  Future<void> _handleRegister(UserCredentialsModel user) async {
     _showLoadingDialog(context);
 
-    final bool success = await controller.handleGoogleSignIn();
-
-    if (mounted && !success) {
-      Navigator.of(context).pop();
-    }
-  }
-
-  Future<void> _handleSignIn(UserCredentialsModel credentials) async {
-    _showLoadingDialog(context);
-
-    final bool success = await controller.handleSignIn(credentials);
+    final bool success = await controller.handleRegister(user);
 
     if (mounted && !success) {
       Navigator.of(context).pop();

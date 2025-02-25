@@ -29,6 +29,13 @@ class UtilsService {
         : "Data Indisponível";
   }
 
+  bool emailRegexMatch(String email) {
+    final RegExp regex = RegExp(
+      r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+    );
+    return regex.hasMatch(email);
+  }
+
   String tabEnumToString(TabType tab) {
     switch (tab) {
       case TabType.inventories:

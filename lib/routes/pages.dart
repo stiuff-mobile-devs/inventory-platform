@@ -6,10 +6,14 @@ import 'package:inventory_platform/features/modules/help/help_page.dart';
 import 'package:inventory_platform/features/modules/home/home_page.dart';
 import 'package:inventory_platform/features/modules/login/login_binding.dart';
 import 'package:inventory_platform/features/modules/login/login_page.dart';
+import 'package:inventory_platform/features/modules/register/register_page.dart';
 import 'package:inventory_platform/features/modules/panel/panel_binding.dart';
 import 'package:inventory_platform/features/modules/panel/panel_page.dart';
 import 'package:inventory_platform/features/modules/settings/settings_page.dart';
 import 'package:inventory_platform/routes/routes.dart';
+
+import '../features/modules/register/register_binding.dart';
+
 
 abstract class AppPages {
   static final pages = [
@@ -18,6 +22,15 @@ abstract class AppPages {
       page: () => const LoginPage(),
       bindings: [
         LoginBinding(),
+      ],
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+    ),
+    GetPage(
+      name: AppRoutes.register,
+      page: () => const RegisterPage(),
+      bindings: [
+        RegisterBinding(),
       ],
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 300),

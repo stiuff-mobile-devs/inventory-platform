@@ -8,7 +8,6 @@ import 'package:sidebarx/sidebarx.dart';
 
 class CustomSidebar extends StatelessWidget {
   CustomSidebar({super.key});
-
   final controller = Get.find<SidebarController>();
   final UtilsService utilsService = UtilsService();
 

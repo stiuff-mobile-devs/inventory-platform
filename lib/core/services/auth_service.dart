@@ -71,6 +71,31 @@ class AuthService {
     }
   }
 
+  Future<bool> signInWithEmailPassword(String email, String password) async {
+    bool success = false;
+
+    final bool hasInternet = await _connectionService.checkInternetConnection();
+    if (!hasInternet) {
+      throw NetworkError();
+    }
+
+    try {
+      final credential = await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: password
+      );
+      success = true;
+      return success;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'wrong-password') {
+        throw AuthError("Senha incorreta");
+      }
+      success = false;
+    }
+
+    return success;
+  }
+
   Future<bool> signInWithGoogle() async {
     bool success = false;
 
