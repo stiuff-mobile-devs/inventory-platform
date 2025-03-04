@@ -71,7 +71,9 @@ abstract class AppPages {
       name: AppRoutes.form,
       page: () => const FormPage(),
       bindings: [
+        PanelBinding(),
         FormBinding(),
+        
       ],
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 300),

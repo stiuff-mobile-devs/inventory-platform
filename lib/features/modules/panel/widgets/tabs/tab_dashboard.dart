@@ -34,14 +34,14 @@ class _DashboardTabState extends State<DashboardTab> {
         borderRadius: BorderRadius.circular(12.0),
         child: Stack(
           children: [
-            SizedBox(
+            /*SizedBox(
               width: double.infinity,
               height: 120,
               child: Image.asset(
                 organization.imagePath!,
                 fit: BoxFit.cover,
               ),
-            ),
+            ),*/
             Positioned(
               bottom: 16.0,
               left: 16.0,
