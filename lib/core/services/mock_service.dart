@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/data/models/domain_model.dart';
 import 'package:inventory_platform/data/models/entity_model.dart';
@@ -11,6 +12,8 @@ import 'package:inventory_platform/data/repositories/organization_repository.dar
 
 class MockService extends GetxController {
   final OrganizationRepository organizationRepository;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
 
   MockService({
     required this.organizationRepository,
@@ -23,8 +26,20 @@ class MockService extends GetxController {
     // loadOrganizationData('1');
   }
 
-  void addSampleOrganizations() {
-    organizationRepository.addAllOrganizations(
+  Future<void> addSampleOrganizations() async {
+    QuerySnapshot querySnapshot = await firestore.collection('departments').get();
+    List<OrganizationModel> organizations = querySnapshot.docs.map((doc) {
+       var data = doc.data() as Map<String, dynamic>;
+      return OrganizationModel(
+        id: doc.id,
+        title: data['title'],
+        description: data['description'],
+        imagePath: "assets/images/Laboratory_1920x1080.jpg",
+      );
+    }).toList();
+
+    organizationRepository.addAllOrganizations(organizations);
+   /* organizationRepository.addAllOrganizations(
       [
         OrganizationModel(
           id: '2',
@@ -39,7 +54,7 @@ class MockService extends GetxController {
           imagePath: "assets/images/Warship_1920x1080.jpg",
         ),
       ],
-    );
+    );*/
   }
 
   void loadOrganizationData(String orgId) {

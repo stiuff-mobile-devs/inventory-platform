@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:inventory_platform/data/models/inventory_model.dart';
 import 'package:inventory_platform/data/repositories/inventory_repository.dart';
@@ -23,6 +25,7 @@ class InventoryFormState extends State<InventoryForm> {
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
   late TextEditingController _revisionController;
+  bool _isLoading = false;
 
   final InventoryRepository _inventoryRepository = InventoryRepository();
 
@@ -62,6 +65,70 @@ class InventoryFormState extends State<InventoryForm> {
     return false;
   }
 
+  Future<void> _saveInventory() async {
+    if (_titleController.text.isEmpty || _descriptionController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Preencha todos os campos e selecione uma imagem.")),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Verifique se o usuário está autenticado
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Usuário não autenticado.")),
+        );
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+
+
+   
+     // Obtém a referência da coleção existente "inventories"
+     String departmentId = "EsQDsCXUBXsL9NKOoih5"; // Substituir pelo ID correto
+
+    // Obtendo a referência do documento do departamento específico
+    DocumentReference departmentRef = FirebaseFirestore.instance
+        .collection("departments")
+        .doc(departmentId);
+
+    // Adicionando um novo documento na subcoleção "inventories"
+    await departmentRef.collection("inventories").add({
+      "title": _titleController.text.trim(),
+      "description": _descriptionController.text.trim(),
+      "revision_number": _revisionController.text.trim(),
+      "created_at": FieldValue.serverTimestamp(),
+      "created_by": user.uid,
+    });
+
+
+      // Feedback de sucesso
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Departamento e inventário criados com sucesso!")),
+      );
+
+      // Voltar para a tela anterior
+      Navigator.pop(context);
+    } catch (e) {
+      print(e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Erro ao salvar departamento: $e")),
+      );
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -97,6 +164,12 @@ class InventoryFormState extends State<InventoryForm> {
             isReadOnly: widget.isFormReadOnly,
           ),
           const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: _isLoading ? null : _saveInventory,
+            child: _isLoading
+                ? CircularProgressIndicator()
+                : Text('Salvar Inventário'),
+          ),
         ],
       ),
     );
