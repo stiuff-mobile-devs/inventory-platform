@@ -4,6 +4,7 @@ import 'package:inventory_platform/core/services/utils_service.dart';
 import 'package:inventory_platform/data/models/organization_model.dart';
 import 'package:inventory_platform/data/repositories/organization_repository.dart';
 import 'package:inventory_platform/features/common/controllers/carousel_section_controller.dart';
+import 'package:inventory_platform/features/modules/form/widgets/departaments_form.dart';
 
 class HomeController extends GetxController {
   final CarouselSectionController carouselController =
@@ -25,9 +26,12 @@ class HomeController extends GetxController {
   }
 
   void createOrganization(BuildContext context) {
-    debugPrint("Criar um novo departamento");
-    _utilsService.showUnderDevelopmentNotice(context);
-  }
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const DepartamentsForm()),
+  );
+}
+
 
   void joinOrganization(BuildContext context) {
     debugPrint("Participar de um departamento");

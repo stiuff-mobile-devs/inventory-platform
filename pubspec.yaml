@@ -36,6 +36,8 @@ dependencies:
   url_launcher: ^6.3.1
   sqflite_common_ffi_web: ^0.4.5+4
   cloud_firestore: ^5.6.2
+  firebase_storage: ^12.4.4
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:

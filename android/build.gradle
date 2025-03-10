@@ -1,3 +1,18 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    
+    ext.kotlin_version = '2.1.10' // Troque para uma versão estável compatível com Flutter
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:8.2.1' // Atualize o Gradle
+        classpath 'com.google.gms:google-services:4.4.0' // Atualize os serviços do Google
+    }
+}
+
 allprojects {
     repositories {
         google()
@@ -8,8 +23,6 @@ allprojects {
 rootProject.buildDir = "../build"
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
     project.evaluationDependsOn(":app")
 }
 
