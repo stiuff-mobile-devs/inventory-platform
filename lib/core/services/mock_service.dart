@@ -29,13 +29,13 @@ class MockService extends GetxController {
         OrganizationModel(
           id: '2',
           title: "Laboratórios",
-          description: 'Uma organização para testes inicialmente vazia.',
+          description: 'Um departamento para testes inicialmente vazia.',
           imagePath: "assets/images/Laboratory_1920x1080.jpg",
         ),
         OrganizationModel(
           id: '1',
           title: "Embarcações",
-          description: 'Uma organização de exemplo com dados fictícios.',
+          description: 'Um departamento de exemplo com dados fictícios.',
           imagePath: "assets/images/Warship_1920x1080.jpg",
         ),
       ],

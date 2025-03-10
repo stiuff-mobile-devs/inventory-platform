@@ -91,7 +91,7 @@ class _AdminTabState extends State<AdminTab> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "Informações da Organização",
+              "Informações do departamento",
               style: TextStyle(
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
@@ -101,7 +101,7 @@ class _AdminTabState extends State<AdminTab> {
             const SizedBox(height: 16.0),
             _buildCustomTextField(
               initialValue: _panelController.getCurrentOrganization()!.title,
-              labelText: "Nome da Organização",
+              labelText: "Nome do departamento",
             ),
             const SizedBox(height: 16.0),
             _buildCustomTextField(

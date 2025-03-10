@@ -25,12 +25,12 @@ class HomeController extends GetxController {
   }
 
   void createOrganization(BuildContext context) {
-    debugPrint("Criar uma nova organização");
+    debugPrint("Criar um novo departamento");
     _utilsService.showUnderDevelopmentNotice(context);
   }
 
   void joinOrganization(BuildContext context) {
-    debugPrint("Participar de uma organização");
+    debugPrint("Participar de um departamento");
     _utilsService.showUnderDevelopmentNotice(context);
   }
 }

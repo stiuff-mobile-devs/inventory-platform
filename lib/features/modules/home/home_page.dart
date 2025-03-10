@@ -23,7 +23,7 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 20),
             _buildQuickActions(context),
             const SizedBox(height: 20),
-            _buildSectionTitle('Minhas Organizações', context),
+            _buildSectionTitle('Meus departamentos', context),
             const SizedBox(height: 16),
             w.CarouselSection(
               isExpanded: true,
@@ -72,7 +72,7 @@ class HomePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Crie ou acesse uma organização para gerenciar seus itens de inventário.',
+                  'Crie ou acesse um departamento para gerenciar seus itens de inventário.',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.white70,
                       ),
@@ -114,13 +114,13 @@ class HomePage extends StatelessWidget {
           children: [
             _buildQuickActionButton(
               icon: Icons.add_circle_rounded,
-              label: 'Criar uma nova Organização',
+              label: 'Criar um novo departamento',
               color: Colors.blue,
               onPressed: () => controller.createOrganization(context),
             ),
             _buildQuickActionButton(
               icon: Icons.supervised_user_circle,
-              label: 'Participar de uma Organização',
+              label: 'Participar de um departamento',
               color: Colors.green,
               onPressed: () => controller.joinOrganization(context),
             ),
