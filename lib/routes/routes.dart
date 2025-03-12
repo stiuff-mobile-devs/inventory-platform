@@ -6,4 +6,5 @@ abstract class AppRoutes {
   static const String register = '/register';
   static const String panel = '/panel';
   static const String form = '/form';
+  static const String departament = '/departament';
 }

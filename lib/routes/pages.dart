@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
+import 'package:inventory_platform/features/modules/form/bindings/departaments_bindings.dart';
 import 'package:inventory_platform/features/modules/form/form_binding.dart';
 import 'package:inventory_platform/features/modules/form/form_page.dart';
+import 'package:inventory_platform/features/modules/form/widgets/departaments_form.dart';
 import 'package:inventory_platform/features/modules/home/home_binding.dart';
 import 'package:inventory_platform/features/modules/help/help_page.dart';
 import 'package:inventory_platform/features/modules/home/home_page.dart';
@@ -76,5 +78,11 @@ abstract class AppPages {
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 300),
     ),
+    GetPage(
+      name: AppRoutes.departament,
+      page: () => const DepartamentsForm(),
+      binding: DepartamentsBinding(),
+    ),
+     
   ];
 }

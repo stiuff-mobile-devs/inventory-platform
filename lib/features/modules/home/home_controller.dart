@@ -5,6 +5,7 @@ import 'package:inventory_platform/data/models/organization_model.dart';
 import 'package:inventory_platform/data/repositories/organization_repository.dart';
 import 'package:inventory_platform/features/common/controllers/carousel_section_controller.dart';
 import 'package:inventory_platform/features/modules/form/widgets/departaments_form.dart';
+import 'package:inventory_platform/routes/routes.dart';
 
 class HomeController extends GetxController {
   final CarouselSectionController carouselController =
@@ -26,10 +27,8 @@ class HomeController extends GetxController {
   }
 
   void createOrganization(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const DepartamentsForm()),
-  );
+    Get.toNamed(AppRoutes.departament);
+
 }
 
 

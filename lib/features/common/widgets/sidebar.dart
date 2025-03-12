@@ -18,6 +18,7 @@ class CustomSidebar extends StatelessWidget {
     AppRoutes.home,
     AppRoutes.settings,
     AppRoutes.help,
+    AppRoutes.departament,
   ];
 
   void _updateSelectedIndex(String route) {

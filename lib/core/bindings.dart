@@ -16,6 +16,7 @@ import 'package:inventory_platform/data/repositories/user_repository.dart';
 import 'package:inventory_platform/features/common/controllers/connection_controller.dart';
 import 'package:inventory_platform/features/common/controllers/sidebar_controller.dart';
 import 'package:inventory_platform/core/services/mock_service.dart';
+import 'package:inventory_platform/features/modules/form/controllers/departaments_controller.dart';
 
 class CoreBindings extends Bindings {
   @override
@@ -47,5 +48,7 @@ class CoreBindings extends Bindings {
         organizationRepository: Get.find<OrganizationRepository>(),
       ),
     );
+      Get.lazyPut<DepartamentsController>(() => DepartamentsController());
+
   }
 }

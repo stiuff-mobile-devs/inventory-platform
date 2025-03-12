@@ -39,22 +39,6 @@ class MockService extends GetxController {
     }).toList();
 
     organizationRepository.addAllOrganizations(organizations);
-   /* organizationRepository.addAllOrganizations(
-      [
-        OrganizationModel(
-          id: '2',
-          title: "Laboratórios",
-          description: 'Um departamento para testes inicialmente vazia.',
-          imagePath: "assets/images/Laboratory_1920x1080.jpg",
-        ),
-        OrganizationModel(
-          id: '1',
-          title: "Embarcações",
-          description: 'Um departamento de exemplo com dados fictícios.',
-          imagePath: "assets/images/Warship_1920x1080.jpg",
-        ),
-      ],
-    );*/
   }
 
   void loadOrganizationData(String orgId) {
