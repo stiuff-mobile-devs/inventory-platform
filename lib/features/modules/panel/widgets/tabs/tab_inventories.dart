@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:inventory_platform/core/enums/tab_type_enum.dart';
 import 'package:inventory_platform/core/services/utils_service.dart';
 import 'package:inventory_platform/data/models/inventory_model.dart';
+import 'package:inventory_platform/features/modules/form/widgets/materials_form.dart';
 import 'package:inventory_platform/features/modules/panel/panel_controller.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/details_dialog.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/list_item_widget.dart';
@@ -130,14 +131,30 @@ class _TabInventoriesState extends State<TabInventories> {
                   color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
-        TextButton.icon(
-          onPressed: () {
-            searchFocusNode.unfocus();
-            Get.toNamed(AppRoutes.form, arguments: [TabType.inventories]);
-          },
-          icon: const Icon(Icons.add),
-          label: const Text('Adicionar Inventário'),
-          style: TextButton.styleFrom(foregroundColor: Colors.blue),
+        Column(
+          children: [
+            TextButton.icon(
+              onPressed: () {
+                searchFocusNode.unfocus();
+                Get.toNamed(AppRoutes.form, arguments: [TabType.inventories]);
+              },
+              icon: const Icon(Icons.add),
+              label: const Text('Adicionar Inventário'),
+              style: TextButton.styleFrom(foregroundColor: Colors.blue),
+            ),
+            TextButton.icon(
+              onPressed: () {
+                  searchFocusNode.unfocus();
+
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MaterialsForm()),
+                );              },
+              icon: const Icon(Icons.add),
+              label: const Text('Acrescentar Material'),
+              style: TextButton.styleFrom(foregroundColor: Colors.blue),
+            ),
+          ],
         ),
       ],
     );
