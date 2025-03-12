@@ -62,7 +62,7 @@ class PanelController extends GetxController {
       final orgId = _currentOrganization.value!.id;
       final dataFetchers = {
         TabType.inventories: () => _fetchData(inventories,
-            () => _organizationRepository.getInventoriesForOrganization(orgId)),
+            () => _organizationRepository.getInventoriesForOrganization('EsQDsCXUBXsL9NKOoih5')),
         TabType.domains: () => _fetchData(domains,
             () => _organizationRepository.getDomainsForOrganization(orgId)),
         TabType.tags: () => _fetchData(
@@ -88,7 +88,7 @@ class PanelController extends GetxController {
 
     await Future.wait([
       _fetchData(inventories,
-          () => _organizationRepository.getInventoriesForOrganization(orgId)),
+          () => _organizationRepository.getInventoriesForOrganization('EsQDsCXUBXsL9NKOoih5')),
       _fetchData(domains,
           () => _organizationRepository.getDomainsForOrganization(orgId)),
       _fetchData(

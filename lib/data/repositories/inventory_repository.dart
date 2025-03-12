@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/data/database/database_helper.dart';
@@ -18,6 +19,21 @@ class InventoryRepository {
       debugPrint('Error fetching all inventories: $e');
       return [];
     }
+  }
+
+  Future<List<InventoryModel>> getInventoriesByDepartment(String deptId) async {
+    CollectionReference ordersRef = FirebaseFirestore.instance
+        .collection('departments')
+        .doc(deptId)
+        .collection('inventories');
+
+    QuerySnapshot querySnapshot = await ordersRef.get();
+
+    List<InventoryModel> list = querySnapshot.docs.map((doc) {
+      return InventoryModel.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
+    }).toList();
+
+    return list;
   }
 
   Future<InventoryModel?> getInventoryById(String id) async {
