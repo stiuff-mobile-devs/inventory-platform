@@ -1,10 +1,13 @@
 import 'package:get/get.dart';
+import 'package:inventory_platform/data/models/material_model.dart';
 import 'package:inventory_platform/features/modules/form/bindings/departaments_bindings.dart';
 import 'package:inventory_platform/features/modules/form/bindings/inventory_bindings.dart';
+import 'package:inventory_platform/features/modules/form/bindings/materials_bindings.dart';
 import 'package:inventory_platform/features/modules/form/form_binding.dart';
 import 'package:inventory_platform/features/modules/form/form_page.dart';
 import 'package:inventory_platform/features/modules/form/widgets/departaments_form.dart';
 import 'package:inventory_platform/features/modules/form/widgets/inventory_form.dart';
+import 'package:inventory_platform/features/modules/form/widgets/materials_form.dart';
 import 'package:inventory_platform/features/modules/home/home_binding.dart';
 import 'package:inventory_platform/features/modules/help/help_page.dart';
 import 'package:inventory_platform/features/modules/home/home_page.dart';
@@ -89,6 +92,11 @@ abstract class AppPages {
       name: AppRoutes.inventory,
       page: () => InventoryForm(cod: Get.parameters['cod']!),
       binding: InventoryBinding(),
+    ),
+     GetPage(
+      name: AppRoutes.material,
+      page: () =>  MaterialsForm(cod: Get.parameters['cod']!),
+      binding: MaterialsBindings(),
     ),
      
   ];

@@ -8,4 +8,5 @@ abstract class AppRoutes {
   static const String form = '/form';
   static const String departament = '/departament';
   static const String inventory = '/inventory';
+  static const String material = '/material';
 }

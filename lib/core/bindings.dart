@@ -18,6 +18,7 @@ import 'package:inventory_platform/features/common/controllers/sidebar_controlle
 import 'package:inventory_platform/core/services/mock_service.dart';
 import 'package:inventory_platform/features/modules/form/controllers/departaments_controller.dart';
 import 'package:inventory_platform/features/modules/form/controllers/inventory_controller.dart';
+import 'package:inventory_platform/features/modules/form/controllers/materials_controller.dart';
 
 class CoreBindings extends Bindings {
   @override
@@ -51,6 +52,8 @@ class CoreBindings extends Bindings {
     );
     Get.lazyPut<DepartamentsController>(() => DepartamentsController());
     Get.lazyPut<InventoryController>(() => InventoryController());
+    Get.lazyPut<MaterialsController>(() => MaterialsController());
+
 
 
   }

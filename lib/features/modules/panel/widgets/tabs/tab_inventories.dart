@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/services/utils_service.dart';
 import 'package:inventory_platform/data/models/inventory_model.dart';
-import 'package:inventory_platform/features/modules/form/widgets/materials_form.dart';
 import 'package:inventory_platform/features/modules/panel/panel_controller.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/details_dialog.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/list_item_widget.dart';
@@ -143,13 +142,10 @@ class _TabInventoriesState extends State<TabInventories> {
             TextButton.icon(
               onPressed: () {
                   searchFocusNode.unfocus();
-
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MaterialsForm()),
-                );              },
+                  Get.toNamed(AppRoutes.material, parameters: {'cod': 'atn6e81FBiSEYeB8EzF3'});
+              },
               icon: const Icon(Icons.add),
-              label: const Text('Acrescentar Material'),
+              label: const Text('Adicionar Material'),
               style: TextButton.styleFrom(foregroundColor: Colors.blue),
             ),
           ],
