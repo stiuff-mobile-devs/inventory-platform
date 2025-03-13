@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:inventory_platform/core/enums/tab_type_enum.dart';
 import 'package:inventory_platform/core/services/utils_service.dart';
 import 'package:inventory_platform/data/models/inventory_model.dart';
 import 'package:inventory_platform/features/modules/form/widgets/materials_form.dart';
@@ -136,8 +135,7 @@ class _TabInventoriesState extends State<TabInventories> {
             TextButton.icon(
               onPressed: () {
                 searchFocusNode.unfocus();
-                Get.toNamed(AppRoutes.form, arguments: [TabType.inventories]);
-              },
+                Get.toNamed(AppRoutes.inventory, parameters: {'cod': organization!.id});              },
               icon: const Icon(Icons.add),
               label: const Text('Adicionar Inventário'),
               style: TextButton.styleFrom(foregroundColor: Colors.blue),

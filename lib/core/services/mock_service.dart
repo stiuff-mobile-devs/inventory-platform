@@ -9,6 +9,7 @@ import 'package:inventory_platform/data/models/reader_model.dart';
 import 'package:inventory_platform/data/models/tag_model.dart';
 import 'package:inventory_platform/data/models/user_model.dart';
 import 'package:inventory_platform/data/repositories/organization_repository.dart';
+import 'package:inventory_platform/features/common/controllers/carousel_section_controller.dart';
 
 class MockService extends GetxController {
   final OrganizationRepository organizationRepository;
@@ -39,6 +40,8 @@ class MockService extends GetxController {
     }).toList();
 
     organizationRepository.addAllOrganizations(organizations);
+    Get.put(CarouselSectionController());
+
   }
 
   void loadOrganizationData(String orgId) {

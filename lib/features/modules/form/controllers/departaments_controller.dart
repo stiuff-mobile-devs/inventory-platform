@@ -29,7 +29,7 @@ class DepartamentsController extends GetxController {
     isLoading.value = true;
 
     try {
-
+      //Segurança firebase
       User? user = FirebaseAuth.instance.currentUser;
       if (user == null) {
         ScaffoldMessenger.of(context).showSnackBar(

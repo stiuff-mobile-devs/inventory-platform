@@ -21,8 +21,8 @@ class FormPageState extends State<FormPage> {
   final FormController controller = Get.put(FormController());
 
   GlobalKey<DomainFormState> domainFormKey = GlobalKey<DomainFormState>();
-  GlobalKey<InventoryFormState> inventoryFormKey =
-      GlobalKey<InventoryFormState>();
+  /*GlobalKey<InventoryFormState> inventoryFormKey =
+      GlobalKey<InventoryFormState>();*/
   GlobalKey<TagFormState> tagFormKey = GlobalKey<TagFormState>();
   GlobalKey<ReaderFormState> readerFormKey = GlobalKey<ReaderFormState>();
   GlobalKey<MemberFormState> memberFormKey = GlobalKey<MemberFormState>();
@@ -50,8 +50,8 @@ class FormPageState extends State<FormPage> {
     controller.activeMode.value = 1;
 
     final formKeys = {
-      TabType.inventories: () =>
-          inventoryFormKey = GlobalKey<InventoryFormState>(),
+    /*  TabType.inventories: () =>
+          inventoryFormKey = GlobalKey<InventoryFormState>(),*/
       TabType.domains: () => domainFormKey = GlobalKey<DomainFormState>(),
       TabType.tags: () => tagFormKey = GlobalKey<TagFormState>(),
       TabType.readers: () => readerFormKey = GlobalKey<ReaderFormState>(),
@@ -124,11 +124,11 @@ class FormPageState extends State<FormPage> {
 
   Widget _buildForm() {
     final formMap = {
-      TabType.inventories: () => InventoryForm(
+      /*TabType.inventories: () => InventoryForm(
             key: inventoryFormKey,
             initialData: controller.initialData,
             isFormReadOnly: controller.activeMode.value == 1,
-          ),
+          ),*/
       TabType.domains: () => DomainForm(
             key: domainFormKey,
             initialData: controller.initialData,
@@ -264,7 +264,7 @@ class FormPageState extends State<FormPage> {
 
   void _submitForm() {
     final formMap = {
-      TabType.inventories: inventoryFormKey,
+     // TabType.inventories: inventoryFormKey,
       TabType.domains: domainFormKey,
       TabType.tags: tagFormKey,
       TabType.readers: readerFormKey,

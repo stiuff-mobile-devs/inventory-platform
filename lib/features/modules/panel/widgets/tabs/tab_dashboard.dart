@@ -16,6 +16,7 @@ class DashboardTab extends StatefulWidget {
 class _DashboardTabState extends State<DashboardTab> {
   late final PanelController _panelController;
   int _currentCarouselIndex = 0;
+  late final String departmentId; // Variável para armazenar o ID do departamento
 
   Widget _buildHeader(OrganizationModel organization) {
     return Container(
@@ -63,7 +64,7 @@ class _DashboardTabState extends State<DashboardTab> {
                       ],
                     ),
                   ),
-                  _buildOrganizationContainer(organization.title),
+                  _buildOrganizationContainer(organization.title, organization.id),
                 ],
               ),
             ),
@@ -73,7 +74,7 @@ class _DashboardTabState extends State<DashboardTab> {
     );
   }
 
-  Widget _buildOrganizationContainer(String organizationName) {
+  Widget _buildOrganizationContainer(String organizationName, String organizationId) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       decoration: BoxDecoration(
@@ -154,6 +155,8 @@ class _DashboardTabState extends State<DashboardTab> {
   void initState() {
     super.initState();
     _panelController = Get.find<PanelController>();
+    //departmentId = 
+
   }
 
   @override
