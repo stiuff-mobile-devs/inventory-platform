@@ -110,7 +110,9 @@ class ScrollableBottomNavigationBarState
                           5, Icons.groups_rounded, 'Members'),
                       _buildNavigationBarItem(6, Icons.device_hub, 'Entities'),
                       _buildNavigationBarItem(
-                          7, Icons.admin_panel_settings, 'Admin'),
+                          7, Icons.admin_panel_settings, 'Relatório'),
+                      _buildNavigationBarItem(
+                          8, Icons.admin_panel_settings, 'Admin'),
                     ],
                   ),
                 ),

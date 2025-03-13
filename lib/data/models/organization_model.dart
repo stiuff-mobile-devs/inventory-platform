@@ -51,7 +51,7 @@ class OrganizationModel {
   set inventories(List<String>? inventories) => _inventoryIds = inventories;
   set domains(List<String>? domains) => _domainIds = domains;
 
-  factory OrganizationModel.fromFirestore(Map<String, dynamic> data, String documentId) {
+  factory OrganizationModel.fromMap(Map<String, dynamic> data, String documentId) {
     return OrganizationModel(
       id: documentId,
       title: data['title'] ?? '',
@@ -59,17 +59,6 @@ class OrganizationModel {
       imagePath: "assets/images/Laboratory_1920x1080.jpg"
     );
   }
-
-  // factory OrganizationModel.fromMap(Map<String, dynamic> map) {
-  //   return OrganizationModel(
-  //     //id: map['uid'] as String,
-  //     id: "ssdsffefefe",
-  //     title: map['title'] as String,
-  //     description: map['description'] as String,
-  //     //imagePath: map['imagePath'] as String,
-  //     imagePath: "assets/images/Laboratory_1920x1080.jpg",
-  //   );
-  //}
 
   Map<String, dynamic> toMap() {
     return {

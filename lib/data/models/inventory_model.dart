@@ -46,7 +46,7 @@ class InventoryModel {
         description: data['description'] ?? 0,
         revisionNumber: data['revision_number'],
         isActive: 1,
-        createdAt: data['created_at']
+        createdAt: data['created_at'].toDate()
     );
   }
 

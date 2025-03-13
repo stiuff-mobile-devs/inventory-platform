@@ -17,6 +17,8 @@ import 'package:inventory_platform/features/common/controllers/connection_contro
 import 'package:inventory_platform/features/common/controllers/sidebar_controller.dart';
 import 'package:inventory_platform/core/services/mock_service.dart';
 
+import '../data/repositories/item_repository.dart';
+
 class CoreBindings extends Bindings {
   @override
   void dependencies() {
@@ -28,6 +30,7 @@ class CoreBindings extends Bindings {
 
     Get.put<MemberRepository>(MemberRepository());
     Get.put<DomainRepository>(DomainRepository());
+    Get.put<ItemRepository>(ItemRepository());
     Get.put<EntityRepository>(EntityRepository());
     Get.put<InventoryRepository>(InventoryRepository());
     Get.put<MaterialRepository>(MaterialRepository());

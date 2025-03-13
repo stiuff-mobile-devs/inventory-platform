@@ -6,6 +6,7 @@ enum TabType {
   readers,
   members,
   entities,
+  reports,
   admin,
   unknown
 }
