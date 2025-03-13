@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:inventory_platform/core/services/warning_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:inventory_platform/core/debug/logger.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -28,8 +29,7 @@ class AuthService {
         _auth.setPersistence(Persistence.LOCAL);
       }
     } catch (e, stackTrace) {
-      debugPrint("Erro ao definir persistência: $e");
-      debugPrint(stackTrace.toString());
+      Logger.error("Erro ao definir persistência: $e", stackTrace);
     }
   }
 
@@ -74,51 +74,80 @@ class AuthService {
   Future<bool> signInWithGoogle() async {
     bool success = false;
 
+    Logger.info("signInWithGoogle - Starting authentication flow");
+
     final bool hasInternet = await _connectionService.checkInternetConnection();
     if (!hasInternet) {
+      Logger.info("signInWithGoogle - No internet connection");
       throw NetworkError();
     }
+
+    Logger.info("signInWithGoogle - Internet connection verified");
 
     UserCredential userCredential;
 
     if (GetPlatform.isWeb) {
+      Logger.info(
+          "signInWithGoogle - Web platform detected, using popup signin");
       final GoogleAuthProvider googleProvider = GoogleAuthProvider();
       userCredential = await _auth.signInWithPopup(googleProvider);
+      Logger.info("signInWithGoogle - Web signin completed");
     } else {
+      Logger.info(
+          "signInWithGoogle - Mobile platform detected, launching Google SignIn");
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      Logger.info("signInWithGoogle - Google SignIn launched");
       if (googleUser == null) {
+        Logger.info("signInWithGoogle - Sign in was interrupted by user");
         throw SignInInterruptionWarning();
       }
 
+      Logger.info(
+          "signInWithGoogle - Google user obtained: ${googleUser.email}");
+
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
+      Logger.info("signInWithGoogle - Google authentication obtained");
 
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
+      Logger.info("signInWithGoogle - Auth credential created");
 
       userCredential = await _auth.signInWithCredential(credential);
+      Logger.info(
+          "signInWithGoogle - Firebase signin with credential completed");
     }
 
     final User? user = userCredential.user;
     if (user == null || user.email == null) {
+      Logger.info("signInWithGoogle - Failed to obtain user email");
       throw AuthError("Erro ao obter email do usuário.");
     }
 
+    Logger.info("signInWithGoogle - User retrieved: ${user.email}");
+
     bool isAllowed = await _isEmailAllowed(user.email!);
+    Logger.info("signInWithGoogle - Email allowed check result: $isAllowed");
 
     success = true;
 
     if (!isAllowed) {
+      Logger.info("signInWithGoogle - Email not allowed, signing out user");
       await _auth.signOut();
       await _googleSignIn.signOut();
       success = false;
       _errorService.handleError(
         AuthError("Seu email não está autorizado a acessar este sistema."),
       );
+      Logger.info(
+          "signInWithGoogle - User signed out due to unauthorized email");
+    } else {
+      Logger.info("signInWithGoogle - Authentication successful");
     }
 
+    Logger.info("signInWithGoogle - Returning success=$success");
     return success;
   }
 

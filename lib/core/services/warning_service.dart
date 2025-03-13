@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/utils/auth/auth_warning.dart';
+import 'package:inventory_platform/core/debug/logger.dart';
 
 class WarningService {
   void handleWarning(Exception e) {
@@ -17,7 +18,7 @@ class WarningService {
     }
 
     if (warningMessage != null) {
-      debugPrint("WarningService: - $warningMessage");
+      Logger.warning("WarningService: - $warningMessage");
 
       Get.snackbar(
         '',

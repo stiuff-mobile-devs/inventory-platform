@@ -10,6 +10,7 @@ import 'package:inventory_platform/data/models/reader_model.dart';
 import 'package:inventory_platform/data/models/tag_model.dart';
 import 'package:inventory_platform/data/models/organization_model.dart';
 import 'package:inventory_platform/data/repositories/organization_repository.dart';
+import 'package:inventory_platform/core/debug/logger.dart';
 
 class PanelController extends GetxController {
   final _organizationRepository = Get.find<OrganizationRepository>();
@@ -120,9 +121,9 @@ class PanelController extends GetxController {
       RxList<T> list, Future<List<T>> Function() fetcher) async {
     try {
       list.assignAll(await fetcher());
-    } catch (e) {
+    } catch (e, stackTrace) {
       list.clear();
-      debugPrint("Erro ao buscar dados: $e");
+      Logger.error("Erro ao buscar dados: $e", stackTrace);
     }
   }
 }

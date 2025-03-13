@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/core/enums/tab_type_enum.dart';
 import 'package:inventory_platform/core/services/utils_service.dart';
@@ -11,6 +10,7 @@ import 'package:inventory_platform/data/models/reader_model.dart';
 import 'package:inventory_platform/data/models/tag_model.dart';
 import 'package:inventory_platform/data/repositories/organization_repository.dart';
 import 'package:inventory_platform/features/modules/panel/panel_controller.dart';
+import 'package:inventory_platform/core/debug/logger.dart';
 
 class FormController extends GetxController {
   late final UtilsService utilsService;
@@ -90,20 +90,20 @@ class FormController extends GetxController {
         }
         break;
       default:
-        debugPrint('Tipo de formulário não reconhecido.');
+        Logger.error('Tipo de formulário não reconhecido.');
         break;
     }
 
     if (isFormValid) {
       panelController.refreshPage();
-      debugPrint('Formulário submetido com sucesso!');
+      Logger.info('Formulário submetido com sucesso!');
       if (activeMode.value == 2) {
         activeMode.value = 1;
       } else {
         Get.back();
       }
     } else {
-      debugPrint('Erro na validação do formulário.');
+      Logger.error('Erro na validação do formulário.');
     }
   }
 
@@ -134,7 +134,7 @@ class FormController extends GetxController {
         _deleteEntity(data.id);
         break;
       default:
-        debugPrint('Tipo de item não reconhecido.');
+        Logger.error('Tipo de item não reconhecido.');
         break;
     }
     panelController.refreshPage();

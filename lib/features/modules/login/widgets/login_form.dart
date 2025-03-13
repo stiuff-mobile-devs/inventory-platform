@@ -33,7 +33,7 @@ class LoginForm extends StatelessWidget {
             ),
             const SizedBox(height: 4.0),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Row(
                   children: [

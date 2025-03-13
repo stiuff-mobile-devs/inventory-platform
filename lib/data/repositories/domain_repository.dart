@@ -1,9 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/data/database/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 import 'package:inventory_platform/data/models/domain_model.dart';
+import 'package:inventory_platform/core/debug/logger.dart';
 
 class DomainRepository {
   final DatabaseHelper _dbHelper = Get.find<DatabaseHelper>();
@@ -12,10 +12,10 @@ class DomainRepository {
     try {
       final db = await _dbHelper.database;
       final List<Map<String, dynamic>> result = await db.query('domains');
-      debugPrint('Fetched all domains: ${result.length} items');
+      Logger.info('Fetched all domains: ${result.length} items');
       return result.map((data) => DomainModel.fromMap(data)).toList();
-    } catch (e) {
-      debugPrint('Error fetching all domains: $e');
+    } catch (e, stackTrace) {
+      Logger.error('Error fetching all domains: $e', stackTrace);
       return [];
     }
   }
@@ -29,13 +29,13 @@ class DomainRepository {
         whereArgs: [id],
       );
       if (result.isNotEmpty) {
-        debugPrint('Fetched domain with id: $id');
+        Logger.info('Fetched domain with id: $id');
         return DomainModel.fromMap(result.first);
       }
-      debugPrint('No domain found with id: $id');
+      Logger.info('No domain found with id: $id');
       return null;
-    } catch (e) {
-      debugPrint('Error fetching domain by id: $e');
+    } catch (e, stackTrace) {
+      Logger.error('Error fetching domain by id: $e', stackTrace);
       return null;
     }
   }
@@ -48,9 +48,9 @@ class DomainRepository {
         domain.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      debugPrint('Added domain with id: ${domain.id}');
-    } catch (e) {
-      debugPrint('Error adding domain: $e');
+      Logger.info('Added domain with id: ${domain.id}');
+    } catch (e, stackTrace) {
+      Logger.error('Error adding domain: $e', stackTrace);
     }
   }
 
@@ -63,9 +63,9 @@ class DomainRepository {
         where: 'id = ?',
         whereArgs: [updatedDomain.id],
       );
-      debugPrint('Updated domain with id: ${updatedDomain.id}');
-    } catch (e) {
-      debugPrint('Error updating domain: $e');
+      Logger.info('Updated domain with id: ${updatedDomain.id}');
+    } catch (e, stackTrace) {
+      Logger.error('Error updating domain: $e', stackTrace);
     }
   }
 
@@ -77,9 +77,9 @@ class DomainRepository {
         where: 'id = ?',
         whereArgs: [id],
       );
-      debugPrint('Deleted domain with id: $id');
-    } catch (e) {
-      debugPrint('Error deleting domain: $e');
+      Logger.info('Deleted domain with id: $id');
+    } catch (e, stackTrace) {
+      Logger.error('Error deleting domain: $e', stackTrace);
     }
   }
 

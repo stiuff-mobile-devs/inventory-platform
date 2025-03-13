@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:inventory_platform/features/common/widgets/base_scaffold.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:inventory_platform/core/debug/logger.dart';
 
 class HelpPage extends StatelessWidget {
   const HelpPage({super.key});
@@ -15,7 +16,7 @@ class HelpPage extends StatelessWidget {
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       } else {
-        debugPrint('Não foi possível abrir a URL: $wikiUrl');
+        Logger.error('Não foi possível abrir a URL: $wikiUrl');
       }
     }
 

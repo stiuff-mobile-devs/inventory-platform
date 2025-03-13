@@ -4,6 +4,7 @@ import 'package:inventory_platform/data/database/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 import 'package:inventory_platform/data/models/entity_model.dart';
+import 'package:inventory_platform/core/debug/logger.dart';
 
 class EntityRepository {
   final DatabaseHelper _dbHelper = Get.find<DatabaseHelper>();
@@ -12,10 +13,10 @@ class EntityRepository {
     try {
       final db = await _dbHelper.database;
       final List<Map<String, dynamic>> result = await db.query('entities');
-      debugPrint('Fetched all entities: ${result.length} items');
+      Logger.info('Fetched all entities: ${result.length} items');
       return result.map((data) => EntityModel.fromMap(data)).toList();
-    } catch (e) {
-      debugPrint('Error fetching all entities: $e');
+    } catch (e, stackTrace) {
+      Logger.error('Error fetching all entities: $e', stackTrace);
       return [];
     }
   }
@@ -29,13 +30,13 @@ class EntityRepository {
         whereArgs: [id],
       );
       if (result.isNotEmpty) {
-        debugPrint('Fetched entity with id: $id');
+        Logger.info('Fetched entity with id: $id');
         return EntityModel.fromMap(result.first);
       }
-      debugPrint('No entity found with id: $id');
+      Logger.info('No entity found with id: $id');
       return null;
-    } catch (e) {
-      debugPrint('Error fetching entity by id: $e');
+    } catch (e, stackTrace) {
+      Logger.error('Error fetching entity by id: $e', stackTrace);
       return null;
     }
   }
@@ -48,9 +49,9 @@ class EntityRepository {
         entity.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      debugPrint('Added entity with id: ${entity.id}');
-    } catch (e) {
-      debugPrint('Error adding entity: $e');
+      Logger.info('Added entity with id: ${entity.id}');
+    } catch (e, stackTrace) {
+      Logger.error('Error adding entity: $e', stackTrace);
     }
   }
 
@@ -63,9 +64,9 @@ class EntityRepository {
         where: 'id = ?',
         whereArgs: [updatedEntity.id],
       );
-      debugPrint('Updated entity with id: ${updatedEntity.id}');
-    } catch (e) {
-      debugPrint('Error updating entity: $e');
+      Logger.info('Updated entity with id: ${updatedEntity.id}');
+    } catch (e, stackTrace) {
+      Logger.error('Error updating entity: $e', stackTrace);
     }
   }
 
@@ -77,9 +78,9 @@ class EntityRepository {
         where: 'id = ?',
         whereArgs: [id],
       );
-      debugPrint('Deleted entity with id: $id');
-    } catch (e) {
-      debugPrint('Error deleting entity: $e');
+      Logger.info('Deleted entity with id: $id');
+    } catch (e, stackTrace) {
+      Logger.error('Error deleting entity: $e', stackTrace);
     }
   }
 

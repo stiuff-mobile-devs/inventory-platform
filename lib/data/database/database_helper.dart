@@ -2,6 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
+import 'package:inventory_platform/core/debug/logger.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -25,20 +26,21 @@ class DatabaseHelper {
         databaseFactory = databaseFactoryFfiWeb;
       }
       String path = join(await getDatabasesPath(), 'inventory_platform.db');
+      Logger.info('Database path: $path');
       return await openDatabase(
         path,
         version: 1,
         onCreate: _onCreate,
       );
-    } catch (e) {
-      debugPrint('Error initializing database: $e');
+    } catch (e, stackTrace) {
+      Logger.error('Error initializing database: $e', stackTrace);
       rethrow;
     }
   }
 
   Future<void> _onCreate(Database db, int version) async {
     try {
-      debugPrint('Creating tables in the database');
+      Logger.info('Creating tables in the database');
       await db.execute('''
       CREATE TABLE readers (
         mac TEXT PRIMARY KEY,
@@ -128,8 +130,8 @@ class DatabaseHelper {
         FOREIGN KEY (memberId) REFERENCES member_model (id)
       )
     ''');
-    } catch (e) {
-      debugPrint('Error creating tables: $e');
+    } catch (e, stackTrace) {
+      Logger.error('Error creating tables: $e', stackTrace);
       rethrow;
     }
   }
@@ -137,11 +139,11 @@ class DatabaseHelper {
   Future<void> insert(String table, Map<String, dynamic> data) async {
     try {
       final db = await database;
-      debugPrint('Inserting into $table: $data');
+      Logger.info('Inserting into $table: $data');
       await db.insert(table, data,
           conflictAlgorithm: ConflictAlgorithm.replace);
-    } catch (e) {
-      debugPrint('Error inserting into $table: $e');
+    } catch (e, stackTrace) {
+      Logger.error('Error inserting into $table: $e', stackTrace);
       rethrow;
     }
   }
@@ -149,10 +151,10 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> queryAllRows(String table) async {
     try {
       final db = await database;
-      debugPrint('Querying all rows from $table');
+      Logger.info('Querying all rows from $table');
       return await db.query(table);
-    } catch (e) {
-      debugPrint('Error querying all rows from $table: $e');
+    } catch (e, stackTrace) {
+      Logger.error('Error querying all rows from $table: $e', stackTrace);
       rethrow;
     }
   }
@@ -160,10 +162,10 @@ class DatabaseHelper {
   Future<int> update(String table, Map<String, dynamic> data, String id) async {
     try {
       final db = await database;
-      debugPrint('Updating $table with id $id: $data');
+      Logger.info('Updating $table with id $id: $data');
       return await db.update(table, data, where: 'id = ?', whereArgs: [id]);
-    } catch (e) {
-      debugPrint('Error updating $table with id $id: $e');
+    } catch (e, stackTrace) {
+      Logger.error('Error updating $table with id $id: $e', stackTrace);
       rethrow;
     }
   }
@@ -171,10 +173,10 @@ class DatabaseHelper {
   Future<int> delete(String table, String id) async {
     try {
       final db = await database;
-      debugPrint('Deleting from $table with id $id');
+      Logger.info('Deleting from $table with id $id');
       return await db.delete(table, where: 'id = ?', whereArgs: [id]);
-    } catch (e) {
-      debugPrint('Error deleting from $table with id $id: $e');
+    } catch (e, stackTrace) {
+      Logger.error('Error deleting from $table with id $id: $e', stackTrace);
       rethrow;
     }
   }

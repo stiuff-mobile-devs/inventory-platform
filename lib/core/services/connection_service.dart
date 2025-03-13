@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/material.dart';
+import 'package:inventory_platform/core/debug/logger.dart';
 
 class ConnectionService {
   final Connectivity _connectivity = Connectivity();
@@ -25,11 +25,11 @@ class ConnectionService {
         .listen((List<ConnectivityResult> results) async {
       if (results.isEmpty || results.first == ConnectivityResult.none) {
         _connectionStatusController.add(false);
-        debugPrint('Conexão com a internet perdida.');
+        Logger.warning('Conexão com a internet perdida.');
       } else {
         final hasInternet = await checkInternetConnection();
         _connectionStatusController.add(hasInternet);
-        debugPrint('Conexão com a internet obtida. ${results.first.name}.');
+        Logger.info('Conexão com a internet obtida. ${results.first.name}.');
       }
     });
   }
