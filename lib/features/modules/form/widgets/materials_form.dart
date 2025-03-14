@@ -6,7 +6,9 @@ import 'package:inventory_platform/features/modules/form/controllers/materials_c
 
 class MaterialsForm extends StatefulWidget {
   late final String cod;
-  MaterialsForm({required this.cod});
+    final String? barcode;
+
+  MaterialsForm({required this.cod, this.barcode});
   
   @override
   _MaterialsFormState createState() => _MaterialsFormState();
@@ -15,6 +17,14 @@ class MaterialsForm extends StatefulWidget {
 class _MaterialsFormState extends State<MaterialsForm> {
   MockService mockService = Get.find<MockService>();
   final MaterialsController controller = Get.find<MaterialsController>();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.barcode != null) {
+      controller.barcodeController.text = widget.barcode!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,3 +92,4 @@ class _MaterialsFormState extends State<MaterialsForm> {
     );
   }
 }
+

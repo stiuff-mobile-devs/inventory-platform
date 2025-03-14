@@ -9,4 +9,7 @@ abstract class AppRoutes {
   static const String departament = '/departament';
   static const String inventory = '/inventory';
   static const String material = '/material';
-}
+  static const String barcodeScanner = '/barcodeScanner';
+  static const String mlKitCamera = '/mlKitCamera';
+  static const String alternateCamera = '/alternateCamera';
+} 

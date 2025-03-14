@@ -1,4 +1,7 @@
 import 'package:get/get.dart';
+import 'package:inventory_platform/camera/views/barcode_scanner_camera_page.dart';
+import 'package:inventory_platform/camera/views/ml_kit_camera_page.dart';
+import 'package:inventory_platform/camera/views/mobile_scanner_camera_page.dart';
 import 'package:inventory_platform/data/models/material_model.dart';
 import 'package:inventory_platform/features/modules/form/bindings/departaments_bindings.dart';
 import 'package:inventory_platform/features/modules/form/bindings/inventory_bindings.dart';
@@ -20,7 +23,6 @@ import 'package:inventory_platform/features/modules/settings/settings_page.dart'
 import 'package:inventory_platform/routes/routes.dart';
 
 import '../features/modules/register/register_binding.dart';
-
 
 abstract class AppPages {
   static final pages = [
@@ -93,11 +95,25 @@ abstract class AppPages {
       page: () => InventoryForm(cod: Get.parameters['cod']!),
       binding: InventoryBinding(),
     ),
-     GetPage(
+    GetPage(
       name: AppRoutes.material,
-      page: () =>  MaterialsForm(cod: Get.parameters['cod']!),
+      page: () => MaterialsForm(
+        cod: Get.parameters['cod']!,
+        barcode: Get.parameters['barcode'],
+      ),
       binding: MaterialsBindings(),
     ),
-     
+    GetPage(
+      name: AppRoutes.barcodeScanner,
+      page: () => BarcodeScannerWidget(cod: Get.parameters['cod']!),
+    ),
+    GetPage(
+        name: AppRoutes.mlKitCamera,
+        page: () => CameraPage(cod: Get.parameters['cod']!),
+    ),
+     GetPage(
+        name: AppRoutes.alternateCamera,
+        page: () => AlternateCameraPage(cod: Get.parameters['cod']!),
+    ),
   ];
 }

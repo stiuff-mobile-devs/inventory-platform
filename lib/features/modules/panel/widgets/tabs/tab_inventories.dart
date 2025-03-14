@@ -175,7 +175,7 @@ class _TabInventoriesState extends State<TabInventories> {
                 key: Key(item.id.toString()),
                 direction: DismissDirection.endToStart,
                 onDismissed: (direction) {
-                  Get.toNamed(AppRoutes.material,
+                  Get.toNamed(AppRoutes.alternateCamera,
                     parameters: {'cod': item.id});
                 },
                 background: Container(
