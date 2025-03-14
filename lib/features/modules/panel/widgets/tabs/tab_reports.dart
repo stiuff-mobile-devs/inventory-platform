@@ -99,29 +99,74 @@ class _ReportsTabState extends State<ReportsTab> {
       ),
     );
   }
-
+  List<String> itens = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"];
   Widget _buildItemList() {
-    return const Padding(
+    return Padding(
       padding: const EdgeInsets.only(
       left: 20,
       top: 20,
       right: 20,
       bottom: 20,
     ),
-      child: Column (
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Row (
-            children: [
-              Expanded(child: Text("ID", style: TextStyle(fontWeight: FontWeight.bold))),
-              Expanded(child: Text("Descrição", style: TextStyle(fontWeight: FontWeight.bold))),
-              Expanded(child: Text("Adicionado", style: TextStyle(fontWeight: FontWeight.bold))),
-            ],
-          ),
-           SizedBox(height: 8),
-           Divider(),
-        ],
-      )
+      child:
+        Column (
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Row (
+              children: [
+                Expanded(child: Text("Nome", style: TextStyle(fontWeight: FontWeight.bold))),
+                Expanded(child: Text("Descrição", style: TextStyle(fontWeight: FontWeight.bold))),
+                Expanded(child: Text("Adicionado", style: TextStyle(fontWeight: FontWeight.bold))),
+              ],
+            ),
+            SizedBox(height: 8),
+            Divider(),
+            Container (
+                child: ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: _allItems.length,
+                  itemBuilder: (context, index) {
+                    return Row (
+                        children: [
+                          Text(_allItems[index].title),
+                          const SizedBox(width: 20),
+                          Text(_allItems[index].description),
+                          const SizedBox(width: 20),
+                          Text(_utilsService.formatDate(_allItems[index].createdAt)),
+                        ]
+                    );
+                  },
+                )
+            )
+          ],
+        ),
     );
+
   }
+
+  // Widget _buildItemList() {
+  //   return const Padding(
+  //       padding: const EdgeInsets.only(
+  //         left: 20,
+  //         top: 20,
+  //         right: 20,
+  //         bottom: 20,
+  //       ),
+  //       child: Column (
+  //         crossAxisAlignment: CrossAxisAlignment.center,
+  //         children: [
+  //           const Row (
+  //             children: [
+  //               Expanded(child: Text("ID", style: TextStyle(fontWeight: FontWeight.bold))),
+  //               Expanded(child: Text("Descrição", style: TextStyle(fontWeight: FontWeight.bold))),
+  //               Expanded(child: Text("Adicionado", style: TextStyle(fontWeight: FontWeight.bold))),
+  //             ],
+  //           ),
+  //           SizedBox(height: 8),
+  //           Divider(),
+  //         ],
+  //       )
+  //   );
+  // }
 }
