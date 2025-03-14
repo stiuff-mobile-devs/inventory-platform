@@ -51,12 +51,12 @@ class OrganizationModel {
   set inventories(List<String>? inventories) => _inventoryIds = inventories;
   set domains(List<String>? domains) => _domainIds = domains;
 
-  factory OrganizationModel.fromMap(Map<String, dynamic> map) {
+  factory OrganizationModel.fromMap(Map<String, dynamic> data, String documentId) {
     return OrganizationModel(
-      id: map['id'] as String,
-      title: map['title'] as String,
-      description: map['description'] as String,
-      imagePath: map['imagePath'] as String,
+      id: documentId,
+      title: data['title'] ?? '',
+      description: data['description'] ?? 0,
+      imagePath: "assets/images/Laboratory_1920x1080.jpg"
     );
   }
 

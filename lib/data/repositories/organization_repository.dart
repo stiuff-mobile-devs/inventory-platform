@@ -2,19 +2,22 @@ import 'package:get/get.dart';
 import 'package:inventory_platform/data/models/domain_model.dart';
 import 'package:inventory_platform/data/models/entity_model.dart';
 import 'package:inventory_platform/data/models/inventory_model.dart';
+import 'package:inventory_platform/data/models/item_model.dart';
 import 'package:inventory_platform/data/models/member_model.dart';
 import 'package:inventory_platform/data/models/organization_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:inventory_platform/data/models/reader_model.dart';
 import 'package:inventory_platform/data/models/tag_model.dart';
 import 'package:inventory_platform/data/repositories/domain_repository.dart';
 import 'package:inventory_platform/data/repositories/entity_repository.dart';
 import 'package:inventory_platform/data/repositories/inventory_repository.dart';
+import 'package:inventory_platform/data/repositories/item_repository.dart';
 import 'package:inventory_platform/data/repositories/member_repository.dart';
 import 'package:inventory_platform/data/repositories/reader_repository.dart';
 import 'package:inventory_platform/data/repositories/tag_repository.dart';
 
 class OrganizationRepository {
-  final List<OrganizationModel> _organizations = [];
+  List<OrganizationModel> _organizations = [];
 
   final DomainRepository _domainRepository = Get.find<DomainRepository>();
   final EntityRepository _entityRepository = Get.find<EntityRepository>();
@@ -22,9 +25,21 @@ class OrganizationRepository {
       Get.find<InventoryRepository>();
   final MemberRepository _memberRepository = Get.find<MemberRepository>();
   final ReaderRepository _readerRepository = Get.find<ReaderRepository>();
+  final ItemRepository _itemRepository = Get.find<ItemRepository>();
   final TagRepository _tagRepository = Get.find<TagRepository>();
 
+  Future<List<OrganizationModel>> getAllOrganizationsRep() async {
+    CollectionReference departments = FirebaseFirestore.instance.collection('departments');
+
+    QuerySnapshot querySnapshot = await departments.get();
+
+    return _organizations = querySnapshot.docs.map((doc) {
+      return OrganizationModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+    }).toList();
+  }
+
   List<OrganizationModel> getAllOrganizations() {
+    getAllOrganizationsRep();
     return _organizations;
   }
 
@@ -37,7 +52,7 @@ class OrganizationRepository {
   }
 
   void addAllOrganizations(List<OrganizationModel> organizations) {
-    _organizations.addAll(organizations);
+    //_organizations.addAll(organizations);
   }
 
   void updateOrganization(OrganizationModel updatedOrganization) {
@@ -62,7 +77,7 @@ class OrganizationRepository {
   Future<List<InventoryModel>> getInventoriesForOrganization(
       String orgId) async {
     List<InventoryModel> allInventories =
-        await _inventoryRepository.getAllInventories();
+        await _inventoryRepository.getInventoriesByDepartment(orgId);
 
     return allInventories;
   }
@@ -101,6 +116,12 @@ class OrganizationRepository {
           .where((member) => org.members?.contains(member.id) ?? false)
           .toList(),
     );
+  }
+
+  Future<List<ItemModel>> getItemsForOrganization(String orgId) async {
+    List<InventoryModel> list = await getInventoriesForOrganization(orgId);
+    List<ItemModel> allItems = await _itemRepository.getAllItemsByOrganization(list,orgId);
+    return allItems;
   }
 
   Future<List<EntityModel>> getEntitiesForOrganization(String orgId) async {

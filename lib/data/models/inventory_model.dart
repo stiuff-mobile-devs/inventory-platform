@@ -39,6 +39,17 @@ class InventoryModel {
   set createdAt(DateTime? createdAt) => _createdAt = createdAt;
   set lastUpdatedAt(DateTime? lastUpdatedAt) => _lastUpdatedAt = lastUpdatedAt;
 
+  factory InventoryModel.fromFirestore(Map<String, dynamic> data, String documentId) {
+    return InventoryModel(
+        id: documentId,
+        title: data['title'] ?? '',
+        description: data['description'] ?? 0,
+        revisionNumber: data['revision_number'],
+        isActive: 1,
+        createdAt: data['created_at'].toDate()
+    );
+  }
+
   factory InventoryModel.fromMap(Map<String, dynamic> map) {
     return InventoryModel(
       id: map['id'],

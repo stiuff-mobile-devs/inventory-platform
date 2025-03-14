@@ -10,6 +10,7 @@ import 'package:inventory_platform/features/common/widgets/base_scaffold.dart';
 import 'package:inventory_platform/features/common/widgets/scrollable_bottom_nav_bar.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/tabs/tab_members.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/tabs/tab_readers.dart';
+import 'package:inventory_platform/features/modules/panel/widgets/tabs/tab_reports.dart';
 import 'package:inventory_platform/features/modules/panel/widgets/tabs/tab_tags.dart';
 
 class PanelPage extends StatefulWidget {
@@ -43,6 +44,7 @@ class _PanelPageState extends State<PanelPage> {
         const TabReaders(),
         const TabMembers(),
         const EntitiesTab(),
+        const ReportsTab(),
         const AdminTab(),
       ];
     });

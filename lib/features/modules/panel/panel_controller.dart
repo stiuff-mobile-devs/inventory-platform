@@ -11,6 +11,8 @@ import 'package:inventory_platform/data/models/tag_model.dart';
 import 'package:inventory_platform/data/models/organization_model.dart';
 import 'package:inventory_platform/data/repositories/organization_repository.dart';
 
+import '../../../data/models/item_model.dart';
+
 class PanelController extends GetxController {
   final _organizationRepository = Get.find<OrganizationRepository>();
   final _utilsService = UtilsService();
@@ -29,6 +31,7 @@ class PanelController extends GetxController {
   final RxList<InventoryModel> inventories = <InventoryModel>[].obs;
   final RxList<MemberModel> members = <MemberModel>[].obs;
   final RxList<ReaderModel> readers = <ReaderModel>[].obs;
+  final RxList<ItemModel> reports = <ItemModel>[].obs;
 
   @override
   void onInit() {
@@ -72,6 +75,8 @@ class PanelController extends GetxController {
         // TabType.members: () => _fetchData(members, () => _organizationRepository.getMembersForOrganization(orgId)),
         TabType.entities: () => _fetchData(entities,
             () => _organizationRepository.getEntitiesForOrganization(orgId)),
+        TabType.reports: () => _fetchData(reports,
+                () => _organizationRepository.getItemsForOrganization(orgId)),
       };
 
       if (dataFetchers.containsKey(tabType)) {
@@ -98,6 +103,8 @@ class PanelController extends GetxController {
       // _fetchData(members, () => _organizationRepository.getMembersForOrganization(orgId)),
       _fetchData(entities,
           () => _organizationRepository.getEntitiesForOrganization(orgId)),
+      _fetchData(reports,
+              () => _organizationRepository.getItemsForOrganization(orgId)),
     ]);
   }
 
@@ -111,6 +118,7 @@ class PanelController extends GetxController {
       4: readers,
       5: members,
       6: entities,
+      7: reports,
     };
 
     listedItems.assignAll(tabDataMap[tabIndex] ?? []);
