@@ -6,9 +6,14 @@ import 'package:inventory_platform/features/common/controllers/sidebar_controlle
 import 'package:inventory_platform/routes/routes.dart';
 import 'package:sidebarx/sidebarx.dart';
 
-class CustomSidebar extends StatelessWidget {
-  CustomSidebar({super.key});
+class CustomSidebar extends StatefulWidget {
+  const CustomSidebar({super.key});
 
+  @override
+  State<CustomSidebar> createState() => _CustomSidebarState();
+}
+
+class _CustomSidebarState extends State<CustomSidebar> {
   final controller = Get.find<SidebarController>();
   final UtilsService utilsService = UtilsService();
 
@@ -29,11 +34,15 @@ class CustomSidebar extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateSelectedIndex(Get.currentRoute);
     });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return SidebarX(
       controller: sidebarController,
       theme: SidebarXTheme(
