@@ -74,7 +74,7 @@ class _MaterialsFormState extends State<MaterialsForm> {
                 ? const CircularProgressIndicator()
                 : ElevatedButton(
                     onPressed: () => controller.saveMaterial(context),
-                    child: const Text("Salvar Departamento"),
+                    child: const Text("Salvar Material"),
                   ),
           ],
         ),

@@ -99,7 +99,7 @@ class MaterialsController extends GetxController {
     } catch (e) {
       print(e.toString());
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Erro ao salvar departamento: $e")),
+        SnackBar(content: Text("Erro ao salvar material: $e")),
       );
     }
   }

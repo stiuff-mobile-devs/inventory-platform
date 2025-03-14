@@ -134,20 +134,14 @@ class _TabInventoriesState extends State<TabInventories> {
             TextButton.icon(
               onPressed: () {
                 searchFocusNode.unfocus();
-                Get.toNamed(AppRoutes.inventory, parameters: {'cod': organization!.id});              },
+                Get.toNamed(AppRoutes.inventory,
+                    parameters: {'cod': organization!.id});
+              },
               icon: const Icon(Icons.add),
               label: const Text('Adicionar Inventário'),
               style: TextButton.styleFrom(foregroundColor: Colors.blue),
             ),
-            TextButton.icon(
-              onPressed: () {
-                  searchFocusNode.unfocus();
-                  Get.toNamed(AppRoutes.material, parameters: {'cod': 'atn6e81FBiSEYeB8EzF3'});
-              },
-              icon: const Icon(Icons.add),
-              label: const Text('Adicionar Material'),
-              style: TextButton.styleFrom(foregroundColor: Colors.blue),
-            ),
+           
           ],
         ),
       ],
@@ -177,44 +171,62 @@ class _TabInventoriesState extends State<TabInventories> {
 
             if (items[index] is InventoryModel) {
               InventoryModel item = items[index];
-              return ListItemWidget(
-                attributes: {
-                  'Título': item.title,
-                  'Descrição': item.description,
-                  'Criado em': _utilsService.formatDate(item.createdAt),
-                  'Atualizado em': _utilsService.formatDate(item.lastUpdatedAt),
+              return Dismissible(
+                key: Key(item.id.toString()),
+                direction: DismissDirection.endToStart,
+                onDismissed: (direction) {
+                  Get.toNamed(AppRoutes.material,
+                    parameters: {'cod': item.id});
                 },
-                isActive: item.isActive,
-                icon: Icons.donut_large_rounded,
-                onTap: (context) {
-                  searchFocusNode.unfocus();
-                  showDetailsDialog(
-                    context,
-                    {
-                      'Título': item.title,
-                      'Descrição': item.description,
-                      'Está Ativo?': item.isActive == 1 ? 'Sim' : 'Não',
-                      'Número de Revisão': item.revisionNumber,
-                      'Data de Criação':
-                          _utilsService.formatDate(item.createdAt),
-                      'Última Atualização':
-                          _utilsService.formatDate(item.lastUpdatedAt),
-                    },
-                    () async {
-                      searchFocusNode.unfocus();
-                      Navigator.of(context).pop();
-                      await Get.toNamed(
-                        AppRoutes.form,
-                        arguments: [
-                          _utilsService.tabIndexToEnum(
-                              _panelController.selectedTabIndex.value),
-                          _panelController.inventories
-                              .firstWhere((e) => e.id == item.id),
-                        ],
-                      );
-                    },
-                  );
-                },
+                background: Container(
+                  color: Colors.green,
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                ),
+                child: ListItemWidget(
+                  attributes: {
+                    'Título': item.title,
+                    'Descrição': item.description,
+                    'Criado em': _utilsService.formatDate(item.createdAt),
+                    'Atualizado em':
+                        _utilsService.formatDate(item.lastUpdatedAt),
+                  },
+                  isActive: item.isActive,
+                  icon: Icons.donut_large_rounded,
+                  onTap: (context) {
+                    searchFocusNode.unfocus();
+                    showDetailsDialog(
+                      context,
+                      {
+                        'Título': item.title,
+                        'Descrição': item.description,
+                        'Está Ativo?': item.isActive == 1 ? 'Sim' : 'Não',
+                        'Número de Revisão': item.revisionNumber,
+                        'Data de Criação':
+                            _utilsService.formatDate(item.createdAt),
+                        'Última Atualização':
+                            _utilsService.formatDate(item.lastUpdatedAt),
+                      },
+                      () async {
+                        searchFocusNode.unfocus();
+                        Navigator.of(context).pop();
+                        await Get.toNamed(
+                          AppRoutes.form,
+                          arguments: [
+                            _utilsService.tabIndexToEnum(
+                                _panelController.selectedTabIndex.value),
+                            _panelController.inventories
+                                .firstWhere((e) => e.id == item.id),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
               );
             }
             return null;
