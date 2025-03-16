@@ -29,6 +29,12 @@ class UtilsService {
         : "Data Indisponível";
   }
 
+  String formatDatePortuguese(DateTime? date) {
+    return date != null
+        ? DateFormat("dd/MM/yyyy").format(date)
+        : "Data Indisponível";
+  }
+
   bool emailRegexMatch(String email) {
     final RegExp regex = RegExp(
       r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
