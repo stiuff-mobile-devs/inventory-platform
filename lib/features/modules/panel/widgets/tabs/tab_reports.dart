@@ -20,8 +20,6 @@ class _ReportsTabState extends State<ReportsTab> {
   final OrganizationRepository _organizationRepository =
   Get.find<OrganizationRepository>();
 
-  final Map<String, bool> _groupExpansionState = {};
-
   @override
   void initState() {
     super.initState();
@@ -101,27 +99,43 @@ class _ReportsTabState extends State<ReportsTab> {
   }
 
   Widget _buildItemList() {
-    return const Padding(
-      padding: const EdgeInsets.only(
-      left: 20,
-      top: 20,
-      right: 20,
-      bottom: 20,
-    ),
-      child: Column (
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Row (
-            children: [
-              Expanded(child: Text("ID", style: TextStyle(fontWeight: FontWeight.bold))),
-              Expanded(child: Text("Descrição", style: TextStyle(fontWeight: FontWeight.bold))),
-              Expanded(child: Text("Adicionado", style: TextStyle(fontWeight: FontWeight.bold))),
-            ],
-          ),
-           SizedBox(height: 8),
-           Divider(),
-        ],
-      )
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, top: 10, right: 20, bottom: 20),
+      child:
+        Column (
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Row (
+              children: [
+                Expanded(child: Text("Identificador", style: TextStyle(fontWeight: FontWeight.bold))),
+                SizedBox(width:50),
+                Expanded(child: Text("Título", style: TextStyle(fontWeight: FontWeight.bold))),
+                SizedBox(width: 40),
+                Expanded(child: Text("Adicionado", style: TextStyle(fontWeight: FontWeight.bold))),
+              ],
+            ),
+            const Divider(color: Colors.black, thickness: 1, indent: 1, endIndent: 1),
+            ListView.separated(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: _allItems.length,
+              itemBuilder: (context, index) {
+                return Row (
+                    children: [
+                      Expanded(child: Text(_allItems[index].id)),
+                      const SizedBox(width: 50),
+                      Expanded(child: Text(_allItems[index].title)),
+                      const SizedBox(width: 40),
+                      Expanded(child: Text(_utilsService.formatDatePortuguese(_allItems[index].createdAt))),
+                    ]
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const Divider(color: Colors.grey, thickness: 1, indent: 1, endIndent: 1,);
+              },
+            )
+          ],
+        ),
     );
   }
 }
