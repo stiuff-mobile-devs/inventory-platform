@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/features/common/controllers/connection_controller.dart';
+import 'package:inventory_platform/core/debug/logger.dart';
 
 class ConnectionStatusIcon extends StatelessWidget {
   const ConnectionStatusIcon({super.key});
@@ -9,7 +10,7 @@ class ConnectionStatusIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetX<ConnectionController>(
       builder: (controller) {
-        debugPrint(
+        Logger.info(
             'Estado de conexão: ${controller.isConnected.value ? "Conectado" : "Desconectado"}');
 
         if (!controller.isConnected.value) {

@@ -1,8 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/data/database/database_helper.dart';
 import 'package:inventory_platform/data/models/reader_model.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:inventory_platform/core/debug/logger.dart';
 
 class ReaderRepository {
   final DatabaseHelper _dbHelper = Get.find<DatabaseHelper>();
@@ -11,10 +11,10 @@ class ReaderRepository {
     try {
       final db = await _dbHelper.database;
       final List<Map<String, dynamic>> result = await db.query('readers');
-      debugPrint('Fetched all readers: ${result.length} items');
+      Logger.info('Fetched all readers: ${result.length} items');
       return result.map((data) => ReaderModel.fromMap(data)).toList();
-    } catch (e) {
-      debugPrint('Error fetching all readers: $e');
+    } catch (e, stackTrace) {
+      Logger.error('Error fetching all readers: $e', stackTrace);
       return [];
     }
   }
@@ -28,13 +28,13 @@ class ReaderRepository {
         whereArgs: [mac],
       );
       if (result.isNotEmpty) {
-        debugPrint('Fetched reader with mac: $mac');
+        Logger.info('Fetched reader with mac: $mac');
         return ReaderModel.fromMap(result.first);
       }
-      debugPrint('No reader found with mac: $mac');
+      Logger.info('No reader found with mac: $mac');
       return null;
-    } catch (e) {
-      debugPrint('Error fetching reader by mac: $e');
+    } catch (e, stackTrace) {
+      Logger.error('Error fetching reader by mac: $e', stackTrace);
       return null;
     }
   }
@@ -47,9 +47,9 @@ class ReaderRepository {
         reader.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      debugPrint('Added reader with mac: ${reader.mac}');
-    } catch (e) {
-      debugPrint('Error adding reader: $e');
+      Logger.info('Added reader with mac: ${reader.mac}');
+    } catch (e, stackTrace) {
+      Logger.error('Error adding reader: $e', stackTrace);
     }
   }
 
@@ -62,9 +62,9 @@ class ReaderRepository {
         where: 'mac = ?',
         whereArgs: [updatedReader.mac],
       );
-      debugPrint('Updated reader with mac: ${updatedReader.mac}');
-    } catch (e) {
-      debugPrint('Error updating reader: $e');
+      Logger.info('Updated reader with mac: ${updatedReader.mac}');
+    } catch (e, stackTrace) {
+      Logger.error('Error updating reader: $e', stackTrace);
     }
   }
 
@@ -76,9 +76,9 @@ class ReaderRepository {
         where: 'mac = ?',
         whereArgs: [mac],
       );
-      debugPrint('Deleted reader with mac: $mac');
-    } catch (e) {
-      debugPrint('Error deleting reader: $e');
+      Logger.info('Deleted reader with mac: $mac');
+    } catch (e, stackTrace) {
+      Logger.error('Error deleting reader: $e', stackTrace);
     }
   }
 }

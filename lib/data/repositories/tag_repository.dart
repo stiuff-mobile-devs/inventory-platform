@@ -1,8 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:inventory_platform/data/database/database_helper.dart';
 import 'package:inventory_platform/data/models/tag_model.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:inventory_platform/core/debug/logger.dart';
 
 class TagRepository {
   final DatabaseHelper _dbHelper = Get.find<DatabaseHelper>();
@@ -11,10 +11,10 @@ class TagRepository {
     try {
       final db = await _dbHelper.database;
       final List<Map<String, dynamic>> result = await db.query('tags');
-      debugPrint('Fetched all tags: ${result.length} items');
+      Logger.info('Fetched all tags: ${result.length} items');
       return result.map((data) => TagModel.fromMap(data)).toList();
-    } catch (e) {
-      debugPrint('Error fetching all tags: $e');
+    } catch (e, stackTrace) {
+      Logger.error('Error fetching all tags: $e', stackTrace);
       return [];
     }
   }
@@ -28,13 +28,13 @@ class TagRepository {
         whereArgs: [id],
       );
       if (result.isNotEmpty) {
-        debugPrint('Fetched tag with id: $id');
+        Logger.info('Fetched tag with id: $id');
         return TagModel.fromMap(result.first);
       }
-      debugPrint('No tag found with id: $id');
+      Logger.info('No tag found with id: $id');
       return null;
-    } catch (e) {
-      debugPrint('Error fetching tag by id: $e');
+    } catch (e, stackTrace) {
+      Logger.error('Error fetching tag by id: $e', stackTrace);
       return null;
     }
   }
@@ -47,9 +47,9 @@ class TagRepository {
         tag.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      debugPrint('Added tag with id: ${tag.id}');
-    } catch (e) {
-      debugPrint('Error adding tag: $e');
+      Logger.info('Added tag with id: ${tag.id}');
+    } catch (e, stackTrace) {
+      Logger.error('Error adding tag: $e', stackTrace);
     }
   }
 
@@ -62,9 +62,9 @@ class TagRepository {
         where: 'id = ?',
         whereArgs: [updatedTag.id],
       );
-      debugPrint('Updated tag with id: ${updatedTag.id}');
-    } catch (e) {
-      debugPrint('Error updating tag: $e');
+      Logger.info('Updated tag with id: ${updatedTag.id}');
+    } catch (e, stackTrace) {
+      Logger.error('Error updating tag: $e', stackTrace);
     }
   }
 
@@ -76,9 +76,9 @@ class TagRepository {
         where: 'id = ?',
         whereArgs: [id],
       );
-      debugPrint('Deleted tag with id: $id');
-    } catch (e) {
-      debugPrint('Error deleting tag: $e');
+      Logger.info('Deleted tag with id: $id');
+    } catch (e, stackTrace) {
+      Logger.error('Error deleting tag: $e', stackTrace);
     }
   }
 }

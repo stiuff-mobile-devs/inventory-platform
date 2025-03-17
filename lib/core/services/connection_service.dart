@@ -1,10 +1,11 @@
 import 'dart:async';
-import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/material.dart';
+import 'package:inventory_platform/core/debug/logger.dart';
+import 'package:inventory_platform/core/services/http_service.dart';
 
 class ConnectionService {
   final Connectivity _connectivity = Connectivity();
+  final HttpService _httpService = HttpService();
   late StreamSubscription<List<ConnectivityResult>> _connectionSubscription;
 
   final StreamController<bool> _connectionStatusController =
@@ -13,7 +14,7 @@ class ConnectionService {
 
   Future<bool> checkInternetConnection() async {
     try {
-      final response = await http.get(Uri.parse('https://httpbin.org/get'));
+      final response = await _httpService.get('https://httpbin.org/get');
       return response.statusCode == 200;
     } catch (_) {
       return false;
@@ -25,11 +26,11 @@ class ConnectionService {
         .listen((List<ConnectivityResult> results) async {
       if (results.isEmpty || results.first == ConnectivityResult.none) {
         _connectionStatusController.add(false);
-        debugPrint('Conexão com a internet perdida.');
+        Logger.warning('Conexão com a internet perdida.');
       } else {
         final hasInternet = await checkInternetConnection();
         _connectionStatusController.add(hasInternet);
-        debugPrint('Conexão com a internet obtida. ${results.first.name}.');
+        Logger.info('Conexão com a internet obtida. ${results.first.name}.');
       }
     });
   }

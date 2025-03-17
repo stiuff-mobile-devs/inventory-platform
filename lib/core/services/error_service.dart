@@ -1,11 +1,14 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:inventory_platform/core/debug/logger.dart';
 import '../utils/auth/auth_error.dart';
 
 class ErrorService {
   void handleError(Exception e) {
-    String errorMessage = "Erro desconhecido.";
+    String errorMessage;
+    String originalError = e.toString();
 
     if (e is InvalidCredentialsError) {
       errorMessage = e.message;
@@ -17,7 +20,9 @@ class ErrorService {
       errorMessage = "Ocorreu um erro inesperado.";
     }
 
-    debugPrint("ErrorService: - $errorMessage");
+    Logger.error(
+        "ErrorService: - $errorMessage\nOriginal error: $originalError",
+        StackTrace.current);
 
     Get.snackbar(
       '',
@@ -30,7 +35,7 @@ class ErrorService {
       margin: const EdgeInsets.all(16),
       messageText: AwesomeSnackbarContent(
         title: 'Erro',
-        message: errorMessage,
+        message: kDebugMode ? originalError : errorMessage,
         contentType: ContentType.failure,
       ),
     );

@@ -2,6 +2,11 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Flutter: Attach to Device",
+            "type": "dart",
+            "request": "attach"
+        },
+        {
             "name": "inventory-platform",
             "request": "launch",
             "type": "dart",
@@ -12,14 +17,14 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile",
-            "deviceId": "R9XX202RXTT" 
+            "deviceId": "R9XX202RXTT"
         },
         {
             "name": "inventory-platform (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release",
-            "deviceId": "R9XX202RXTT" 
+            "deviceId": "R9XX202RXTT"
         }
     ]
 }
